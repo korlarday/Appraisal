@@ -1,0 +1,164 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<!-- Page Content -->
+<div class="content content-full">
+    <div style="display:none" id="sessionCount"></div>
+    <div style="display:none" id="sessionNames">
+        @*@foreach (var item in Model.StudentsInSessions)
+        {
+            <span class="sessionName">@item.SessionName</span>
+        }*@
+    </div>
+    <div style="display:none" id="students">
+        @*@foreach (var item in Model.StudentsInSessions)
+        {
+            <span class="studentCount">@item.NumberOfStudents</span>
+        }*@
+    </div>
+    <!-- Overview -->
+    <h5 class="mt-4 mb-3">Home - Dashboard</h5>
+    <div class="row">
+        <div class="col-sm-6 col-lg-3 invisible" data-toggle="appear">
+            <div class="block block-rounded block-fx-pop text-center">
+                <div class="block-content block-content-full">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <i class="fa fa-users font-size-h1 text-primary"></i>
+                            <div class="font-size-h6">Students</div>
+                        </div>
+                        <div class="font-size-h3 col-md-7 align-self-center" style="border-left:1px solid #e3e3e3">13</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3 invisible" data-toggle="appear">
+            <div class="block block-rounded block-fx-pop text-center">
+                <div class="block-content block-content-full">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <i class="si si-users font-size-h1 text-primary"></i>
+                            <div class="font-size-h6">Teachers</div>
+                        </div>
+                        <div class="font-size-h3 col-md-7 align-self-center" style="border-left:1px solid #e3e3e3">13</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3 invisible" data-toggle="appear">
+            <div class="block block-rounded block-fx-pop text-center">
+                <div class="block-content block-content-full">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <i class="fa fa-user-tie font-size-h1 text-primary"></i>
+                            <div class="font-size-h6">Parents</div>
+                        </div>
+                        <div class="font-size-h3 col-md-7 align-self-center" style="border-left:1px solid #e3e3e3">2</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3 invisible" data-toggle="appear">
+            <div class="block block-rounded block-fx-pop text-center">
+                <div class="block-content block-content-full">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <i class="fa fa-wallet font-size-h1 text-primary"></i>
+                            <div class="font-size-h6">Earnings</div>
+                        </div>
+                        <div class="font-size-h3 col-md-7 align-self-center" style="border-left:1px solid #e3e3e3">50,000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Overview -->
+    <!-- Notice board -->
+    <div class="overflow-hidden">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="block block-rounded block-bordered">
+                    <div class="block-header block-header-default">
+                        <h3 class="block-title">Students Enrollment</h3>
+                    </div>
+                    <div class="block-content">
+                        <div class="block block-content-full text-center">
+                            <div class="py-3">
+                                <!-- Bars Chart Container -->
+                                @*<canvas class="js-chartjs-bars"></canvas>*@
+                                @*<canvas class="js-chartjs-bars chartjs-render-monitor" width="742" height="371" style="display: block; width: 742px; height: 371px;"></canvas>*@
+                                <canvas id="myChart" width="742" height="371"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="block block-rounded block-bordered">
+                    <div class="block-header block-header-default">
+                        <h3 class="block-title">Notice Board</h3>
+                    </div>
+                    <div class="block-content">
+                        <div class="block block-rounded">
+                            
+                            <div style="padding:10px 0;border-bottom:1px solid #f5f6fa;">
+                                <a href="/">
+                                    <div class="date-posted text-info"></div>
+                                    <div class="posted-by text-success">By </div>
+                                    <div class="title">
+                                        Title
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Domains -->
+</div>
+
+
+@section Scripts {
+
+    <!-- END Page Content -->
+    <script>
+        $(function () {
+            var $sessionCount = parseInt($("#sessionCount").text());
+            var $students = $("#students .studentCount");
+            var $sessionNames = $("#sessionNames .sessionName");
+            var $studentCounts = [];
+            var $sessions = [];
+            $.each($students, function (el, val) {
+                $studentCounts.push(parseInt($(this).text()));
+                $sessions.push($($sessionNames[el]).text())
+            });
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: $sessions,
+                    datasets: [{
+                        label: '# Students enrolled',
+                        data: $studentCounts,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        });
+    </script>
+}

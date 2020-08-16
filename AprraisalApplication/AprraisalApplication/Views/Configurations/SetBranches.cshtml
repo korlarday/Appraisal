@@ -1,0 +1,357 @@
+﻿@model AprraisalApplication.Models.ViewModels.SetBranchVM
+
+@{
+    ViewBag.Title = "Set Branches";
+}
+
+
+<!-- Hero -->
+<div class="bg-body-light">
+    <div class="content content-full">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Set Branches</h1>
+            <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Administration</li>
+                    <li class="breadcrumb-item">Resourses</li>
+                    <li class="breadcrumb-item active" aria-current="page">Set Branches</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
+<!-- Page Content -->
+<div class="content">
+    <!-- Elements -->
+    <div class="block block-rounded block-bordered">
+        <div class="block-header block-header-default">
+            <h3 class="block-title">Branches</h3>
+        </div>
+        <div class="block-content">
+            <div class="block block-rounded block-bordered">
+                <div class="block-content block-content-full">
+                    <div>
+                        <button type="button" class="btn btn-primary push" data-toggle="modal" data-target="#new_branch_modal">New Branch</button>
+                        <button type="button" style="display:none" data-toggle="modal" id="show_edit_modal" data-target="#edit_branch_modal">Edit Branch</button>
+                    </div>
+                    <!-- DataTables init on table by adding .js-dataTable-buttons class, functionality is initialized in js/pages/be_tables_datatables.min.js which was auto compiled from _es6/pages/be_tables_datatables.js -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-vcenter js-dataTable-full-pagination" id="table">
+                            <thead>
+                                <tr>
+                                    <th style="display:none">Id</th>
+                                    <th style="display:none">TypeId</th>
+                                    <th class="text-center">#</th>
+                                    <th>Branch Name</th>
+                                    <th>State</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table_body">
+                                @{
+                                    int num = 1;
+                                    foreach (var item in Model.Branches)
+                                    {
+                                        <tr id="@item.Id">
+                                            <td class="id" style="display: none">@item.Id</td>
+                                            <td class="stateId" style="display: none">@item.State.Id</td>
+                                            <td class="text-center count-item">@num</td>
+                                            <td class="branchname">
+                                                @item.Description
+                                            </td>
+                                            <td class="state">
+                                                @item.State.Description
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="btn-group">
+                                                    <a href="#" class="btn btn-sm btn-primary edit_branch" data-toggle="tooltip" title="Edit">
+                                                        <i class="fa fa-pencil-alt"></i>
+                                                    </a>
+                                                    <a href="#" class="btn btn-sm btn-danger delete_branch" data-toggle="tooltip" title="Delete">
+                                                        <i class="fa fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        ++num;
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Elements -->
+</div>
+<!-- END Page Content -->
+<!-- New Subject Modal -->
+<div class="modal fade" id="new_branch_modal" tabindex="-1" role="dialog" aria-labelledby="new_branch_modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-popout" role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title">Create New Branch</h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="fa fa-fw fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
+                    <div class="row push">
+                        <div class="col-md-8 offset-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.CreateBranch.Description)
+                                @Html.EditorFor(model => model.CreateBranch.Description, new { htmlAttributes = new { @class = "form-control", id = "branch_name" } })
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.CreateBranch.StateId)
+                                @Html.DropDownListFor(model => model.CreateBranch.StateId, Model.States, "Select State", new { @class = "form-control", id = "state_type" })
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" id="submit_branch" class="btn btn-primary mt-3">Create Branch</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="block-content block-content-full text-right bg-light">
+                    <button type="button" class="btn btn-sm btn-light close_modal" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END  -->
+<!-- Edit Subject Modal -->
+<div class="modal fade" id="edit_branch_modal" tabindex="-1" role="dialog" aria-labelledby="edit_branch_modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-popout" role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title">Edit Branch</h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="fa fa-fw fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
+                    <div class="row push">
+                        <div class="col-md-8 offset-md-2">
+                            <input type="hidden" id="edit_id" />
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.CreateBranch.Description)
+                                @Html.EditorFor(model => model.CreateBranch.Description, new { htmlAttributes = new { @class = "form-control", id = "edit_branch_name" } })
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.CreateBranch.StateId)
+                                @Html.DropDownListFor(model => model.CreateBranch.StateId, Model.States, "Select State", new { @class = "form-control", id = "edit_branch_type" })
+                            </div>
+
+                            <div class="form-group">
+                                <button type="button" id="update_branch" class="btn btn-primary mt-3">Update Branch</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="block-content block-content-full text-right bg-light">
+                    <button type="button" class="btn btn-sm btn-light close_modal" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END  -->
+
+@section Scripts {
+
+    <script>
+        $(function () {
+
+            // NEW branch START
+            var submitBranchButton = $("#submit_branch");
+            var branchName = $("#branch_name");
+            var stateType = $("#state_type")
+            var table = $("#table");
+
+
+            // SUBMITTING NEW Subject
+            submitBranchButton.click(function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                $this.attr("disabled", true);
+                var newBranchName = branchName.val();
+                var newStateType = stateType.val();
+                if (newBranchName.length < 1 || isNaN(parseInt(newStateType))) {
+                    Swal.fire("Oops...", "All fields are required!", "error");
+                    $this.attr("disabled", false);
+                    return false;
+                }
+
+                var url = "/api/Resources/PostAddBranch";
+
+                $.post(url,
+                    { branchName: newBranchName, stateId: newStateType },
+                    function (data) {
+
+                        if (data.Feedback == "taken") {
+                            Swal.fire("Oops...", "The branch name is already exists!", "error");
+                            $this.attr("disabled", false);
+                            return false;
+                        }
+                        else if (data.Feedback == 'required') {
+                            Swal.fire("Oops...", "All fields are required!", "error");
+                            $this.attr("disabled", false);
+                            return false;
+                        }
+                        else {
+                            if (!$("table#table").length) {
+                                location.reload();
+                            } else {
+                                $this.attr("disabled", false);
+                                $(".close_modal").click();
+                                Swal.fire("Success...", "Branch created successfully", "success");
+
+                                branchName.val("");
+                                stateType.val("");
+                                var toAppend = $("table#table tbody tr:last").clone();
+                                toAppend.attr("id", data.id);
+                                toAppend.children(".id").text(data.id);
+                                toAppend.children(".count-item").text(data.index);
+                                toAppend.children(".branchname").text(data.branchName);
+                                toAppend.children(".state").text(data.state);
+                                toAppend.children(".stateId").text(data.stateId);
+
+                                table.append($(toAppend).hide().fadeIn(1200));
+
+                            }
+                        }
+
+                    });
+            })
+            // END
+
+
+
+            // For show edit
+            $("#table").on("click", ".edit_branch", function (e) {
+                e.preventDefault();
+
+                $this = $(this);
+                var id = $this.closest('tr').children(".id").text();
+                var branchname = $this.closest('tr').children(".branchname").text();
+                var stateId = parseInt($this.closest('tr').children(".stateId").text());
+
+                $("#edit_branch_name").val(branchname.trim());
+                $("#edit_branch_type").val(stateId);
+                $("#edit_id").val(id);
+
+                $("#show_edit_modal").click();
+            });
+            // END
+
+            // submit edit
+            var submitEdit = $("#update_branch");
+            submitEdit.click(function (e) {
+                e.preventDefault();
+                $this = $(this);
+                $this.attr("disabled", true);
+
+                var editId = $("#edit_id").val();
+                var branchname = $("#edit_branch_name").val();
+                var stateId = $("#edit_branch_type").val();
+
+                if (branchname.length < 1 || isNaN(parseInt(stateId))) {
+                    Swal.fire("Oops...", "All fields are required!", "error");
+                    $this.attr("disabled", false);
+                    return false;
+                }
+
+                var url = "/api/Resources/PostEditBranch";
+
+                $.post(url,
+                    { id: editId, branchName: branchname, stateId: stateId },
+                    function (data) {
+
+                        if (data.Feedback == "taken") {
+                            Swal.fire("Oops...", "The branch description already exists!", "error");
+                            $this.attr("disabled", false);
+                            return false;
+                        }
+                        else if (data.Feedback == 'required') {
+                            Swal.fire("Oops...", "All fields are required!", "error");
+                            $this.attr("disabled", false);
+                            return false;
+                        }
+                        else {
+                            $this.attr("disabled", false);
+                            $(".close_modal").click();
+                            Swal.fire("Success...", "Branch updated successfully", "success");
+
+                            $("#edit_branch_name").val("");
+                            $("#edit_branch_type").val("");
+
+
+                            $("#table_body").children("#" + data.id).hide().fadeIn(1000);
+                            $("#table_body").children("#" + data.id).children(".branchname").text(data.branchName);
+                            $("#table_body").children("#" + data.id).children(".state").text(data.state);
+                            $("#table_body").children("#" + data.id).children(".stateId").text(data.stateId);
+
+                        }
+
+
+
+                    });
+            })
+            //END
+
+            /*
+             * Delete Subject js
+             */
+            $("#table").on("click", ".delete_branch", function (e) {
+                var $this = $(this);
+                e.preventDefault();
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to rever this!",
+                    type: "warning",
+                    showCancelButton: !0,
+                    customClass: { confirmButton: "btn btn-danger m-1", cancelButton: "btn btn-secondary m-1" },
+                    confirmButtonText: "Yes, delete it!",
+                    html: !1,
+                    preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
+
+                }).then(function (n) {
+                    if (n.value) {
+                        var id = $this.closest('tr').children(".id").text();
+                        var url = "/api/Resources/PostDeleteBranch";
+
+                        $.post(url, { id: id }, function (data) {
+                            Swal.fire("Deleted!", "Branch has been deleted.", "success");
+                            $this.closest('tr').fadeOut("slow", function () {
+                                $(this).remove();
+                            });
+                        });
+                    }
+                    else {
+                        "cancel" === n.dismiss && Swal.fire("Cancelled", "Subject file is safe :)", "error")
+                    }
+
+                })
+                //if (!confirm("Are you sure you want to delete")) return false;
+                //var $this = $(this);
+                //var id = $this.parent().parent().children(".id").text();
+
+            })
+        })
+                    ////////////////////////////////////////////////////////////////////
+    </script>
+}
+

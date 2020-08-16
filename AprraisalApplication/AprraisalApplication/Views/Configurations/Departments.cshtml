@@ -1,0 +1,373 @@
+﻿@model AprraisalApplication.Models.ViewModels.SetDepartmentVM
+
+@{
+    ViewBag.Title = "Departments";
+}
+
+<!-- Hero -->
+<div class="bg-body-light">
+    <div class="content content-full">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Set Departments</h1>
+            <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Configurations</li>
+                    <li class="breadcrumb-item">Resourses</li>
+                    <li class="breadcrumb-item active" aria-current="page">Set Departments</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
+<!-- Page Content -->
+<div class="content">
+    <!-- Elements -->
+    <div class="block block-rounded block-bordered">
+        <div class="block-header block-header-default">
+            <h3 class="block-title">Departments</h3>
+        </div>
+        <div class="block-content">
+            <div class="block block-rounded block-bordered">
+                <div class="block-content block-content-full">
+                    <div>
+                        <button type="button" class="btn btn-primary push" data-toggle="modal" data-target="#new_department_modal">New Department</button>
+                        <button type="button" style="display:none" data-toggle="modal" id="show_edit_modal" data-target="#edit_department_modal">Edit Department</button>
+                    </div>
+                    <!-- DataTables init on table by adding .js-dataTable-buttons class, functionality is initialized in js/pages/be_tables_datatables.min.js which was auto compiled from _es6/pages/be_tables_datatables.js -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-vcenter js-dataTable-full-pagination" id="table">
+                            <thead>
+                                <tr>
+                                    <th style="display:none">Id</th>
+                                    <th class="text-center">#</th>
+                                    <th>Department Name</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table_body">
+                                @{
+                                    int num = 1;
+                                    foreach (var item in Model.Departments)
+                                    {
+                                        <tr id="@item.Id">
+                                            <td class="id" style="display: none">@item.Id</td>
+                                            <td class="text-center count-item">@num</td>
+                                            <td class="departmentname">
+                                                @item.Name
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="btn-group">
+                                                    <a href="#" class="btn btn-sm btn-primary edit_department" data-toggle="tooltip" title="Edit">
+                                                        <i class="fa fa-pencil-alt"></i>
+                                                    </a>
+                                                    <a href="#" class="btn btn-sm btn-primary delete_department" data-toggle="tooltip" title="Delete">
+                                                        <i class="fa fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        ++num;
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Elements -->
+</div>
+<!-- END Page Content -->
+<!-- New Subject Modal -->
+<div class="modal fade" id="new_department_modal" tabindex="-1" role="dialog" aria-labelledby="new_department_modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-popout" role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title">Create New Department</h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="fa fa-fw fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
+                    <div class="row push">
+                        <div class="col-md-8 offset-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.CreateDepartment.Name)
+                                @Html.EditorFor(model => model.CreateDepartment.Name, new { htmlAttributes = new { @class = "form-control", id = "department_name" } })
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" id="submit_department" class="btn btn-primary mt-3">Create Department</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="block-content block-content-full text-right bg-light">
+                    <button type="button" class="btn btn-sm btn-light close_modal" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END  -->
+<!-- Edit Subject Modal -->
+<div class="modal fade" id="edit_department_modal" tabindex="-1" role="dialog" aria-labelledby="edit_department_modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-popout" role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title">Edit Department</h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="fa fa-fw fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
+                    <div class="row push">
+                        <div class="col-md-8 offset-md-2">
+                            <input type="hidden" id="edit_id" />
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.CreateDepartment.Name)
+                                @Html.EditorFor(model => model.CreateDepartment.Name, new { htmlAttributes = new { @class = "form-control", id = "edit_department_name" } })
+                            </div>
+
+                            <div class="form-group">
+                                <button type="button" id="update_department" class="btn btn-primary mt-3">Update Department</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="block-content block-content-full text-right bg-light">
+                    <button type="button" class="btn btn-sm btn-light close_modal" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END  -->
+
+@section Scripts {
+
+    <script>
+        $(function () {
+
+            // NEW Subject START
+            var submitDeptButton = $("#submit_department");
+            var departmentName = $("#department_name");
+            var table = $("#table");
+
+
+            // SUBMITTING NEW Subject
+            submitDeptButton.click(function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                $this.attr("disabled", true);
+                var newDeptName = departmentName.val();
+                if (newDeptName.length < 1) {
+                    Swal.fire("Oops...", "The dept name field is required!", "error");
+                    $this.attr("disabled", false);
+                    return false;
+                }
+
+                $.ajax({
+                    url: '/api/resources/PostAddDepartment',
+                    data: {
+                        departmentName: newDeptName
+                    },
+                    method: 'POST',
+                    success: function (data) {
+                        if (data.feedback == "taken") {
+                            Swal.fire("Oops...", "The department name exists!", "error");
+                            $this.attr("disabled", false);
+                            return false;
+                        }
+                        else if (data.feedback == 'required') {
+                            Swal.fire("Oops...", "All fields are required!", "error");
+                            $this.attr("disabled", false);
+                            return false;
+                        }
+                        else {
+                            if (!$("table#table").length) {
+                                location.reload();
+                            } else {
+                                $this.attr("disabled", false);
+                                $(".close_modal").click();
+                                Swal.fire("Success...", "Department created successfully", "success");
+
+                                departmentName.val("");
+                                var toAppend = $("table#table tbody tr:last").clone();
+                                toAppend.attr("id", data.id);
+                                toAppend.children(".id").text(data.id);
+                                toAppend.children(".count-item").text(data.index);
+                                toAppend.children(".departmentname").text(data.departmentName);
+
+                                table.append($(toAppend).hide().fadeIn(1200));
+
+                            }
+                        }
+                    },
+                    error: function () {
+                        console.log('Something went wrong');
+                    }
+                })
+                //$.post(url,
+                //    { departmentName: newDeptName },
+                //    function (data) {
+
+                //        if (data.Feedback == "taken") {
+                //            Swal.fire("Oops...", "The department name exists!", "error");
+                //            $this.attr("disabled", false);
+                //            return false;
+                //        }
+                //        else if (data.Feedback == 'required') {
+                //            Swal.fire("Oops...", "All fields are required!", "error");
+                //            $this.attr("disabled", false);
+                //            return false;
+                //        }
+                //        else {
+                //            if (!$("table#table").length) {
+                //                location.reload();
+                //            } else {
+                //                $this.attr("disabled", false);
+                //                $(".close_modal").click();
+                //                Swal.fire("Success...", "Department created successfully", "success");
+
+                //                subjectName.val("");
+                //                subjectType.val("");
+                //                var toAppend = $("table#table tbody tr:last").clone();
+                //                toAppend.attr("id", data.id);
+                //                toAppend.children(".id").text(data.id);
+                //                toAppend.children(".count-item").text(data.index);
+                //                toAppend.children(".subjectname").text(data.departmentName);
+
+                //                table.append($(toAppend).hide().fadeIn(1200));
+
+                //            }
+                //        }
+
+                //    });
+            })
+            // END
+
+
+
+            // For show edit
+            $("#table").on("click", ".edit_department", function (e) {
+                e.preventDefault();
+
+                $this = $(this);
+                var id = $this.closest('tr').children(".id").text();
+                var departmentname = $this.closest('tr').children(".departmentname").text();
+
+                $("#edit_department_name").val(departmentname.trim());
+                $("#edit_id").val(id);
+
+
+                $("#show_edit_modal").click();
+            });
+            // END
+
+            // submit edit
+            var submitEdit = $("#update_department");
+            submitEdit.click(function (e) {
+                e.preventDefault();
+                $this = $(this);
+                $this.attr("disabled", true);
+
+                var editId = $("#edit_id").val();
+                var departmentname = $("#edit_department_name").val();
+
+                if (departmentname.length < 1) {
+                    Swal.fire("Oops...", "All fields are required!", "error");
+                    $this.attr("disabled", false);
+                    return false;
+                }
+                console.log(editId, departmentname)
+                var url = "/api/Resources/PostEditDepartment";
+
+                $.post(url,
+                    { id: editId, departmentName: departmentname },
+                    function (data) {
+                        console.log(data)
+
+                        if (data.feedback == "taken") {
+                            Swal.fire("Oops...", "The department name is exists!", "error");
+                            $this.attr("disabled", false);
+                            return false;
+                        }
+                        else if (data.feedback == 'required') {
+                            Swal.fire("Oops...", "All fields are required!", "error");
+                            $this.attr("disabled", false);
+                            return false;
+                        }
+                        else {
+                            $this.attr("disabled", false);
+                            $(".close_modal").click();
+                            Swal.fire("Success...", "Department updated successfully", "success");
+
+                            $("#edit_department_name").val('')
+
+
+                            $("#table_body").children("#" + data.id).hide().fadeIn(1000);
+                            $("#table_body").children("#" + data.id).children(".departmentname").text(data.departmentName);
+
+                        }
+
+
+
+                    });
+            })
+            //END
+
+            /*
+             * Delete Subject js
+             */
+            $("#table").on("click", ".delete_department", function (e) {
+                var $this = $(this);
+                e.preventDefault();
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to rever this!",
+                    type: "warning",
+                    showCancelButton: !0,
+                    customClass: { confirmButton: "btn btn-danger m-1", cancelButton: "btn btn-secondary m-1" },
+                    confirmButtonText: "Yes, delete it!",
+                    html: !1,
+                    preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
+
+                }).then(function (n) {
+                    if (n.value) {
+                        Swal.fire("Deleted!", "Department item has been deleted.", "success");
+                        var id = $this.closest('tr').children(".id").text();
+                        var url = "/api/Resources/PostDeleteDepartment";
+
+                        $.post(url, { id: id }, function (data) {
+                                $this.closest('tr').fadeOut("slow", function () {
+                                    $(this).remove();
+                                })
+                        })
+                    }
+                    else {
+                        "cancel" === n.dismiss && Swal.fire("Cancelled", "Department file is safe :)", "error")
+                    }
+
+                })
+                //if (!confirm("Are you sure you want to delete")) return false;
+                //var $this = $(this);
+                //var id = $this.parent().parent().children(".id").text();
+
+            })
+        })
+                    ////////////////////////////////////////////////////////////////////
+    </script>
+}
+
