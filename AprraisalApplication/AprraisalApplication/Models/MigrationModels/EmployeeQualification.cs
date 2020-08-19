@@ -11,5 +11,15 @@ namespace AprraisalApplication.Models.MigrationModels
         public int EmployeeId { get; set; }
         public Qualification Qualification { get; set; }
         public int QualificationId { get; set; }
+
+        public EmployeeQualification()
+        {
+
+        }
+        public EmployeeQualification(int employeeId, int qualificationId)
+        {
+            EmployeeId = employeeId;
+            QualificationId = qualificationId;
+        }
     }
 }

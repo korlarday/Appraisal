@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AprraisalApplication.Models.MigrationModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,25 +10,52 @@ namespace AprraisalApplication.Models.ViewModels
 {
     public class CreateEmployeeProfileVM
     {
+        public CreateEmployeeProfileVM()
+        {
+
+        }
+        public CreateEmployeeProfileVM(Employee employee)
+        {
+            ApplicationUserId = employee.ApplicationUserId;
+            Firstname = employee.Firstname;
+            Lastname = employee.Lastname;
+            Othername = employee.Othername;
+            StateId = employee.StateId;
+            GenderId = employee.GenderId;
+            BranchId = employee.BranchId;
+            GradeId = employee.GradeId;
+            JobTitleId = employee.JobTitleId;
+            DateOfEmployment = employee.DateOfEmployment;
+            DateOfLastPromotion = employee.DateOfLastPromotion;
+            TitleId = employee.TitleId;
+            DepartmentId = employee.DepartmentId;
+            SelectedQualifications = employee.EmployeeQualifications.Select(x => x.QualificationId).ToList();
+            PassportImage = employee.PassportImage;
+            SignatureImage = employee.SignatureImage;
+        }
+
         public int Id { get; set; }
 
-        public int ApplicationUserId { get; set; }
+        public string ApplicationUserId { get; set; }
 
         [Required]
         [MaxLength(255)]
+        [Display(Name = "First Name")]
         public string Firstname { get; set; }
 
         [Required]
         [MaxLength(255)]
+        [Display(Name = "Last Name")]
         public string Lastname { get; set; }
 
         [MaxLength(255)]
+        [Display(Name = "Other Name")]
         public string Othername { get; set; }
 
         [Required]
         [Display(Name = "State Of Posting")]
         public int StateId { get; set; }
-        // for loading state dropdown
+        // for loading state dropdown 
         public IEnumerable<SelectListItem> States { get; set; }
 
         [Required]
@@ -50,8 +78,10 @@ namespace AprraisalApplication.Models.ViewModels
         public IEnumerable<SelectListItem> JobTitles { get; set; }
 
         [Required]
+        [Display(Name = "Date Of Employment")]
         public DateTime DateOfEmployment { get; set; }
 
+        [Display(Name = "Date Of Last Promotion")]
         public DateTime? DateOfLastPromotion { get; set; }
 
         [Required]
@@ -60,10 +90,29 @@ namespace AprraisalApplication.Models.ViewModels
         // for loading title dropdown
         public IEnumerable<SelectListItem> Titles { get; set; }
 
+        [Display(Name = "Department")]
+        [Required]
+        public int DepartmentId { get; set; }
+        // for loading title dropdown
+        public IEnumerable<SelectListItem> Departments { get; set; }
+
+        [Display(Name = "Grade")]
+        [Required]
+        public int GradeId { get; set; }
+        // for loading grade dropdown
+        public IEnumerable<SelectListItem> Grades { get; set; }
+
+        public List<Qualification> Qualifications { get; set; }
+        public List<int> SelectedQualifications { get; set; }
+
         [Display(Name = "Upload Passport")]
         public HttpPostedFileBase UploadPassport { get; set; }
 
         [Display(Name = "Upload Signature")]
         public HttpPostedFileBase UploadSignature { get; set; }
+
+        public byte[] PassportImage { get; set; }
+
+        public byte[] SignatureImage { get; set; }
     }
 }

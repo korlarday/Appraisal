@@ -40,5 +40,11 @@ namespace AprraisalApplication.Controllers
             };
             return View("SetBranches", model);
         }
+
+        //[ActionName("appraisal-template-setup")]
+        //public ActionResult AppraisalTemplateSetup()
+        //{
+
+        //}
     }
 }

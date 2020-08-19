@@ -19,6 +19,18 @@ namespace AprraisalApplication.Models
         public DbSet<Gender> Genders { get; set; }
         public DbSet<EmployeeQualification> EmployeeQualifications { get; set; }
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<CareerHistory> CareerHistories { get; set; }
+        public DbSet<Grade> Grades { get; set; }
+        public DbSet<DefaultRating> DefaultRatings { get; set; }
+        public DbSet<DefaultSummaryRating> DefaultSummaryRatings { get; set; }
+        public DbSet<AppraisalTemplate> AppraisalTemplates { get; set; }
+        public DbSet<AppraisalTemplateSection> AppraisalTemplateSections { get; set; }
+        public DbSet<SectionType> SectionTypes { get; set; }
+        public DbSet<AppraisalSectionDetail> AppraisalSectionDetails { get; set; }
+        public DbSet<SectionDetailBreakdown> SectionDetailBreakdowns { get; set; }
+        public DbSet<ExpectedValue> ExpectedValues { get; set; }
+        public DbSet<TemplateRating> TemplateRatings { get; set; }
+        public DbSet<TemplateSummaryRating> TemplateSummaryRatings { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

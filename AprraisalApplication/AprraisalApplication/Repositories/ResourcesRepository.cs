@@ -2,6 +2,7 @@
 using AprraisalApplication.Models.ApiParameters;
 using AprraisalApplication.Models.MigrationModels;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -35,9 +36,29 @@ namespace AprraisalApplication.Repositories
             db.SaveChanges();
         }
 
+        internal List<Gender> GetGenders()
+        {
+            return db.Genders.ToList();
+        }
+
         internal Department GetDepartmentById(int id)
         {
             return db.Departments.Find(id);
+        }
+
+        internal List<JobTitle> GetAllJobTitles()
+        {
+            return db.JobTitles.Where(x => x.IsDeleted == false).ToList();
+        }
+
+        internal List<Qualification> GetAllQualifications()
+        {
+            return db.Qualifications.Where(x => x.IsDeleted == false).ToList();
+        }
+
+        internal List<Title> GetTitles()
+        {
+            return db.Titles.Where(x => x.IsDeleted == false).ToList();
         }
 
         internal bool IsDepartmentNameExists(int id, string departmentName)
@@ -110,6 +131,11 @@ namespace AprraisalApplication.Repositories
             Branch branch = db.Branches.Find(id);
             branch.IsDeleted = true;
             db.SaveChanges();
+        }
+
+        internal List<Grade> GetGrades()
+        {
+            return db.Grades.Where(x => x.IsDeleted == false).ToList();
         }
     }
 }

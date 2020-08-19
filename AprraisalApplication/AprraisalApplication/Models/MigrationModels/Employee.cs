@@ -1,7 +1,11 @@
-﻿using System;
+﻿using AprraisalApplication.Models.ViewModels;
+using EllipticCurve;
+using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -12,7 +16,7 @@ namespace AprraisalApplication.Models.MigrationModels
         public int Id { get; set; }
 
         public ApplicationUser ApplicationUser { get; set; }
-        public int ApplicationUserId { get; set; }
+        public string ApplicationUserId { get; set; }
 
         [Required]
         [MaxLength(255)]
@@ -48,12 +52,79 @@ namespace AprraisalApplication.Models.MigrationModels
         public Title Title { get; set; }
         public byte TitleId { get; set; }
 
+        public byte[] PassportImage { get; set; }
+
+        public byte[] SignatureImage { get; set; }
+
+
+        public Department Department { get; set; }
+        public int DepartmentId { get; set; }
+
+        public Grade Grade { get; set; }
+        [Required]
+        public int GradeId { get; set; }
+
 
         public ICollection<EmployeeQualification> EmployeeQualifications { get; set; }
+        public ICollection<CareerHistory> CareerHistories { get; set; }
 
         public Employee()
         {
             EmployeeQualifications = new Collection<EmployeeQualification>();
+            CareerHistories = new Collection<CareerHistory>();
+        }
+
+        public Employee(CreateEmployeeProfileVM model)
+        {
+            ApplicationUserId = HttpContext.Current.User.Identity.GetUserId();
+            Firstname = model.Firstname;
+            Lastname = model.Lastname;
+            Othername = model.Othername;
+            StateId = model.StateId;
+            GenderId = model.GenderId;
+            BranchId = model.BranchId;
+            GradeId = model.GradeId;
+            JobTitleId = model.JobTitleId;
+            DateOfEmployment = model.DateOfEmployment;
+            DateOfLastPromotion = model.DateOfLastPromotion;
+            TitleId = model.TitleId;
+            DepartmentId = model.DepartmentId;
+            if(model.UploadPassport != null)
+            {
+                PassportImage = new byte[model.UploadPassport.ContentLength];
+                model.UploadPassport.InputStream.Read(PassportImage, 0, model.UploadPassport.ContentLength);
+            }
+            if (model.UploadSignature != null)
+            {
+                SignatureImage = new byte[model.UploadSignature.ContentLength];
+                model.UploadSignature.InputStream.Read(SignatureImage, 0, model.UploadSignature.ContentLength);
+            }
+        }
+
+        internal void UpdateEmployee(CreateEmployeeProfileVM model)
+        {
+            Firstname = model.Firstname;
+            Lastname = model.Lastname;
+            Othername = model.Othername;
+            StateId = model.StateId;
+            GenderId = model.GenderId;
+            BranchId = model.BranchId;
+            GradeId = model.GradeId;
+            JobTitleId = model.JobTitleId;
+            DateOfEmployment = model.DateOfEmployment;
+            DateOfLastPromotion = model.DateOfLastPromotion;
+            TitleId = model.TitleId;
+            DepartmentId = model.DepartmentId;
+            if (model.UploadPassport != null)
+            {
+                PassportImage = new byte[model.UploadPassport.ContentLength];
+                model.UploadPassport.InputStream.Read(PassportImage, 0, model.UploadPassport.ContentLength);
+            }
+            if (model.UploadSignature != null)
+            {
+                SignatureImage = new byte[model.UploadSignature.ContentLength];
+                model.UploadSignature.InputStream.Read(SignatureImage, 0, model.UploadSignature.ContentLength);
+            }
         }
     }
 }

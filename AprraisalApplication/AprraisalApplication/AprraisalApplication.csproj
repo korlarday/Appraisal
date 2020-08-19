@@ -187,6 +187,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\api\EmployeesController.cs" />
     <Compile Include="Controllers\api\ResourcesController.cs" />
     <Compile Include="Controllers\ConfigurationsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -227,27 +228,94 @@
     <Compile Include="Migrations\202008162314157_SeedingGender.Designer.cs">
       <DependentUpon>202008162314157_SeedingGender.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202008171059069_addingPassportAndSignatureToEmployee.cs" />
+    <Compile Include="Migrations\202008171059069_addingPassportAndSignatureToEmployee.Designer.cs">
+      <DependentUpon>202008171059069_addingPassportAndSignatureToEmployee.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008171233210_makeUserIdStringInEmployees.cs" />
+    <Compile Include="Migrations\202008171233210_makeUserIdStringInEmployees.Designer.cs">
+      <DependentUpon>202008171233210_makeUserIdStringInEmployees.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008172020471_AddingCareerHistoryTable.cs" />
+    <Compile Include="Migrations\202008172020471_AddingCareerHistoryTable.Designer.cs">
+      <DependentUpon>202008172020471_AddingCareerHistoryTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008180804088_AddingGradesTable.cs" />
+    <Compile Include="Migrations\202008180804088_AddingGradesTable.Designer.cs">
+      <DependentUpon>202008180804088_AddingGradesTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008180810351_AddGradeToCareerHistory.cs" />
+    <Compile Include="Migrations\202008180810351_AddGradeToCareerHistory.Designer.cs">
+      <DependentUpon>202008180810351_AddGradeToCareerHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008191654281_AddingDefaultRatings.cs" />
+    <Compile Include="Migrations\202008191654281_AddingDefaultRatings.Designer.cs">
+      <DependentUpon>202008191654281_AddingDefaultRatings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008191655152_SeedingDefaultRatings.cs" />
+    <Compile Include="Migrations\202008191655152_SeedingDefaultRatings.Designer.cs">
+      <DependentUpon>202008191655152_SeedingDefaultRatings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008191729117_AddDefaultSummaryRatings.cs" />
+    <Compile Include="Migrations\202008191729117_AddDefaultSummaryRatings.Designer.cs">
+      <DependentUpon>202008191729117_AddDefaultSummaryRatings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008191730125_SeedingDefaultSummaryRatings.cs" />
+    <Compile Include="Migrations\202008191730125_SeedingDefaultSummaryRatings.Designer.cs">
+      <DependentUpon>202008191730125_SeedingDefaultSummaryRatings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008192133034_AddingAppraisalTemplateTables.cs" />
+    <Compile Include="Migrations\202008192133034_AddingAppraisalTemplateTables.Designer.cs">
+      <DependentUpon>202008192133034_AddingAppraisalTemplateTables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008192134032_SeedingSectionType.cs" />
+    <Compile Include="Migrations\202008192134032_SeedingSectionType.Designer.cs">
+      <DependentUpon>202008192134032_SeedingSectionType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008192151177_ChangeintToStringExpectedValue.cs" />
+    <Compile Include="Migrations\202008192151177_ChangeintToStringExpectedValue.Designer.cs">
+      <DependentUpon>202008192151177_ChangeintToStringExpectedValue.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008192151575_SeedingExpectedValueTable.cs" />
+    <Compile Include="Migrations\202008192151575_SeedingExpectedValueTable.Designer.cs">
+      <DependentUpon>202008192151575_SeedingExpectedValueTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApiModels\NewBranchVM.cs" />
     <Compile Include="Models\ApiModels\NewDepartmentVM.cs" />
+    <Compile Include="Models\ApiModels\NewHistoryApiVM.cs" />
     <Compile Include="Models\ApiParameters\BranchParams.cs" />
+    <Compile Include="Models\ApiParameters\CareerHistoryParams.cs" />
     <Compile Include="Models\ApiParameters\NewDepartmentParams.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\Attributes\EmailConfirmation.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\MigrationModels\AppraisalSectionDetail.cs" />
+    <Compile Include="Models\MigrationModels\AppraisalTemplate.cs" />
+    <Compile Include="Models\MigrationModels\AppraisalTemplateSection.cs" />
     <Compile Include="Models\MigrationModels\Branch.cs" />
+    <Compile Include="Models\MigrationModels\CareerHistory.cs" />
+    <Compile Include="Models\MigrationModels\DefaultRating.cs" />
+    <Compile Include="Models\MigrationModels\DefaultSummaryRating.cs" />
     <Compile Include="Models\MigrationModels\Department.cs" />
     <Compile Include="Models\MigrationModels\Employee.cs" />
     <Compile Include="Models\MigrationModels\EmployeeQualification.cs" />
+    <Compile Include="Models\MigrationModels\ExpectedValue.cs" />
     <Compile Include="Models\MigrationModels\Gender.cs" />
+    <Compile Include="Models\MigrationModels\Grade.cs" />
     <Compile Include="Models\MigrationModels\JobTitle.cs" />
     <Compile Include="Models\MigrationModels\Qualification.cs" />
+    <Compile Include="Models\MigrationModels\SectionDetailBreakdown.cs" />
+    <Compile Include="Models\MigrationModels\SectionType.cs" />
     <Compile Include="Models\MigrationModels\State.cs" />
+    <Compile Include="Models\MigrationModels\TemplateRating.cs" />
+    <Compile Include="Models\MigrationModels\TemplateSummaryRating.cs" />
     <Compile Include="Models\MigrationModels\Title.cs" />
     <Compile Include="Models\ViewModels\AccountLoginVM.cs" />
     <Compile Include="Models\ViewModels\CreateEmployeeProfileVM.cs" />
+    <Compile Include="Models\ViewModels\EditCareerHistoryVM.cs" />
     <Compile Include="Models\ViewModels\NewAccountVM.cs" />
     <Compile Include="Models\ViewModels\SetBranchVM.cs" />
     <Compile Include="Models\ViewModels\SetDepartmentVM.cs" />
@@ -3757,6 +3825,7 @@
     <Content Include="Content\Template\js\plugins\magnific-popup\jquery.magnific-popup.js" />
     <Content Include="Content\Template\js\plugins\magnific-popup\jquery.magnific-popup.min.js" />
     <Content Include="Content\Template\js\plugins\magnific-popup\magnific-popup.css" />
+    <Content Include="Content\Template\js\plugins\moment.js" />
     <Content Include="Content\Template\js\plugins\nestable2\jquery.nestable.min.css" />
     <Content Include="Content\Template\js\plugins\nestable2\jquery.nestable.min.js" />
     <Content Include="Content\Template\js\plugins\pwstrength-bootstrap\pwstrength-bootstrap.js" />
@@ -4303,10 +4372,13 @@
     <Content Include="Views\Home\UserPartial.cshtml" />
     <Content Include="Views\Configurations\Departments.cshtml" />
     <Content Include="Views\Configurations\SetBranches.cshtml" />
+    <Content Include="Views\Users\UserProfile.cshtml" />
+    <Content Include="Views\Users\ViewProfile.cshtml" />
+    <Content Include="Views\Users\EditProfile.cshtml" />
+    <Content Include="Views\Users\EditCareerHistory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Users\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -4426,6 +4498,45 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202008162314157_SeedingGender.resx">
       <DependentUpon>202008162314157_SeedingGender.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008171059069_addingPassportAndSignatureToEmployee.resx">
+      <DependentUpon>202008171059069_addingPassportAndSignatureToEmployee.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008171233210_makeUserIdStringInEmployees.resx">
+      <DependentUpon>202008171233210_makeUserIdStringInEmployees.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008172020471_AddingCareerHistoryTable.resx">
+      <DependentUpon>202008172020471_AddingCareerHistoryTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008180804088_AddingGradesTable.resx">
+      <DependentUpon>202008180804088_AddingGradesTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008180810351_AddGradeToCareerHistory.resx">
+      <DependentUpon>202008180810351_AddGradeToCareerHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008191654281_AddingDefaultRatings.resx">
+      <DependentUpon>202008191654281_AddingDefaultRatings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008191655152_SeedingDefaultRatings.resx">
+      <DependentUpon>202008191655152_SeedingDefaultRatings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008191729117_AddDefaultSummaryRatings.resx">
+      <DependentUpon>202008191729117_AddDefaultSummaryRatings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008191730125_SeedingDefaultSummaryRatings.resx">
+      <DependentUpon>202008191730125_SeedingDefaultSummaryRatings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008192133034_AddingAppraisalTemplateTables.resx">
+      <DependentUpon>202008192133034_AddingAppraisalTemplateTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008192134032_SeedingSectionType.resx">
+      <DependentUpon>202008192134032_SeedingSectionType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008192151177_ChangeintToStringExpectedValue.resx">
+      <DependentUpon>202008192151177_ChangeintToStringExpectedValue.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008192151575_SeedingExpectedValueTable.resx">
+      <DependentUpon>202008192151575_SeedingExpectedValueTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
