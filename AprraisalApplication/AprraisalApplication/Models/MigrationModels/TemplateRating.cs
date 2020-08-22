@@ -8,6 +8,18 @@ namespace AprraisalApplication.Models.MigrationModels
 {
     public class TemplateRating
     {
+        public TemplateRating()
+        {
+
+        }
+        public TemplateRating(DefaultRating item, int appraisalTemplateId)
+        {
+            AppraisalTemplateId = appraisalTemplateId;
+            Score = item.Score;
+            Rating = item.Rating;
+            Description = item.Description;
+        }
+
         public int Id { get; set; }
         public int AppraisalTemplateId { get; set; }
         [Required]

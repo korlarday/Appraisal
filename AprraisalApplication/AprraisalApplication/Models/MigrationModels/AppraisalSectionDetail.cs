@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AprraisalApplication.Models.ApiParameters;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -18,6 +19,14 @@ namespace AprraisalApplication.Models.MigrationModels
         public AppraisalSectionDetail()
         {
             SectionDetailBreakdowns = new Collection<SectionDetailBreakdown>();
+        }
+
+        public AppraisalSectionDetail(QualitativeDetail qualitativeDetail, int templateSectionId)
+        {
+            Title1 = qualitativeDetail.Title;
+            Title2 = "";
+            MaxScore = qualitativeDetail.Weight;
+            AppraisalTemplateSectionId = templateSectionId;
         }
     }
 }

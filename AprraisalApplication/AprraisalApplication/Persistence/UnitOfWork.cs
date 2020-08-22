@@ -12,11 +12,13 @@ namespace AprraisalApplication.Persistence
         private readonly ApplicationDbContext context;
         public AccountRepository Account { get; private set; }
         public ResourcesRepository Resources { get; private set; }
+        public AppraisalTemplateRepository AppraisalTemplate { get; private set; }
         public UnitOfWork(ApplicationDbContext context)
         {
             this.context = context;
             Account = new AccountRepository(context);
             Resources = new ResourcesRepository(context);
+            AppraisalTemplate = new AppraisalTemplateRepository(context);
         }
     }
 }

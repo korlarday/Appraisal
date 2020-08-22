@@ -1,0 +1,831 @@
+﻿@model AprraisalApplication.Models.ViewModels.AppraisalTemplateSetupVM
+
+@{
+    ViewBag.Title = "Edit Appraisal Template";
+}
+
+
+<!-- Hero -->
+<div class="bg-body-light">
+    <div class="content content-full">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Edit Appraisal Template</h1>
+            <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Configurations</li>
+                    <li class="breadcrumb-item">Appraisal Templates</li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit Template</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
+<!-- Page Content -->
+<div class="content">
+    <!-- Elements -->
+    <div class="block block-rounded block-bordered">
+        <div class="block-header block-header-default">
+            <h3 class="block-title">Edit Appraisal Template</h3>
+        </div>
+        <div class="block-content">
+            @if (TempData["SM"] != null)
+            {
+                <div class="alert alert-success">
+                    <span>@TempData["SM"]</span>
+                </div>
+            }
+
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <div class="form-group">
+                        <label for="templateName">Appraisal Template Name</label>
+                        <input type="text" class="form-control" id="templateName" value="@Model.AppraisalTemplate.TemplateName" name="templateName" placeholder="Enter Template Name...">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Descriptions (optional)</label>
+                        <textarea class="form-control" id="description" name="description" rows="4" placeholder="Descriptions...">@Model.AppraisalTemplate.Description</textarea>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary bg-primary" id="dropdown-default-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-plus"></i> Add Section</button>
+                        <div class="dropdown-menu" id="sectionTypeOptions" aria-labelledby="dropdown-default-primary">
+                            @foreach (var item in Model.SectionTypes)
+                            {
+                                <a class="dropdown-item sectionTypesList" href="javascript:void(0)" data-sectionType="@item.Id">
+                                    @item.Name
+                                </a>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="text-danger-light">Kindly note that the total sum of percentage score obtainable of all mandatory sections must equal 100%.</div>
+                </div>
+            </div>
+            <hr />
+            @*Task performed and rating Section Template*@
+            <div class="p-2 taskPerformedSection" data-sectionNum="" style="display:none">
+                <div class="block block-rounded block-bordered">
+                    <div class="block-header block-header-default">
+                        <h3 class="block-title">Section <span class="sectionNumber">1</span> (Task performed by employee and their ratings)</h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option deleteSection" data-toggle="tooltip" title="Delete Section"><i class="fa fa-times" style="color:red"></i></button>
+                            <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
+                        </div>
+                    </div>
+                    <div class="block-content" style="width:100% !important">
+                        <div class="row">
+                            <div class="col-md-8 offset-md-2">
+                                <div class="form-group">
+                                    <label>Section Title</label>
+                                    <input type="text" class="form-control sectionTitle" placeholder="Enter Section Title...">
+                                </div>
+                                <div class="form-group">
+                                    <label for="instructions">Section Instructions</label>
+                                    <textarea class="form-control sectionInstructions" rows="4" placeholder="Enter Instructions..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Column Header</label>
+                                    <input type="text" class="form-control sectionFirstColHeader" style="max-width:350px" placeholder="Enter Column Header">
+                                </div>
+                                <div class="form-group">
+                                    <label>Percentage Score obtainable (%)</label>
+                                    <input type="number" class="form-control sectionPercentageScore" style="max-width:350px" placeholder="">
+                                </div>
+                                <div class="form-group">
+                                    <label>Total Points in this section (optional)</label>
+                                    <input type="number" class="form-control sectionTotalPoints" style="max-width:350px" placeholder="">
+                                </div>
+                                <div class="form-group">
+                                    <label>Section Type</label>
+                                    <select class="form-control sectionType" style="max-width:350px">
+                                        <option value="mandatory">Mandatory</option>
+                                        <option value="optional">Optional</option>
+                                    </select>
+                                </div>
+                                <div class="form-group derivedSectionContainer" style="display:none">
+                                    <label>Derived From Section:</label>
+                                    <select class="form-control derivedSection" style="max-width:350px">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*Duties Assigned Template*@
+            <div class="p-2 dutiesAssigned" data-sectionNum="" style="display:none">
+                <div class="block block-rounded block-bordered">
+                    <div class="block-header block-header-default">
+                        <h3 class="block-title">Section <span class="sectionNumber">1</span> (Duties assigned to employee and their ratings)</h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option deleteSection" data-toggle="tooltip" title="Delete Section"><i class="fa fa-times" style="color:red"></i></button>
+                            <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
+                        </div>
+                    </div>
+                    <div class="block-content" style="width:100% !important">
+                        <div class="row">
+                            <div class="col-md-8 offset-md-2">
+                                <div class="form-group">
+                                    <label>Section Title</label>
+                                    <input type="text" class="form-control sectionTitle" placeholder="Enter Section Title...">
+                                </div>
+                                <div class="form-group">
+                                    <label for="instructions">Section Instructions</label>
+                                    <textarea class="form-control sectionInstructions" rows="4" placeholder="Enter Instructions..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>First Column Header</label>
+                                    <input type="text" class="form-control sectionFirstColHeader" style="max-width:350px" placeholder="Enter Column Header">
+                                </div>
+                                <div class="form-group">
+                                    <label>Second Column Header</label>
+                                    <input type="text" class="form-control sectionSecondColHeader" style="max-width:350px" placeholder="Enter Column Header">
+                                </div>
+                                <div class="form-group">
+                                    <label>Percentage Score obtainable (%)</label>
+                                    <input type="number" class="form-control sectionPercentageScore" style="max-width:350px" placeholder="">
+                                </div>
+                                <div class="form-group">
+                                    <label>Total Points in this section (optional)</label>
+                                    <input type="number" class="form-control sectionTotalPoints" style="max-width:350px" placeholder="">
+                                </div>
+                                <div class="form-group">
+                                    <label>Section Type</label>
+                                    <select class="form-control sectionType" style="max-width:350px">
+                                        <option value="mandatory">Mandatory</option>
+                                        <option value="optional">Optional</option>
+                                    </select>
+                                </div>
+                                <div class="form-group derivedSectionContainer" style="display:none">
+                                    <label>Derived From Section:</label>
+                                    <select class="form-control derivedSection" style="max-width:350px">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*For Quantitative Indices*@
+            <div class="p-2 quantitativeIndices" data-sectionNum="" style="display:none">
+                <div class="block block-rounded block-bordered">
+                    <div class="block-header block-header-default">
+                        <h3 class="block-title">Section <span class="sectionNumber">1</span> (Quantitative indices)</h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option deleteSection" data-toggle="tooltip" title="Delete Section"><i class="fa fa-times" style="color:red"></i></button>
+                            <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
+                        </div>
+                    </div>
+                    <div class="block-content" style="width:100% !important">
+                        <div class="row">
+                            <div class="col-md-8 offset-md-2">
+                                <div class="form-group">
+                                    <label>Section Title</label>
+                                    <input type="text" class="form-control sectionTitle" placeholder="Enter Section Title...">
+                                </div>
+                                <div class="form-group">
+                                    <label for="instructions">Section Instructions</label>
+                                    <textarea class="form-control sectionInstructions" rows="4" placeholder="Enter Instructions..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Percentage Score obtainable (%)</label>
+                                    <input type="number" class="form-control sectionPercentageScore" style="max-width:350px" placeholder="">
+                                </div>
+                                <div class="form-group">
+                                    <label>Total Points in this section</label>
+                                    <input type="number" class="form-control sectionTotalPoints" style="max-width:350px" placeholder="">
+                                </div>
+                                <div class="form-group" style="display:none">
+                                    <label>Section Type</label>
+                                    <select class="form-control sectionType" style="max-width:350px">
+                                        <option value="mandatory">Mandatory</option>
+                                        <option value="optional">Optional</option>
+                                    </select>
+                                </div>
+                                <div class="form-group derivedSectionContainer" style="display:none">
+                                    <label>Derived From Section:</label>
+                                    <select class="form-control derivedSection" style="max-width:350px">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-vcenter">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center" style="width: 50px;">#</th>
+                                            <th><input type="text" class="form-control sectionFirstColHeader" placeholder="Enter Column Header"></th>
+                                            <th class="text-center" style="width: 150px;">Max Score</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="display:none">
+                                            <th class="text-center rowCount d-flex" scope="row">1</th>
+                                            <td class="font-w600">
+                                                <input type="text" class="form-control title" placeholder="">
+                                                <p style="overflow:hidden;" class="">
+                                                    <span class="mt-4 font-w700" style="display:block">Item Breakdown</span>
+
+                                                    <div style="overflow:hidden; display:none" class="p-1 item-container">
+                                                        <div class="float-left" style="width:50%">
+                                                            <input type="text" class="form-control item-breakdown-text" />
+                                                        </div>
+                                                        <div class="float-left pl-3" style="width:35%">
+                                                            <select class="value-type form-control">
+                                                                <option value="">Select Value Type</option>
+                                                                <option value="number">Number Value</option>
+                                                                <option value="money">Money Value</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="float-left" style="width:9%">
+                                                            <button class="btn btn-danger btn-sm ml-4 mt-1 removeItem"><i class="fa fa-times"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </p>
+                                                <button class="btn btn-primary btn-sm add-item"><i class="fa fa-plus"></i> Add Item</button>
+                                            </td>
+                                            <td class="font-w600 d-flex">
+                                                <input type="number" class="form-control weight" placeholder="">
+                                            </td>
+                                            <td class="text-center">
+                                                <button class="btn btn-danger deleteQualitativeRow" data-toggle="tooltip" title="Delete Row"><i class="fa fa-times"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-center rowCount d-flex" scope="row">1</th>
+                                            <td class="font-w600">
+                                                <input type="text" class="form-control title" placeholder="">
+                                                <p style="overflow:hidden;" class="container1">
+                                                    <span class="mt-4 font-w700" style="display:block">Item Breakdown</span>
+
+                                                    <div style="overflow:hidden; display:none" class="p-1 item-container">
+                                                        <div class="float-left" style="width:50%">
+                                                            <input type="text" class="form-control item-breakdown-text" />
+                                                        </div>
+                                                        <div class="float-left pl-3" style="width:35%">
+                                                            <select class="value-type form-control">
+                                                                <option value="">Select Value Type</option>
+                                                                <option value="number">Number Value</option>
+                                                                <option value="money">Money Value</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="float-left" style="width:9%">
+                                                            <button class="btn btn-danger btn-sm ml-4 mt-1 removeItem"><i class="fa fa-times"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </p>
+                                                <button class="btn btn-primary btn-sm add-item"><i class="fa fa-plus"></i> Add Item</button>
+                                            </td>
+                                            <td class="font-w600 d-flex">
+                                                <input type="number" class="form-control weight" placeholder="">
+                                            </td>
+                                            <td class="text-center">
+                                                <button class="btn btn-danger deleteQualitativeRow" data-toggle="tooltip" title="Delete Row"><i class="fa fa-times"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="p-2">
+                                <button class="btn btn-primary btn-sm addQuantitativeRow"><i class="fa fa-plus"></i> Add Row</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*For Qualitative Indices*@
+            <div class="p-2 qualitativeIndices" data-sectionNum="" style="display:none">
+                <div class="block block-rounded block-bordered">
+                    <div class="block-header block-header-default">
+                        <h3 class="block-title">Section <span class="sectionNumber">1</span> (Qualitative indices)</h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option deleteSection" data-toggle="tooltip" title="Delete Section"><i class="fa fa-times" style="color:red"></i></button>
+                            <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
+                        </div>
+                    </div>
+                    <div class="block-content" style="width:100% !important">
+                        <div class="row">
+                            <div class="col-md-8 offset-md-2">
+                                <div class="form-group">
+                                    <label>Section Title</label>
+                                    <input type="text" class="form-control sectionTitle" placeholder="Enter Section Title...">
+                                </div>
+                                <div class="form-group">
+                                    <label for="instructions">Section Instructions</label>
+                                    <textarea class="form-control sectionInstructions" rows="4" placeholder="Enter Instructions..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Percentage Score obtainable (%)</label>
+                                    <input type="number" class="form-control sectionPercentageScore" style="max-width:350px" placeholder="">
+                                </div>
+                                <div class="form-group">
+                                    <label>Total Points in this section</label>
+                                    <input type="number" class="form-control sectionTotalPoints" style="max-width:350px" placeholder="">
+                                </div>
+                                <div class="form-group" style="display:none">
+                                    <label>Section Type</label>
+                                    <select class="form-control sectionType" style="max-width:350px">
+                                        <option value="mandatory">Mandatory</option>
+                                        <option value="optional">Optional</option>
+                                    </select>
+                                </div>
+                                <div class="form-group derivedSectionContainer" style="display:none">
+                                    <label>Derived From Section:</label>
+                                    <select class="form-control derivedSection" style="max-width:350px">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-vcenter">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center" style="width: 50px;">#</th>
+                                            <th><input type="text" class="form-control sectionFirstColHeader" placeholder="Enter Column Header"></th>
+                                            <th class="text-center" style="width: 150px;">Weight</th>
+                                            @foreach (var item in Model.DefaultRatings)
+                                            {
+                                                <th class="text-center">@item.Score</th>
+                                            }
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="display:none">
+                                            <th class="text-center rowCount" scope="row">1</th>
+                                            <td class="font-w600">
+                                                <input type="text" class="form-control title" placeholder="">
+                                            </td>
+                                            <td class="font-w600">
+                                                <input type="number" class="form-control weight" placeholder="">
+                                            </td>
+                                            @foreach (var item in Model.DefaultRatings)
+                                            {
+                                                <td></td>
+                                            }
+                                            <td class="text-center">
+                                                <button class="btn btn-danger deleteQualitativeRow" data-toggle="tooltip" title="Delete Row"><i class="fa fa-times"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-center rowCount" scope="row">1</th>
+                                            <td class="font-w600">
+                                                <input type="text" class="form-control title" placeholder="">
+                                            </td>
+                                            <td class="font-w600">
+                                                <input type="number" class="form-control weight" placeholder="">
+                                            </td>
+                                            @foreach (var item in Model.DefaultRatings)
+                                            {
+                                                <td></td>
+                                            }
+                                            <td class="text-center">
+                                                <button class="btn btn-danger deleteQualitativeRow" data-toggle="tooltip" title="Delete Row"><i class="fa fa-times"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="p-2">
+                                <button class="btn btn-primary btn-sm addQualitativeRow"><i class="fa fa-plus"></i> Add Row</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div id="sectionContainer">
+                @foreach (var item in Model.AppraisalTemplate.AppraisalTemplateSections)
+                {
+                    if(item.SectionTypeId == 1)
+                    {
+                        <div class="p-2 taskPerformedSection" data-sectionNum="@item.SetupId">
+                            <div class="block block-rounded block-bordered">
+                                <div class="block-header block-header-default">
+                                    <h3 class="block-title">Section <span class="sectionNumber">@item.SetupId</span> (Task performed by employee and their ratings)</h3>
+                                    <div class="block-options">
+                                        <button type="button" class="btn-block-option deleteSection" data-toggle="tooltip" title="Delete Section"><i class="fa fa-times" style="color:red"></i></button>
+                                        <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
+                                    </div>
+                                </div>
+                                <div class="block-content" style="width:100% !important">
+                                    <div class="row">
+                                        <div class="col-md-8 offset-md-2">
+                                            <div class="form-group">
+                                                <label>Section Title</label>
+                                                <input type="text" class="form-control sectionTitle" value="@item.SectionTitle" placeholder="Enter Section Title...">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="instructions">Section Instructions</label>
+                                                <textarea class="form-control sectionInstructions" rows="4" placeholder="Enter Instructions...">@item.SectionInstructions</textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Column Header</label>
+                                                <input type="text" class="form-control sectionFirstColHeader" value="@item.FirstColumnHeader" style="max-width:350px" placeholder="Enter Column Header">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Percentage Score obtainable (%)</label>
+                                                <input type="number" class="form-control sectionPercentageScore" value="@item.TotalPercentageObtainable" style="max-width:350px" placeholder="">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Total Points in this section (optional)</label>
+                                                <input type="number" class="form-control sectionTotalPoints" value="@item.TotalMarkObtainable" style="max-width:350px" placeholder="">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Section Type</label>
+                                                <select class="form-control sectionType" style="max-width:350px">
+                                                    <option value="mandatory" @(item.Optional? "": "selected")>Mandatory</option>
+                                                    <option value="optional" @(item.Optional? "selected": "")>Optional</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group derivedSectionContainer" style="display:none">
+                                                <label>Derived From Section:</label>
+                                                <select class="form-control derivedSection" style="max-width:350px">
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 offset-md-3">
+                    <div class="form-group mt-5 text-center">
+                        <button type="button" id="create-template" class="btn btn-hero-primary"><i class="fa fa-plus"></i> Create Template</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            @*
+            1	Task performed by employee and their ratings
+            2	Duties assigned to employee and their ratings
+            3	Quantitative indices
+            4	Qualitative indices
+            *@
+            // when you click on add section button
+            $("#sectionTypeOptions").on("click", ".sectionTypesList", function () {
+                var $this = $(this);
+                var $sectionTypeId = $this.attr("data-sectionType");
+                var $numbersTaken = [];
+                var $sections = $(".appraisalSection");
+                var $length = $sections.length + 2;
+
+                $.each($sections, function () {
+                    var $num = parseInt($(this).attr("data-sectionNum"));
+                    $numbersTaken.push($num);
+                });
+                var $sectionCount = 0;
+                for (var i = 1; i < $length; i++) {
+                    if (!$numbersTaken.includes(i)) {
+                        $sectionCount = i;
+                        break;
+                    }
+                }
+
+                if ($sectionTypeId == 1) {
+                    // Task perfomed by employee and their ratings
+                    var $clone = $(".taskPerformedSection:first").clone();
+                    $clone.addClass("appraisalSection");
+                    $clone.attr("data-sectionNum", $sectionCount);
+                    $clone.attr("data-sectionTypeId", 1);
+                    $clone.find(".sectionNumber").text($sectionCount);
+                    $clone.show();
+                    $("#sectionContainer").append($clone);
+                    console.log($sectionCount)
+                } else if ($sectionTypeId == 2) {
+                    // Duties Assigned to employee and their ratings
+                    var $clone = $(".dutiesAssigned:first").clone();
+                    $clone.addClass("appraisalSection");
+                    $clone.attr("data-sectionNum", $sectionCount);
+                    $clone.attr("data-sectionTypeId", 2);
+                    $clone.find(".sectionNumber").text($sectionCount);
+                    $clone.show();
+                    $("#sectionContainer").append($clone);
+                } else if ($sectionTypeId == 3) {
+                    // Quantitative indices
+                    var $clone = $(".quantitativeIndices:first").clone();
+                    $clone.addClass("appraisalSection");
+                    $clone.attr("data-sectionNum", $sectionCount);
+                    $clone.attr("data-sectionTypeId", 3);
+                    $clone.find(".sectionNumber").text($sectionCount);
+                    $clone.show();
+                    $("#sectionContainer").append($clone);
+                } else if ($sectionTypeId == 4) {
+                    // Qualitative indices
+                    var $clone = $(".qualitativeIndices:first").clone();
+                    $clone.addClass("appraisalSection");
+                    $clone.attr("data-sectionNum", $sectionCount);
+                    $clone.attr("data-sectionTypeId", 4);
+                    $clone.find(".sectionNumber").text($sectionCount);
+                    $clone.show();
+                    $("#sectionContainer").append($clone);
+                }
+            });
+
+            // when you click on submit template
+            $("#create-template").on("click", function () {
+                var $rootThis = $(this);
+                var $templateName = $("#templateName").val();
+                var $description = $("#description").val();
+                var $sectionCount = parseInt($(".appraisalSection").length);
+                var $sections = $(".appraisalSection");
+
+                if ($templateName == '') {
+                    Swal.fire("Oops...", "Template Name cannot be empty!", "error");
+                    return false;
+                }
+                if (isNaN($sectionCount) || $sectionCount < 1) {
+                    Swal.fire("Oops...", "It seems no section was created for this appraisal template!", "error");
+                    return false;
+                }
+
+                var $appraisalTemplate = [];
+                var $isValid = true;
+                var $qualitativeDetailsIsValid = true;
+                var $qualitativeDetailsScoreValid = true;
+                var $breakdownIsValid = true;
+                var $percentageTotal = 0;
+
+                $.each($sections, function () {
+                    var $this = $(this);
+                    var $sectionTypeId = $this.attr("data-sectionTypeId");
+                    var $sectionSetupId = $this.attr("data-sectionNum");
+                    var $sectionTitle = $this.find(".sectionTitle").val();
+                    var $sectionInstructions = $this.find(".sectionInstructions").val();
+                    var $sectionFirstColHeader = $this.find(".sectionFirstColHeader").val();
+                    var $sectionSecondColHeader = $this.find(".sectionSecondColHeader").val();
+                    var $sectionPercentageScore = $this.find(".sectionPercentageScore").val();
+                    var $sectionTotalPoints = $this.find(".sectionTotalPoints").val();
+                    var $sectionType = $this.find(".sectionType").val();
+                    var $derivedSection = $this.find(".derivedSection").val();
+                    var $qualitativeDetails = [];
+                    var $TotalWeightScore = 0;
+
+                    if ($sectionTypeId == 4 || $sectionTypeId == 3) {
+                        var $sectionDetails = $this.find("table tbody tr:not(:first)");
+
+                        $.each($sectionDetails, function () {
+                            var $setupDetailId = parseInt($(this).find(".rowCount").text());
+                            var $title = $(this).find(".title").val();
+                            var $weight = parseInt($(this).find(".weight").val());
+
+                            if ($title == '' || isNaN($weight)) {
+                                $qualitativeDetailsIsValid = false;
+                            }
+                            $TotalWeightScore += $weight;
+
+                            if ($sectionTypeId == 3) {
+                                console.log('setupdetailId', $setupDetailId);
+                                var $breakdowns = $(this).find("td p.container" + $setupDetailId + ' .item-container');
+                                var $itemBreakdowns = [];
+                                $.each($breakdowns, function () {
+                                    var $itemText = $(this).find(".item-breakdown-text").val();
+                                    var $valueType = $(this).find(".value-type").val();
+                                    console.log($itemText, $valueType);
+                                    if ($itemText == '' || $valueType == '') {
+                                        $breakdownIsValid = false;
+                                    }
+                                    var object = {
+                                        itemText: $itemText,
+                                        valueType: $valueType
+                                    };
+                                    $itemBreakdowns.push(object);
+                                });
+                            }
+
+                            var obj = {
+                                setupDetailId: $setupDetailId,
+                                title: $title,
+                                weight: $weight,
+                                itemBreakdowns: $itemBreakdowns
+                            }
+                            $qualitativeDetails.push(obj);
+                        });
+                    }
+                    if ($sectionTypeId == 4 || $sectionTypeId == 3) {
+                        console.log($sectionTotalPoints, $TotalWeightScore)
+                        if (parseInt($sectionTotalPoints) !== $TotalWeightScore) {
+                            $qualitativeDetailsScoreValid = false;
+                        }
+                    }
+
+                    if ($sectionTitle == '' || $sectionInstructions == '' || $sectionPercentageScore == '') {
+                        $isValid = false;
+                    }
+                    if ($sectionType == 'mandatory') {
+                        $percentageTotal += parseInt($sectionPercentageScore);
+                    }
+                    var obj = {
+                        sectionSetupId: $sectionSetupId,
+                        sectionTitle: $sectionTitle,
+                        sectionInstructions: $sectionInstructions,
+                        sectionFirstColHeader: $sectionFirstColHeader,
+                        sectionPercentageScore: $sectionPercentageScore,
+                        sectionTotalPoints: $sectionTotalPoints,
+                        sectionType: $sectionType,
+                        sectionTypeId: $sectionTypeId,
+                        derivedSection: $derivedSection,
+                        sectionSecondColHeader: $sectionSecondColHeader,
+                        qualitativeDetails: $qualitativeDetails
+                    };
+                    $appraisalTemplate.push(obj);
+
+                });
+
+
+                if ($isValid == false) {
+                    Swal.fire("Oops...", "All required fields must be filed!", "error");
+                    return false;
+                }
+                if ($qualitativeDetailsIsValid == false) {
+                    Swal.fire("Oops...", "Invalid field(s) submitted in the qualitative or quantitative section!", "error");
+                    return false;
+                }
+                if ($qualitativeDetailsScoreValid == false) {
+                    Swal.fire("Oops...", "Invalid fields in the qualitative or quantitative section. Total weighted score must be equal to the total score obtainable!", "error");
+                    return false;
+                }
+                if ($breakdownIsValid == false) {
+                    Swal.fire("Oops...", "Invalid field(s) submitted in the quantitative section!", "error");
+                    return false;
+                }
+
+                console.log($percentageTotal);
+                if ($percentageTotal != 100) {
+                    Swal.fire("Oops...", "Total percentage score obtainable of all sections must equal 100%!", "error");
+                    return false;
+                }
+
+                var url = "/api/Configurations/PostSaveAppraisalTemplate";
+                $.post(url,
+                    {
+                        templateName: $templateName,
+                        templateDescription: $description,
+                        appraisalSectionParams: $appraisalTemplate
+                    },
+                    function (data) {
+                        Swal.fire({
+                            title: "Success",
+                            text: "Appraisal template was created successfully",
+                            type: "success",
+                            showCancelButton: 0,
+                            customClass: { okButton: "btn btn-danger m-1" },
+                            html: !1,
+                            preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
+
+                        }).then(function (n) {
+                            if (n.value) {
+                                window.location.href = '/configurations/appraisal-templates';
+                            }
+                        });
+                    });
+
+            });
+
+            // when you select section type to be optional
+            $("#sectionContainer").on("change", ".sectionType", function () {
+                var $this = $(this);
+                var $value = $this.val();
+                var $sections = $(".appraisalSection");
+                var $select = $this.closest(".appraisalSection").find(".derivedSectionContainer .derivedSection");
+                if ($value == 'optional') {
+                    $this.closest(".appraisalSection").find(".derivedSectionContainer option").remove();
+                    $.each($sections, function () {
+                        var $this = $(this);
+                        var $sectionNum = $this.attr("data-sectionNum");
+                        var $option = '<option value="' + $sectionNum + '">Section ' + $sectionNum + '</option>';
+                        $select.append($option);
+                    });
+                    $this.closest(".appraisalSection").find(".derivedSectionContainer").show();
+                } else {
+                    $this.closest(".appraisalSection").find(".derivedSectionContainer").hide();
+                }
+            });
+
+            // when you click on delete section
+            $("#sectionContainer").on("click", ".deleteSection", function () {
+                var $rootThis = $(this);
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to rever this!",
+                    type: "warning",
+                    showCancelButton: !0,
+                    customClass: { confirmButton: "btn btn-danger m-1", cancelButton: "btn btn-secondary m-1" },
+                    confirmButtonText: "Yes, delete it!",
+                    html: !1,
+                    preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
+
+                }).then(function (n) {
+                    if (n.value) {
+                        $rootThis.closest(".appraisalSection").remove();
+                        var $sections = $(".appraisalSection");
+                        $.each($sections, function () {
+                            var $this = $(this);
+                            $this.find(".derivedSectionContainer option").remove();
+                            $this.find(".derivedSectionContainer").hide();
+                            $this.find(".sectionType").val("mandatory");
+                        });
+                    }
+                    else {
+                        "cancel" === n.dismiss && Swal.fire("Cancelled", "Section file is safe :)", "error")
+                    }
+
+                })
+            });
+
+            // when you click on add qualitative row
+            $("#sectionContainer").on("click", ".addQualitativeRow", function () {
+                var $this = $(this);
+                var $qualitativeIndicesSection = $this.closest(".qualitativeIndices");
+                var $rows = $qualitativeIndicesSection.find("table tbody tr").slice(1);
+                var $numbersTaken = [];
+                var $length = $rows.length + 2;
+
+                $.each($rows, function () {
+                    var $num = parseInt($(this).find(".rowCount").text());
+                    $numbersTaken.push($num);
+                });
+                var $rowCount = 0;
+                for (var i = 1; i < $length; i++) {
+                    if (!$numbersTaken.includes(i)) {
+                        $rowCount = i;
+                        break;
+                    }
+                }
+
+                var $clone = $qualitativeIndicesSection.find("table tbody tr:first").clone();
+                $clone.find('.rowCount').text($rowCount);
+                $clone.show();
+                $qualitativeIndicesSection.find('table tbody').append($clone);
+            });
+
+            $("#sectionContainer").on("click", ".deleteQualitativeRow", function () {
+                var $this = $(this);
+                $this.closest("tr").remove();
+            });
+
+            // when you click on add item
+            $("#sectionContainer").on("click", "table .add-item", function () {
+                var $this = $(this);
+                var $itemContainer = $this.closest("td").find("p:first");
+                var $clone = $this.closest("td").children(".item-container:first").clone();
+                console.log($clone)
+                $clone.show();
+                $itemContainer.append($clone);
+            });
+
+            // when you click on remove item
+            $("#sectionContainer").on("click", "table td .removeItem", function () {
+                var $this = $(this);
+                $this.closest(".item-container").remove();
+            });
+
+            // when you click on add qualitative row
+            $("#sectionContainer").on("click", ".addQuantitativeRow", function () {
+                var $this = $(this);
+                var $quantitativeIndicesSection = $this.closest(".quantitativeIndices");
+                var $rows = $quantitativeIndicesSection.find("table tbody tr").slice(1);
+                var $numbersTaken = [];
+                var $length = $rows.length + 2;
+
+                $.each($rows, function () {
+                    var $num = parseInt($(this).find(".rowCount").text());
+                    $numbersTaken.push($num);
+                });
+                var $rowCount = 0;
+                for (var i = 1; i < $length; i++) {
+                    if (!$numbersTaken.includes(i)) {
+                        $rowCount = i;
+                        break;
+                    }
+                }
+
+                var $clone = $quantitativeIndicesSection.find("table tbody tr:first").clone();
+                $clone.find('.rowCount').text($rowCount);
+                $clone.find('td p').addClass('container' + $rowCount);
+                console.log('addclass', 'container' + $rowCount);
+                $clone.show();
+                $quantitativeIndicesSection.find('table tbody').append($clone);
+            });
+        })
+    </script>
+    <script>jQuery(function () { Dashmix.helpers(['flatpickr', 'datepicker']); });</script>
+}

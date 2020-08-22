@@ -1,0 +1,80 @@
+﻿@model IEnumerable<AprraisalApplication.Models.MigrationModels.AppraisalTemplate>
+
+@{
+    ViewBag.Title = "Appraisal Templates";
+}
+
+
+<!-- Hero -->
+<div class="bg-body-light">
+    <div class="content content-full">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Appraisal Templates</h1>
+            <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Configurations</li>
+                    <li class="breadcrumb-item">Appraisal</li>
+                    <li class="breadcrumb-item active" aria-current="page">Appraisal Templates</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
+<!-- Page Content -->
+<div class="content">
+    <!-- Elements -->
+    <div class="block block-rounded block-bordered">
+        <div class="block-header block-header-default">
+            <h3 class="block-title">Appraisal Templates</h3>
+        </div>
+        <div class="block-content">
+            <div class="block block-rounded block-bordered">
+                <div class="block-content block-content-full">
+                    <!-- DataTables init on table by adding .js-dataTable-buttons class, functionality is initialized in js/pages/be_tables_datatables.min.js which was auto compiled from _es6/pages/be_tables_datatables.js -->
+                    <div class="table-responsive">
+                        <table class="table table-hover table-vcenter">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 50px;">#</th>
+                                    <th>Template Name</th>
+                                    <th class="d-none d-sm-table-cell" style="width: 25%;">Number of sections</th>
+                                    <th class="text-center" style="width: 100px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{ 
+                                    int num = 1;
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <th class="text-center" scope="row">@num</th>
+                                            <td class="font-w600">
+                                                <a href="/configurations/edit-appraisal-template/@item.Slug">@item.TemplateName</a>
+                                            </td>
+                                            <td class="text-center">
+                                                @item.NumberOfSections
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="btn-group">
+                                                    <a href="/configurations/edit-appraisal-template/@item.Slug" class="btn btn-sm btn-primary" data-toggle="tooltip" title="Edit">
+                                                        <i class="fa fa-pencil-alt"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-primary" data-toggle="tooltip" title="Delete">
+                                                        <i class="fa fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        ++num;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Elements -->
+</div>

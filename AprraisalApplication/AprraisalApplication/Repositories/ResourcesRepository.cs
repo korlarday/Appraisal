@@ -56,6 +56,21 @@ namespace AprraisalApplication.Repositories
             return db.Qualifications.Where(x => x.IsDeleted == false).ToList();
         }
 
+        internal List<SectionType> GetSectionTypes()
+        {
+            return db.SectionTypes.ToList();
+        }
+
+        internal List<ExpectedValue> GetExpectedValues()
+        {
+            return db.ExpectedValues.ToList();
+        }
+
+        internal List<DefaultRating> GetDefaultRatings()
+        {
+            return db.DefaultRatings.OrderByDescending(x => x.Score).ToList();
+        }
+
         internal List<Title> GetTitles()
         {
             return db.Titles.Where(x => x.IsDeleted == false).ToList();
