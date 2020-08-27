@@ -1,4 +1,5 @@
 ﻿using AprraisalApplication.Models;
+using AprraisalApplication.Models.Attributes;
 using AprraisalApplication.Models.MigrationModels;
 using AprraisalApplication.Models.ViewModels;
 using AprraisalApplication.Persistence;
@@ -11,6 +12,8 @@ using System.Web.Mvc;
 
 namespace AprraisalApplication.Controllers
 {
+    [Authorize]
+    [EmailConfirmation]
     public class UsersController : Controller
     {
         public readonly ApplicationDbContext db;

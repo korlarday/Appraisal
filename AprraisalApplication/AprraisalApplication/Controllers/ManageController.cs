@@ -7,10 +7,12 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using AprraisalApplication.Models;
+using AprraisalApplication.Models.Attributes;
 
 namespace AprraisalApplication.Controllers
 {
     [Authorize]
+    [EmailConfirmation]
     public class ManageController : Controller
     {
         private ApplicationSignInManager _signInManager;

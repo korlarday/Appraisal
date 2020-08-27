@@ -1,0 +1,120 @@
+﻿@model AprraisalApplication.Models.ViewModels.SetupDepartmentTemplateVM
+
+@{
+    ViewBag.Title = "Setup Department Template";
+}
+
+
+<!-- Hero -->
+<div class="bg-body-light">
+    <div class="content content-full">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Setup Department Appraisal</h1>
+            <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Configurations</li>
+                    <li class="breadcrumb-item">Appraisal</li>
+                    <li class="breadcrumb-item active" aria-current="page">Department Template Setup</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
+<!-- Page Content -->
+<div class="content">
+    <!-- Elements -->
+    <div class="block block-rounded block-bordered">
+        <div class="block-header block-header-default">
+            <h3 class="block-title">Department Appraisal Template</h3>
+        </div>
+        <div class="block-content">
+            <div class="block block-rounded block-bordered">
+                <div class="block-content block-content-full">
+                    <!-- DataTables init on table by adding .js-dataTable-buttons class, functionality is initialized in js/pages/be_tables_datatables.min.js which was auto compiled from _es6/pages/be_tables_datatables.js -->
+                    <div class="table-responsive">
+                        <table class="table table-hover table-vcenter" id="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 50px;">#</th>
+                                    <th>Department</th>
+                                    <th class="d-none d-sm-table-cell" style="width: 45%;">Appraisal Template</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int num = 1;
+                                    foreach (var item in Model.DepartmentAndTemplates)
+                                    {
+                                        <tr data-departmentId="@item.DepartmentId">
+                                            <th class="text-center" scope="row">@num</th>
+                                            <td class="font-w600">
+                                                @item.DepartmentName
+                                            </td>
+                                            <td class="text-center">
+                                                <select class="form-control">
+                                                    <option value=""></option>
+                                                    @foreach (var template in Model.Templates)
+                                                    {
+                                                        <option value="@template.Id" @(template.Id == item.TemplateId? "selected": "")>@template.TemplateName</option>
+                                                    }
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        ++num;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div class="text-center">
+                        <button class="btn btn-primary" id="updateDeptTemplates"><i class="fa fa-pencil-alt"></i> Update Templates</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Elements -->
+</div>
+
+
+@section Scripts {
+
+    <script>
+        $(function () {
+            /*
+             * Delete Subject js
+             */
+            $("#updateDeptTemplates").on("click", function (e) {
+                var $this = $(this);
+                e.preventDefault();
+                var $tableRows = $("table tbody tr");
+                //departmentId
+                //templateId
+                var $departmentsAndTemplateId = [];
+
+                $.each($tableRows, function () {
+                    var $departmentId = $(this).attr("data-departmentId");
+                    var $templateId = $(this).find("td select").val();
+                    var obj = {
+                        departmentId: $departmentId,
+                        templateId: $templateId
+                    };
+                    $departmentsAndTemplateId.push(obj);
+                });
+                console.log($departmentsAndTemplateId);
+                Dashmix.layout('header_loader_on');
+
+                var url = "/api/configurations/PostUpdateDepartmentAppraisal";
+
+                $.post(url, { items: $departmentsAndTemplateId }, function (data) {
+                    Swal.fire("Updated!", "Department templates has been updated.", "success");
+                    Dashmix.layout('header_loader_off');
+                });
+            })
+        })
+                    ////////////////////////////////////////////////////////////////////
+    </script>
+}

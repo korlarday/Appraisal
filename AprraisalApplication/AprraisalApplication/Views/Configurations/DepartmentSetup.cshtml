@@ -1,0 +1,133 @@
+﻿@model AprraisalApplication.Models.ViewModels.SetupEmployeeAppraiserVM
+
+@{
+    ViewBag.Title = "Department Setup";
+}
+
+
+<!-- Hero -->
+<div class="bg-body-light">
+    <div class="content content-full">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Setup Employee Appraiser</h1>
+            <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Configurations</li>
+                    <li class="breadcrumb-item">Appraisal</li>
+                    <li class="breadcrumb-item active" aria-current="page">Employee Appraiser Setup</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
+<!-- Page Content -->
+<div class="content">
+    <!-- Elements -->
+    <div class="block block-rounded block-bordered">
+        <div class="block-header block-header-default">
+            <h3 class="block-title">Employee Appraiser</h3>
+        </div>
+        <div class="block-content">
+            <div class="block block-rounded block-bordered">
+                <div class="block-content block-content-full">
+                    <!-- DataTables init on table by adding .js-dataTable-buttons class, functionality is initialized in js/pages/be_tables_datatables.min.js which was auto compiled from _es6/pages/be_tables_datatables.js -->
+                    <div class="table-responsive">
+                        <table class="table table-hover table-vcenter js-dataTable-full-pagination" id="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 50px;">#</th>
+                                    <th>Employee</th>
+                                    <th class="d-none d-sm-table-cell" style="width: 35%;">Appraiser</th>
+                                    <th>Submission To Team Leader</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int num = 1;
+                                    foreach (var item in Model.UserAppraisers)
+                                    {
+                                        <tr data-userId="@item.ApplicationUserId">
+                                            <th class="text-center" scope="row">@num</th>
+                                            <td class="font-w600">
+                                                @item.Firstname @item.Lastname
+                                            </td>
+                                            <td class="text-center">
+                                                <select class="form-control select-appraiser">
+                                                    <option value=""></option>
+                                                    @foreach (var employee in Model.Employees)
+                                                    {
+                                                        if(item.ApplicationUserId != employee.ApplicationUserId)
+                                                        {
+                                                            <option value="@employee.ApplicationUserId" @(employee.ApplicationUserId == item.DefaultUserAppraiser.AppraiserId ? "selected" : "")>@employee.Firstname @employee.Lastname</option>
+
+                                                        }
+                                                    }
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-control to-team-leader">
+                                                    <option value="false" @(item.DefaultUserAppraiser.ToTeamLeader? "selected":"")>False</option>
+                                                    <option value="true" @(item.DefaultUserAppraiser.ToTeamLeader? "selected":"")>True</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        ++num;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div class="text-center">
+                        <button class="btn btn-primary" id="updateEmpAppraiser"><i class="fa fa-pencil-alt"></i> Update Employees Appraiser</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Elements -->
+</div>
+
+
+@section Scripts {
+
+    <script>
+        $(function () {
+            /*
+             * Delete Subject js
+             */
+            $("#updateEmpAppraiser").on("click", function (e) {
+                var $this = $(this);
+                e.preventDefault();
+                var $tableRows = $("table tbody tr");
+                //departmentId
+                //templateId
+                var $usersAndAppraiserId = [];
+
+                $.each($tableRows, function () {
+                    var $userId = $(this).attr("data-userId");
+                    var $appraiserId = $(this).find("td select.select-appraiser").val();
+                    var $toTeamLeader = $(this).find("td select.to-team-leader").val();
+                    var obj = {
+                        applicationUserId: $userId,
+                        appraiserId: $appraiserId,
+                        toTeamLeader: $toTeamLeader
+                    };
+                    $usersAndAppraiserId.push(obj);
+                });
+                console.log($usersAndAppraiserId);
+                Dashmix.layout('header_loader_on');
+
+                var url = "/api/configurations/PostSetEmployeeAppraiser";
+
+                $.post(url, { items: $usersAndAppraiserId }, function (data) {
+                    Swal.fire("Updated!", "Employees appraiser has been updated.", "success");
+                    Dashmix.layout('header_loader_off');
+                });
+            })
+        })
+                        ////////////////////////////////////////////////////////////////////
+    </script>
+}

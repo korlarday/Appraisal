@@ -1,4 +1,6 @@
-﻿using AprraisalApplication.Models.MigrationModels;
+﻿using AprraisalApplication.Models.Attributes;
+using AprraisalApplication.Models.MigrationModels;
+using AprraisalApplication.Models.ViewModels;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
@@ -31,6 +33,21 @@ namespace AprraisalApplication.Models
         public DbSet<ExpectedValue> ExpectedValues { get; set; }
         public DbSet<TemplateRating> TemplateRatings { get; set; }
         public DbSet<TemplateSummaryRating> TemplateSummaryRatings { get; set; }
+        public DbSet<AppraisalUserTemplate> AppraisalUserTemplates { get; set; }
+        public DbSet<AppraisalDepartmentTemplate> AppraisalDepartmentTemplates { get; set; }
+        public DbSet<DefaultUserAppraiser> DefaultUserAppraisers { get; set; }
+        public DbSet<AppraisalType> AppraisalTypes { get; set; }
+        public DbSet<AppraisalLocation> AppraisalLocations { get; set; }
+        public DbSet<AppraisalDepartment> AppraisalDepartments { get; set; }
+        public DbSet<AppraisalStaff> AppraisalStaffs { get; set; }
+        public DbSet<NewAppraisal> NewAppraisals { get; set; }
+        public DbSet<Appraisee> Appraisees { get; set; }
+        public DbSet<AppraiseeCareerHistoryWithCompany> appraiseeCareerHistoryWithCompanies { get; set; }
+        public DbSet<AppraiserPersonalData> AppraiserPersonalDatas { get; set; }
+        public DbSet<AppraiseePersonalData> AppraiseePersonalDatas { get; set; }
+        public DbSet<SectionResult> SectionResults { get; set; }
+        public DbSet<SectionDetailResult> SectionDetailResults { get; set; }
+        public DbSet<ItemBreakdownResult> ItemBreakdownResults { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

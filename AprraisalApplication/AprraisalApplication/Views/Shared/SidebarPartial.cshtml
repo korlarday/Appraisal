@@ -43,7 +43,34 @@
                         <span class="nav-main-link-name">Dashboard</span>
                     </a>
                 </li>
+                <li class="nav-main-heading">Appraisal</li>
+                <li class="nav-main-item">
+                    <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                        <i class="nav-main-link-icon fa fa-border-all"></i>
+                        <span class="nav-main-link-name">Appraisal</span>
+                    </a>
+                    <ul class="nav-main-submenu">
+                        <li class="nav-main-item">
+                            <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "new-appraisal" ? "active" : "")" href="/appraisal/new-appraisal">
+                                <span class="nav-main-link-name">New Appraisal</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="nav-main-heading">Configurations</li>
+                <li class="nav-main-item">
+                    <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                        <i class="nav-main-link-icon fa fa-border-all"></i>
+                        <span class="nav-main-link-name">Department</span>
+                    </a>
+                    <ul class="nav-main-submenu">
+                        <li class="nav-main-item">
+                            <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "department-setup" ? "active" : "")" href="/configurations/department-setup">
+                                <span class="nav-main-link-name">Department Setup</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="nav-main-item">
                     <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
                         <i class="nav-main-link-icon fa fa-border-all"></i>
@@ -51,7 +78,11 @@
                     </a>
                     <ul class="nav-main-submenu">
                         <li class="nav-main-item">
-                            <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "appraisal-templates" ? "active" : "")" href="/configurations/appraisal-templates">
+                            <a class="nav-main-link
+                               @(ViewContext.RouteData.Values["Action"].ToString() == "appraisal-templates" ||
+                                   ViewContext.RouteData.Values["Action"].ToString() == "edit-appraisal-template"
+                                   ? "active" : "")"
+                               href="/configurations/appraisal-templates">
 
                                 <span class="nav-main-link-name">Appraisal Templates</span>
                             </a>
@@ -59,6 +90,16 @@
                         <li class="nav-main-item">
                             <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "appraisal-template-setup" ? "active" : "")" href="/configurations/appraisal-template-setup">
                                 <span class="nav-main-link-name">Set up Template</span>
+                            </a>
+                        </li>
+                        <li class="nav-main-item">
+                            <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "setup-department-template" ? "active" : "")" href="/configurations/setup-department-template">
+                                <span class="nav-main-link-name">Department Template</span>
+                            </a>
+                        </li>
+                        <li class="nav-main-item">
+                            <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "setup-employee-template" ? "active" : "")" href="/configurations/setup-employee-template">
+                                <span class="nav-main-link-name">Employee Template</span>
                             </a>
                         </li>
                     </ul>

@@ -13,9 +13,9 @@ namespace AprraisalApplication.Models.ViewModels
         [MaxLength(255)]
         public string Username { get; set; }
 
+        //[RegularExpression(@"\w+([-+.]\w+)*@ieianchorpensions\.com", ErrorMessage = "You must use your IEI Email account")]
         [Required]
         [EmailAddress]
-        [RegularExpression(@"\w+([-+.]\w+)*@ieianchorpensions\.com", ErrorMessage = "You must use your IEI Email account")]
         [Display(Name = "Email")]
         public string Email { get; set; }
 

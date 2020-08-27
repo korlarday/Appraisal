@@ -8,12 +8,14 @@ namespace AprraisalApplication.Models.ApiParameters
 {
     public class AppraisalTemplateParams
     {
+        public int TemplateId { get; set; }
         public string TemplateName { get; set; }
         public string TemplateDescription { get; set; }
         public List<AppraisalSectionParam> AppraisalSectionParams { get; set; }
     }
     public class AppraisalSectionParam
     {
+        public int? SectionId { get; set; }
         public int SectionSetupId { get; set; }
         public string SectionTitle { get; set; }
         public string SectionInstructions { get; set; }
@@ -29,6 +31,7 @@ namespace AprraisalApplication.Models.ApiParameters
 
     public class QualitativeDetail
     {
+        public int? DetailId { get; set; }
         public int SetupDetailId { get; set; }
         public string Title { get; set; }
         public int Weight { get; set; }
@@ -36,6 +39,7 @@ namespace AprraisalApplication.Models.ApiParameters
     }
     public class ItemBreakDown
     {
+        public int? BreakdownId { get; set; }
         public string ItemText { get; set; }
         public string ValueType { get; set; }
     }

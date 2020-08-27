@@ -15,6 +15,7 @@ namespace AprraisalApplication.Models.MigrationModels
         public string Title2 { get; set; }
         public int MaxScore { get; set; }
         public bool HasBreakDown { get; set; }
+        public bool IsDeleted { get; set; }
         public ICollection<SectionDetailBreakdown> SectionDetailBreakdowns { get; set; }
         public AppraisalSectionDetail()
         {
@@ -27,6 +28,12 @@ namespace AprraisalApplication.Models.MigrationModels
             Title2 = "";
             MaxScore = qualitativeDetail.Weight;
             AppraisalTemplateSectionId = templateSectionId;
+        }
+
+        internal void Update(QualitativeDetail qualitativeDetail)
+        {
+            Title1 = qualitativeDetail.Title;
+            MaxScore = qualitativeDetail.Weight;
         }
     }
 }

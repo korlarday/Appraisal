@@ -34,5 +34,20 @@ namespace AprraisalApplication.Models.MigrationModels
         public int MaxScore { get; set; }
         public ExpectedValue ExpectedValue { get; set; }
         public byte ExpectedValueId { get; set; }
+        public bool IsDeleted { get; set; }
+
+        internal void Update(ItemBreakDown itemBreakdown)
+        {
+            Title = itemBreakdown.ItemText;
+            MaxScore = 0;
+            if (itemBreakdown.ValueType == "money")
+            {
+                ExpectedValueId = 2;
+            }
+            else
+            {
+                ExpectedValueId = 1;
+            }
+        }
     }
 }

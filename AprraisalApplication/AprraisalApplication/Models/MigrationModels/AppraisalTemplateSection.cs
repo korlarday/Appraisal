@@ -22,6 +22,7 @@ namespace AprraisalApplication.Models.MigrationModels
         public bool Optional { get; set; }
         public int SetupId { get; set; }
         public int? DerivedSectionSetupId { get; set; }
+        public bool IsDeleted { get; set; }
         public ICollection<AppraisalSectionDetail> AppraisalSectionDetails { get; set; }
         public AppraisalTemplateSection()
         {
@@ -46,6 +47,26 @@ namespace AprraisalApplication.Models.MigrationModels
             else 
             { 
                 DerivedSectionSetupId = null; 
+            }
+        }
+
+        internal void Update(AppraisalSectionParam item)
+        {
+            SectionTitle = item.SectionTitle;
+            SectionInstructions = item.SectionInstructions;
+            FirstColumnHeader = item.SectionFirstColHeader;
+            SecondColumnHeader = item.SectionSecondColHeader;
+            TotalMarkObtainable = item.SectionTotalPoints;
+            TotalPercentageObtainable = item.SectionPercentageScore;
+            Optional = item.SectionType == "optional";
+            SetupId = item.SectionSetupId;
+            if (item.SectionType == "optional")
+            {
+                DerivedSectionSetupId = item.DerivedSection;
+            }
+            else
+            {
+                DerivedSectionSetupId = null;
             }
         }
     }

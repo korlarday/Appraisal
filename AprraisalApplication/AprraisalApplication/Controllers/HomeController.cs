@@ -12,7 +12,6 @@ using System.Web.Mvc;
 namespace AprraisalApplication.Controllers
 {
     [Authorize]
-    [EmailConfirmation]
     public class HomeController : Controller
     {
         public readonly ApplicationDbContext db;
@@ -27,6 +26,7 @@ namespace AprraisalApplication.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         public ActionResult UserPartial()
         {
             string userId = User.Identity.GetUserId();

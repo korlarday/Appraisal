@@ -34,6 +34,15 @@ namespace AprraisalApplication.Models.MigrationModels
             Slug = model.TemplateName.ToLower().Replace(" ", "-").Replace(".", "-").Replace(",", "-");
             DateCreated = DateTime.Now;
             IsDeleted = false;
+            Description = model.TemplateDescription;
+        }
+
+        internal void UpdateTemplate(AppraisalTemplateParams model)
+        {
+            NumberOfSections = model.AppraisalSectionParams.Count();
+            TemplateName = model.TemplateName;
+            Slug = model.TemplateName.ToLower().Replace(" ", "-").Replace(".", "-").Replace(",", "-");
+            Description = model.TemplateDescription;
         }
     }
 }

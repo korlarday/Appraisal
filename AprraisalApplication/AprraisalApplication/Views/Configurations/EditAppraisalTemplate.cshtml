@@ -38,6 +38,7 @@
 
             <div class="row">
                 <div class="col-md-8 offset-md-2">
+                    <span style="display:none" id="templateId">@Model.AppraisalTemplate.Id</span>
                     <div class="form-group">
                         <label for="templateName">Appraisal Template Name</label>
                         <input type="text" class="form-control" id="templateName" value="@Model.AppraisalTemplate.TemplateName" name="templateName" placeholder="Enter Template Name...">
@@ -258,7 +259,7 @@
                                             <th class="text-center rowCount d-flex" scope="row">1</th>
                                             <td class="font-w600">
                                                 <input type="text" class="form-control title" placeholder="">
-                                                <p style="overflow:hidden;" class="container1">
+                                                <div style="overflow:hidden;" class="container1">
                                                     <span class="mt-4 font-w700" style="display:block">Item Breakdown</span>
 
                                                     <div style="overflow:hidden; display:none" class="p-1 item-container">
@@ -276,7 +277,7 @@
                                                             <button class="btn btn-danger btn-sm ml-4 mt-1 removeItem"><i class="fa fa-times"></i></button>
                                                         </div>
                                                     </div>
-                                                </p>
+                                                </div>
                                                 <button class="btn btn-primary btn-sm add-item"><i class="fa fa-plus"></i> Add Item</button>
                                             </td>
                                             <td class="font-w600 d-flex">
@@ -404,57 +405,399 @@
             <div id="sectionContainer">
                 @foreach (var item in Model.AppraisalTemplate.AppraisalTemplateSections)
                 {
-                    if(item.SectionTypeId == 1)
+                    if(item.IsDeleted == false)
                     {
-                        <div class="p-2 taskPerformedSection" data-sectionNum="@item.SetupId">
-                            <div class="block block-rounded block-bordered">
-                                <div class="block-header block-header-default">
-                                    <h3 class="block-title">Section <span class="sectionNumber">@item.SetupId</span> (Task performed by employee and their ratings)</h3>
-                                    <div class="block-options">
-                                        <button type="button" class="btn-block-option deleteSection" data-toggle="tooltip" title="Delete Section"><i class="fa fa-times" style="color:red"></i></button>
-                                        <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
+                        // if section type is task performed and rating section
+                        if (item.SectionTypeId == 1)
+                        {
+                            <div class="p-2 taskPerformedSection appraisalSection" data-sectionNum="@item.SetupId" data-sectionId="@item.Id" data-sectionTypeId="@item.SectionTypeId">
+                                <div class="block block-rounded block-bordered">
+                                    <div class="block-header block-header-default">
+                                        <h3 class="block-title">Section <span class="sectionNumber">@item.SetupId</span> (Task performed by employee and their ratings)</h3>
+                                        <div class="block-options">
+                                            <button type="button" class="btn-block-option deleteSection" data-sectionId="@item.Id" data-toggle="tooltip" title="Delete Section"><i class="fa fa-times" style="color:red"></i></button>
+                                            <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="block-content" style="width:100% !important">
-                                    <div class="row">
-                                        <div class="col-md-8 offset-md-2">
-                                            <div class="form-group">
-                                                <label>Section Title</label>
-                                                <input type="text" class="form-control sectionTitle" value="@item.SectionTitle" placeholder="Enter Section Title...">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="instructions">Section Instructions</label>
-                                                <textarea class="form-control sectionInstructions" rows="4" placeholder="Enter Instructions...">@item.SectionInstructions</textarea>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Column Header</label>
-                                                <input type="text" class="form-control sectionFirstColHeader" value="@item.FirstColumnHeader" style="max-width:350px" placeholder="Enter Column Header">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Percentage Score obtainable (%)</label>
-                                                <input type="number" class="form-control sectionPercentageScore" value="@item.TotalPercentageObtainable" style="max-width:350px" placeholder="">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Total Points in this section (optional)</label>
-                                                <input type="number" class="form-control sectionTotalPoints" value="@item.TotalMarkObtainable" style="max-width:350px" placeholder="">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Section Type</label>
-                                                <select class="form-control sectionType" style="max-width:350px">
-                                                    <option value="mandatory" @(item.Optional? "": "selected")>Mandatory</option>
-                                                    <option value="optional" @(item.Optional? "selected": "")>Optional</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group derivedSectionContainer" style="display:none">
-                                                <label>Derived From Section:</label>
-                                                <select class="form-control derivedSection" style="max-width:350px">
-                                                </select>
+                                    <div class="block-content" style="width:100% !important">
+                                        <div class="row">
+                                            <div class="col-md-8 offset-md-2">
+                                                <div class="form-group">
+                                                    <label>Section Title</label>
+                                                    <input type="text" class="form-control sectionTitle" value="@item.SectionTitle" placeholder="Enter Section Title...">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="instructions">Section Instructions</label>
+                                                    <textarea class="form-control sectionInstructions" rows="4" placeholder="Enter Instructions...">@item.SectionInstructions</textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Column Header</label>
+                                                    <input type="text" class="form-control sectionFirstColHeader" value="@item.FirstColumnHeader" style="max-width:350px" placeholder="Enter Column Header">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Percentage Score obtainable (%)</label>
+                                                    <input type="number" class="form-control sectionPercentageScore" value="@item.TotalPercentageObtainable" style="max-width:350px" placeholder="">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Total Points in this section (optional)</label>
+                                                    <input type="number" class="form-control sectionTotalPoints" value="@item.TotalMarkObtainable" style="max-width:350px" placeholder="">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Section Type</label>
+                                                    <select class="form-control sectionType" style="max-width:350px">
+                                                        <option value="mandatory">Mandatory</option>
+                                                        <option value="optional" @(item.Optional ? "selected" : "")>Optional</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group derivedSectionContainer" style="display:none">
+                                                    <label>Derived From Section:</label>
+                                                    <select class="form-control derivedSection" style="max-width:350px">
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        }
+                        // if section type is duties assigned
+                        else if (item.SectionTypeId == 2)
+                        {
+                            <div class="p-2 dutiesAssigned appraisalSection" data-sectionNum="@item.SetupId" data-sectionId="@item.Id" data-sectionTypeId="@item.SectionTypeId">
+                                <div class="block block-rounded block-bordered">
+                                    <div class="block-header block-header-default">
+                                        <h3 class="block-title">Section <span class="sectionNumber">@item.SetupId</span> (Duties assigned to employee and their ratings)</h3>
+                                        <div class="block-options">
+                                            <button type="button" class="btn-block-option deleteSection" data-sectionId="@item.Id" data-toggle="tooltip" title="Delete Section"><i class="fa fa-times" style="color:red"></i></button>
+                                            <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
+                                        </div>
+                                    </div>
+                                    <div class="block-content" style="width:100% !important">
+                                        <div class="row">
+                                            <div class="col-md-8 offset-md-2">
+                                                <div class="form-group">
+                                                    <label>Section Title</label>
+                                                    <input type="text" class="form-control sectionTitle" value="@item.SectionTitle" placeholder="Enter Section Title...">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="instructions">Section Instructions</label>
+                                                    <textarea class="form-control sectionInstructions" rows="4" placeholder="Enter Instructions...">@item.SectionInstructions</textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>First Column Header</label>
+                                                    <input type="text" class="form-control sectionFirstColHeader" value="@item.FirstColumnHeader" style="max-width:350px" placeholder="Enter Column Header">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Second Column Header</label>
+                                                    <input type="text" class="form-control sectionSecondColHeader" value="@item.SecondColumnHeader" style="max-width:350px" placeholder="Enter Column Header">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Percentage Score obtainable (%)</label>
+                                                    <input type="number" class="form-control sectionPercentageScore" value="@item.TotalPercentageObtainable" style="max-width:350px" placeholder="">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Total Points in this section (optional)</label>
+                                                    <input type="number" class="form-control sectionTotalPoints" value="@item.TotalMarkObtainable" style="max-width:350px" placeholder="">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Section Type</label>
+                                                    <select class="form-control sectionType" style="max-width:350px">
+                                                        <option value="mandatory">Mandatory</option>
+                                                        <option value="optional" @(item.Optional? "selected":"")>Optional</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group derivedSectionContainer" style="display:none">
+                                                    <label>Derived From Section:</label>
+                                                    <select class="form-control derivedSection" style="max-width:350px">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        // if section type is quantitative
+                        else if (item.SectionTypeId == 3)
+                        {
+                            <div class="p-2 quantitativeIndices appraisalSection" data-sectionNum="@item.SetupId" data-sectionId="@item.Id" data-sectionTypeId="@item.SectionTypeId">
+                                <div class="block block-rounded block-bordered">
+                                    <div class="block-header block-header-default">
+                                        <h3 class="block-title">Section <span class="sectionNumber">@item.SetupId</span> (Quantitative indices)</h3>
+                                        <div class="block-options">
+                                            <button type="button" class="btn-block-option deleteSection" data-sectionId="@item.Id" data-toggle="tooltip" title="Delete Section"><i class="fa fa-times" style="color:red"></i></button>
+                                            <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
+                                        </div>
+                                    </div>
+                                    <div class="block-content" style="width:100% !important">
+                                        <div class="row">
+                                            <div class="col-md-8 offset-md-2">
+                                                <div class="form-group">
+                                                    <label>Section Title</label>
+                                                    <input type="text" class="form-control sectionTitle" value="@item.SectionTitle" placeholder="Enter Section Title...">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="instructions">Section Instructions</label>
+                                                    <textarea class="form-control sectionInstructions" rows="4" placeholder="Enter Instructions...">@item.SectionInstructions</textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Percentage Score obtainable (%)</label>
+                                                    <input type="number" class="form-control sectionPercentageScore" value="@item.TotalPercentageObtainable" style="max-width:350px" placeholder="">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Total Points in this section</label>
+                                                    <input type="number" class="form-control sectionTotalPoints" value="@item.TotalMarkObtainable" style="max-width:350px" placeholder="">
+                                                </div>
+                                                <div class="form-group" style="display:none">
+                                                    <label>Section Type</label>
+                                                    <select class="form-control sectionType" style="max-width:350px">
+                                                        <option value="mandatory">Mandatory</option>
+                                                        <option value="optional">Optional</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group derivedSectionContainer" style="display:none">
+                                                    <label>Derived From Section:</label>
+                                                    <select class="form-control derivedSection" style="max-width:350px">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-striped table-vcenter">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-center" style="width: 50px;">#</th>
+                                                            <th><input type="text" class="form-control sectionFirstColHeader" value="@item.FirstColumnHeader" placeholder="Enter Column Header"></th>
+                                                            <th class="text-center" style="width: 150px;">Max Score</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr style="display:none">
+                                                            <th class="text-center rowCount d-flex" scope="row">1</th>
+                                                            <td class="font-w600">
+                                                                <input type="text" class="form-control title" placeholder="">
+                                                                <div style="overflow:hidden;" class="">
+                                                                    <span class="mt-4 font-w700" style="display:block">Item Breakdown</span>
+
+                                                                    <div style="overflow:hidden; display:none" class="p-1 item-container">
+                                                                        <div class="float-left" style="width:50%">
+                                                                            <input type="text" class="form-control item-breakdown-text" />
+                                                                        </div>
+                                                                        <div class="float-left pl-3" style="width:35%">
+                                                                            <select class="value-type form-control">
+                                                                                <option value="">Select Value Type</option>
+                                                                                <option value="number">Number Value</option>
+                                                                                <option value="money">Money Value</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="float-left" style="width:9%">
+                                                                            <button class="btn btn-danger btn-sm ml-4 mt-1 removeItem"><i class="fa fa-times"></i></button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <button class="btn btn-primary btn-sm add-item"><i class="fa fa-plus"></i> Add Item</button>
+                                                            </td>
+                                                            <td class="font-w600 d-flex">
+                                                                <input type="number" class="form-control weight" placeholder="">
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <button class="btn btn-danger deleteQualitativeRow" data-toggle="tooltip" title="Delete Row"><i class="fa fa-times"></i></button>
+                                                            </td>
+                                                        </tr>
+
+                                                        @{
+                                                            int num = 1;
+                                                            foreach (var detail in item.AppraisalSectionDetails)
+                                                            {
+                                                                if(detail.IsDeleted == false)
+                                                                {
+                                                                    <tr data-detailId="@detail.Id">
+                                                                        <th class="text-center rowCount d-flex" scope="row">@num</th>
+                                                                        <td class="font-w600">
+                                                                            <input type="text" class="form-control title" value="@detail.Title1" placeholder="">
+                                                                            <div style="overflow:hidden;" class="@("container" + num)">
+
+                                                                                <span class="mt-4 font-w700" style="display:block">Item Breakdown</span>
+
+                                                                                <div style="overflow:hidden; display:none" class="p-1 item-container">
+                                                                                    <div class="float-left" style="width:50%">
+                                                                                        <input type="text" class="form-control item-breakdown-text" />
+                                                                                    </div>
+                                                                                    <div class="float-left pl-3" style="width:35%">
+                                                                                        <select class="value-type form-control">
+                                                                                            <option value="">Select Value Type</option>
+                                                                                            <option value="number">Number Value</option>
+                                                                                            <option value="money">Money Value</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                    <div class="float-left" style="width:9%">
+                                                                                        <button class="btn btn-danger btn-sm ml-4 mt-1 removeItem"><i class="fa fa-times"></i></button>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                @foreach (var breakdown in detail.SectionDetailBreakdowns)
+                                                                                {
+                                                                                    if(breakdown.IsDeleted == false)
+                                                                                    {
+                                                                                        <div style="overflow:hidden;" class="item-container p-1" data-breakdownId="@breakdown.Id">
+                                                                                            <div class="float-left" style="width:50%">
+                                                                                                <input type="text" value="@breakdown.Title" class="form-control item-breakdown-text" />
+                                                                                            </div>
+                                                                                            <div class="float-left pl-3" style="width:35%">
+                                                                                                <select class="value-type form-control">
+                                                                                                    <option value="">Select Value Type</option>
+                                                                                                    <option value="number" @(breakdown.ExpectedValueId == 1? "selected": "")>Number Value</option>
+                                                                                                    <option value="money" @(breakdown.ExpectedValueId == 2? "selected": "")>Money Value</option>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                            <div class="float-left" style="width:9%">
+                                                                                                <button class="btn btn-danger btn-sm ml-4 mt-1 removeItem" data-breakdownId="@breakdown.Id"><i class="fa fa-times"></i></button>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    }
+                                                                                }
+                                                                            </div>
+                                                                            <button class="btn btn-primary btn-sm add-item"><i class="fa fa-plus"></i> Add Item</button>
+                                                                        </td>
+                                                                        <td class="font-w600 d-flex">
+                                                                            <input type="number" class="form-control weight" value="@detail.MaxScore" placeholder="">
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            <button class="btn btn-danger deleteQualitativeRow" data-detailId="@detail.Id" data-toggle="tooltip" title="Delete Row"><i class="fa fa-times"></i></button>
+                                                                        </td>
+                                                                    </tr>
+                                                                    ++num;
+                                                                }
+                                                            }
+                                                        }
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="p-2">
+                                                <button class="btn btn-primary btn-sm addQuantitativeRow"><i class="fa fa-plus"></i> Add Row</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else if(item.SectionTypeId == 4)
+                        {
+                            <div class="p-2 qualitativeIndices appraisalSection" data-sectionNum="@item.SetupId" data-sectionId="@item.Id" data-sectionTypeId="@item.SectionTypeId">
+                                <div class="block block-rounded block-bordered">
+                                    <div class="block-header block-header-default">
+                                        <h3 class="block-title">Section <span class="sectionNumber">@item.SetupId</span> (Qualitative indices)</h3>
+                                        <div class="block-options">
+                                            <button type="button" class="btn-block-option deleteSection" data-sectionId="@item.Id" data-toggle="tooltip" title="Delete Section"><i class="fa fa-times" style="color:red"></i></button>
+                                            <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
+                                        </div>
+                                    </div>
+                                    <div class="block-content" style="width:100% !important">
+                                        <div class="row">
+                                            <div class="col-md-8 offset-md-2">
+                                                <div class="form-group">
+                                                    <label>Section Title</label>
+                                                    <input type="text" class="form-control sectionTitle" value="@item.SectionTitle" placeholder="Enter Section Title...">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="instructions">Section Instructions</label>
+                                                    <textarea class="form-control sectionInstructions" rows="4" placeholder="Enter Instructions...">@item.SectionInstructions</textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Percentage Score obtainable (%)</label>
+                                                    <input type="number" class="form-control sectionPercentageScore" value="@item.TotalPercentageObtainable" style="max-width:350px" placeholder="">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Total Points in this section</label>
+                                                    <input type="number" class="form-control sectionTotalPoints" value="@item.TotalMarkObtainable" style="max-width:350px" placeholder="">
+                                                </div>
+                                                <div class="form-group" style="display:none">
+                                                    <label>Section Type</label>
+                                                    <select class="form-control sectionType" style="max-width:350px">
+                                                        <option value="mandatory">Mandatory</option>
+                                                        <option value="optional">Optional</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group derivedSectionContainer" style="display:none">
+                                                    <label>Derived From Section:</label>
+                                                    <select class="form-control derivedSection" style="max-width:350px">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-striped table-vcenter">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-center" style="width: 50px;">#</th>
+                                                            <th><input type="text" class="form-control sectionFirstColHeader" value="@item.FirstColumnHeader" placeholder="Enter Column Header"></th>
+                                                            <th class="text-center" style="width: 150px;">Weight</th>
+                                                            @foreach (var rating in Model.DefaultRatings)
+                                                            {
+                                                                <th class="text-center">@rating.Score</th>
+                                                            }
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr style="display:none">
+                                                            <th class="text-center rowCount" scope="row">1</th>
+                                                            <td class="font-w600">
+                                                                <input type="text" class="form-control title" placeholder="">
+                                                            </td>
+                                                            <td class="font-w600">
+                                                                <input type="number" class="form-control weight" placeholder="">
+                                                            </td>
+                                                            @foreach (var rating in Model.DefaultRatings)
+                                                            {
+                                                                <td></td>
+                                                            }
+                                                            <td class="text-center">
+                                                                <button class="btn btn-danger deleteQualitativeRow" data-toggle="tooltip" title="Delete Row"><i class="fa fa-times"></i></button>
+                                                            </td>
+                                                        </tr>
+                                                        @{ 
+                                                            int num = 1;
+                                                            foreach (var detail in item.AppraisalSectionDetails)
+                                                            {
+                                                                if(detail.IsDeleted == false)
+                                                                {
+                                                                    <tr data-detailId="@detail.Id">
+                                                                        <th class="text-center rowCount" scope="row">@num</th>
+                                                                        <td class="font-w600">
+                                                                            <input type="text" class="form-control title" value="@detail.Title1" placeholder="">
+                                                                        </td>
+                                                                        <td class="font-w600">
+                                                                            <input type="number" value="@detail.MaxScore" class="form-control weight" placeholder="">
+                                                                        </td>
+                                                                        @foreach (var rating in Model.DefaultRatings)
+                                                                        {
+                                                                            <td></td>
+                                                                        }
+                                                                        <td class="text-center">
+                                                                            <button class="btn btn-danger deleteQualitativeRow" data-toggle="tooltip" title="Delete Row"><i class="fa fa-times"></i></button>
+                                                                        </td>
+                                                                    </tr>
+                                                                    ++num;
+                                                                }
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="p-2">
+                                                <button class="btn btn-primary btn-sm addQualitativeRow"><i class="fa fa-plus"></i> Add Row</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
                     }
                 }
             </div>
@@ -462,7 +805,7 @@
             <div class="row">
                 <div class="col-md-6 offset-md-3">
                     <div class="form-group mt-5 text-center">
-                        <button type="button" id="create-template" class="btn btn-hero-primary"><i class="fa fa-plus"></i> Create Template</button>
+                        <button type="button" id="update-template" class="btn btn-hero-primary"><i class="fa fa-pen-square"></i> Update Template</button>
                     </div>
                 </div>
             </div>
@@ -541,8 +884,9 @@
             });
 
             // when you click on submit template
-            $("#create-template").on("click", function () {
+            $("#update-template").on("click", function () {
                 var $rootThis = $(this);
+                var $templateId = $("#templateId").text();
                 var $templateName = $("#templateName").val();
                 var $description = $("#description").val();
                 var $sectionCount = parseInt($(".appraisalSection").length);
@@ -567,6 +911,7 @@
                 $.each($sections, function () {
                     var $this = $(this);
                     var $sectionTypeId = $this.attr("data-sectionTypeId");
+                    var $sectionId = $this.attr("data-sectionId");
                     var $sectionSetupId = $this.attr("data-sectionNum");
                     var $sectionTitle = $this.find(".sectionTitle").val();
                     var $sectionInstructions = $this.find(".sectionInstructions").val();
@@ -586,6 +931,7 @@
                             var $setupDetailId = parseInt($(this).find(".rowCount").text());
                             var $title = $(this).find(".title").val();
                             var $weight = parseInt($(this).find(".weight").val());
+                            var $detailId = $(this).attr("data-detailId");
 
                             if ($title == '' || isNaN($weight)) {
                                 $qualitativeDetailsIsValid = false;
@@ -593,10 +939,12 @@
                             $TotalWeightScore += $weight;
 
                             if ($sectionTypeId == 3) {
-                                console.log('setupdetailId', $setupDetailId);
-                                var $breakdowns = $(this).find("td p.container" + $setupDetailId + ' .item-container');
+                                var $breakdowns = $(this).find("td div.container" + $setupDetailId + " .item-container").splice(1);
+                                
+                                //var $breakdowns = holds.children(".item-container");
                                 var $itemBreakdowns = [];
                                 $.each($breakdowns, function () {
+                                    var $breakdownId = $(this).attr("data-breakdownId");
                                     var $itemText = $(this).find(".item-breakdown-text").val();
                                     var $valueType = $(this).find(".value-type").val();
                                     console.log($itemText, $valueType);
@@ -604,6 +952,7 @@
                                         $breakdownIsValid = false;
                                     }
                                     var object = {
+                                        breakdownId: $breakdownId,
                                         itemText: $itemText,
                                         valueType: $valueType
                                     };
@@ -612,6 +961,7 @@
                             }
 
                             var obj = {
+                                detailId: $detailId,
                                 setupDetailId: $setupDetailId,
                                 title: $title,
                                 weight: $weight,
@@ -634,6 +984,7 @@
                         $percentageTotal += parseInt($sectionPercentageScore);
                     }
                     var obj = {
+                        sectionId: $sectionId,
                         sectionSetupId: $sectionSetupId,
                         sectionTitle: $sectionTitle,
                         sectionInstructions: $sectionInstructions,
@@ -674,9 +1025,11 @@
                     return false;
                 }
 
-                var url = "/api/Configurations/PostSaveAppraisalTemplate";
+                var url = "/api/Configurations/PostEditAppraisalTemplate";
+                console.log($appraisalTemplate)
                 $.post(url,
                     {
+                        templateId: $templateId,
                         templateName: $templateName,
                         templateDescription: $description,
                         appraisalSectionParams: $appraisalTemplate
@@ -684,7 +1037,7 @@
                     function (data) {
                         Swal.fire({
                             title: "Success",
-                            text: "Appraisal template was created successfully",
+                            text: "Appraisal template was updated successfully",
                             type: "success",
                             showCancelButton: 0,
                             customClass: { okButton: "btn btn-danger m-1" },
@@ -723,6 +1076,7 @@
             // when you click on delete section
             $("#sectionContainer").on("click", ".deleteSection", function () {
                 var $rootThis = $(this);
+
                 Swal.fire({
                     title: "Are you sure?",
                     text: "You won't be able to rever this!",
@@ -735,7 +1089,15 @@
 
                 }).then(function (n) {
                     if (n.value) {
-                        $rootThis.closest(".appraisalSection").remove();
+                        $sectionId = $rootThis.attr("data-sectionId");
+                        if ($sectionId == '') {
+                            $rootThis.closest(".appraisalSection").remove();
+                        } else {
+                            $.post('/api/configurations/PostDeleteAppraisalSection', { sectionId: $sectionId }, function (data) {
+                                Swal.fire("Deleted!", "Section has been deleted.", "success");
+                                $rootThis.closest(".appraisalSection").remove();
+                            });
+                        }
                         var $sections = $(".appraisalSection");
                         $.each($sections, function () {
                             var $this = $(this);
@@ -747,7 +1109,6 @@
                     else {
                         "cancel" === n.dismiss && Swal.fire("Cancelled", "Section file is safe :)", "error")
                     }
-
                 })
             });
 
@@ -779,23 +1140,75 @@
 
             $("#sectionContainer").on("click", ".deleteQualitativeRow", function () {
                 var $this = $(this);
-                $this.closest("tr").remove();
+                var $detailId = $this.attr("data-detailId");
+                if ($detailId == '') {
+                    $this.closest("tr").remove();
+                } else {
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to rever this!",
+                        type: "warning",
+                        showCancelButton: !0,
+                        customClass: { confirmButton: "btn btn-danger m-1", cancelButton: "btn btn-secondary m-1" },
+                        confirmButtonText: "Yes, delete it!",
+                        html: !1,
+                        preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
+
+                    }).then(function (n) {
+                        if (n.value) {
+                            $.post('/api/configurations/PostDeleteAppraisalSectionDetail', { detailId: $detailId }, function (data) {
+                                Swal.fire("Deleted!", "item has been deleted.", "success");
+                                $this.closest("tr").remove();
+                            });
+                        }
+                        else {
+                            "cancel" === n.dismiss && Swal.fire("Cancelled", "Item is safe :)", "error")
+                        }
+                    })
+                }
             });
 
             // when you click on add item
             $("#sectionContainer").on("click", "table .add-item", function () {
+                console.log("clicked")
                 var $this = $(this);
-                var $itemContainer = $this.closest("td").find("p:first");
-                var $clone = $this.closest("td").children(".item-container:first").clone();
-                console.log($clone)
+                var $itemContainer = $this.closest("td").children("div:first");
+                var $clone = $this.closest("td").find("div.item-container:first").clone();
                 $clone.show();
                 $itemContainer.append($clone);
             });
 
             // when you click on remove item
             $("#sectionContainer").on("click", "table td .removeItem", function () {
+                
+                //
                 var $this = $(this);
-                $this.closest(".item-container").remove();
+                var $breakdownId = $this.attr("data-breakdownId");
+                if ($breakdownId == '') {
+                    $this.closest(".item-container").remove();
+                } else {
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to rever this!",
+                        type: "warning",
+                        showCancelButton: !0,
+                        customClass: { confirmButton: "btn btn-danger m-1", cancelButton: "btn btn-secondary m-1" },
+                        confirmButtonText: "Yes, delete it!",
+                        html: !1,
+                        preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
+
+                    }).then(function (n) {
+                        if (n.value) {
+                            $.post('/api/configurations/PostDeleteSectionBreakdown', { breakdownId: $breakdownId }, function (data) {
+                                Swal.fire("Deleted!", "item has been deleted.", "success");
+                                $this.closest(".item-container").remove();
+                            });
+                        }
+                        else {
+                            "cancel" === n.dismiss && Swal.fire("Cancelled", "Item is safe :)", "error")
+                        }
+                    });
+                }
             });
 
             // when you click on add qualitative row
@@ -821,7 +1234,6 @@
                 var $clone = $quantitativeIndicesSection.find("table tbody tr:first").clone();
                 $clone.find('.rowCount').text($rowCount);
                 $clone.find('td p').addClass('container' + $rowCount);
-                console.log('addclass', 'container' + $rowCount);
                 $clone.show();
                 $quantitativeIndicesSection.find('table tbody').append($clone);
             });

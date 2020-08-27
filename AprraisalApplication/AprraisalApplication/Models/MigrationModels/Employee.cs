@@ -18,6 +18,9 @@ namespace AprraisalApplication.Models.MigrationModels
         public ApplicationUser ApplicationUser { get; set; }
         public string ApplicationUserId { get; set; }
 
+        public DefaultUserAppraiser DefaultUserAppraiser { get; set; }
+        public int DefaultUserAppraiserId { get; set; }
+
         [Required]
         [MaxLength(255)]
         public string Firstname { get; set; }
@@ -74,9 +77,10 @@ namespace AprraisalApplication.Models.MigrationModels
             CareerHistories = new Collection<CareerHistory>();
         }
 
-        public Employee(CreateEmployeeProfileVM model)
+        public Employee(CreateEmployeeProfileVM model, int defaultUserAppraiserId)
         {
             ApplicationUserId = HttpContext.Current.User.Identity.GetUserId();
+            DefaultUserAppraiserId = defaultUserAppraiserId;
             Firstname = model.Firstname;
             Lastname = model.Lastname;
             Othername = model.Othername;

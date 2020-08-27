@@ -1,5 +1,6 @@
 ﻿using AprraisalApplication.Models;
 using AprraisalApplication.Models.ApiParameters;
+using AprraisalApplication.Models.MigrationModels;
 using AprraisalApplication.Persistence;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,54 @@ namespace AprraisalApplication.Controllers.api
         public IHttpActionResult PostSaveAppraisalTemplate([FromBody] AppraisalTemplateParams model)
         {
             _unitOfWork.AppraisalTemplate.SaveNewAppraisalTemplate(model);
+            return Ok();
+        }
+
+        public IHttpActionResult PostEditAppraisalTemplate([FromBody] AppraisalTemplateParams model)
+        {
+            _unitOfWork.AppraisalTemplate.EditAppraisalTemplate(model);
+            return Ok();
+        }
+
+        public IHttpActionResult PostDeleteAppraisalSection([FromBody] AppraisalSectionParam model)
+        {
+            _unitOfWork.AppraisalTemplate.DeleteAppraisalSection((int)model.SectionId);
+            return Ok();
+        }
+
+        public IHttpActionResult PostDeleteAppraisalSectionDetail([FromBody] QualitativeDetail model)
+        {
+            _unitOfWork.AppraisalTemplate.DeleteSectionDetail((int)model.DetailId);
+            return Ok();
+        }
+
+        public IHttpActionResult PostDeleteSectionBreakdown([FromBody] ItemBreakDown model)
+        {
+            _unitOfWork.AppraisalTemplate.DeleteSectionBreakdown((int)model.BreakdownId);
+            return Ok();
+        }
+
+        public IHttpActionResult PostDeleteAppraisalTemplate([FromBody] AppraisalTemplate model)
+        {
+            _unitOfWork.AppraisalTemplate.DeleteAppraisalTemplate(model.Id);
+            return Ok();
+        }
+
+        public IHttpActionResult PostUpdateDepartmentAppraisal([FromBody] AppraisalDepartmentParams model)
+        {
+            _unitOfWork.AppraisalTemplate.UpdateDepartmentAppraisals(model);
+            return Ok();
+        }
+
+        public IHttpActionResult PostUpdateEmployeeAppraisal([FromBody] AppraisalUserParams model)
+        {
+            _unitOfWork.AppraisalTemplate.UpdateUserAppraisal(model);
+            return Ok();
+        }
+
+        public IHttpActionResult PostSetEmployeeAppraiser([FromBody] UserAppraiserParams model)
+        {
+            _unitOfWork.Office.SetEmployeesAppraiser(model);
             return Ok();
         }
     }

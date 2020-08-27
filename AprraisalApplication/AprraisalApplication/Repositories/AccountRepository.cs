@@ -28,7 +28,12 @@ namespace AprraisalApplication.Repositories
 
         internal bool SaveEmployeeDetails(CreateEmployeeProfileVM model)
         {
-            Employee employee = new Employee(model);
+            // save the employee default appraiser
+            DefaultUserAppraiser defaultAppraiser = new DefaultUserAppraiser();
+            db.DefaultUserAppraisers.Add(defaultAppraiser);
+            db.SaveChanges();
+
+            Employee employee = new Employee(model, defaultAppraiser.Id);
             db.Employees.Add(employee);
             db.SaveChanges();
 
@@ -140,6 +145,11 @@ namespace AprraisalApplication.Repositories
             }
 
             return db.SaveChanges() != 0;
+        }
+
+        internal List<ApplicationUser> GetAllUsers()
+        {
+            return db.Users.Where(x => x.EmailConfirmed == true && x.EmployeeId != null).ToList();
         }
     }
 }

@@ -1,0 +1,268 @@
+﻿@model AprraisalApplication.Models.ViewModels.AppraisalTemplateSetupVM
+
+@{
+    Layout = null;
+    int columns = Model.DefaultRatings.Count() + 1;
+    int dutiesAssignCol = Model.DefaultRatings.Count() + 2;
+    int ratingsCount = Model.DefaultRatings.Count();
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>View Appraisal Template</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+
+    <meta name="description" content="View Appraisal Template">
+    <meta name="author" content="pixelcave">
+    <meta name="robots" content="noindex, nofollow">
+
+
+    <!-- Icons -->
+    <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
+    <link rel="shortcut icon" href="~/Content/Template/media/favicons/favicon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="~/Content/Template/media/favicons/favicon-192x192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="~/Content/Template/media/favicons/apple-touch-icon-180x180.png">
+    <!-- END Icons -->
+    <!-- Stylesheets -->
+    <!-- Fonts and Dashmix framework -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,400i,600,700">
+
+
+    @Styles.Render("~/Content/css")
+    <style>
+        #content-body {
+            max-width: 1000px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 50px;
+        }
+        .table-bordered td, .table-bordered th {
+            border: 1px solid grey;
+        }
+        .table thead th {
+            border-bottom: 1px solid grey;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="content-body">
+        <h1 class="text-center font-size-h4 text-uppercase">@Model.AppraisalTemplate.TemplateName</h1>
+        <div class="row">
+            @foreach (var templateSection in Model.AppraisalTemplate.AppraisalTemplateSections)
+            {
+                if(templateSection.IsDeleted == false)
+                {
+                    if (templateSection.SectionTypeId == 1)
+                    {
+                        <h5 class="mt-4">Section @templateSection.SetupId</h5>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-bordered table-vcenter">
+                                <thead>
+                                    <tr style="background-color:#e5e6e6;">
+                                        <th rowspan="2" colspan="@columns">
+                                            <div class="font-size-h5 text-center">@templateSection.SectionTitle</div>
+                                            <div>@templateSection.SectionInstructions</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="background-color:#e5e6e6;">
+                                        <th class="text-center text-uppercase" style="width:70%;" scope="row">
+                                            @((templateSection.FirstColumnHeader != "")? templateSection.FirstColumnHeader: "tasks performed")
+                                        </th>
+                                        <th class="text-uppercase text-center" colspan="@ratingsCount">ratings</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center text-uppercase" scope="row"></th>
+                                        @foreach (var item in Model.DefaultRatings)
+                                        {
+                                            <th class="text-center">@item.Score</th>
+                                        }
+                                    </tr>
+                                    @for (int i = 1; i < 5; i++)
+                                    {
+                                        <tr>
+                                            <td>@(i + ".")</td>
+                                            @foreach (var item in Model.DefaultRatings)
+                                            {
+                                                <td></td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else if (templateSection.SectionTypeId == 2)
+                    {
+                        <h5 class="mt-4">Section @templateSection.SetupId</h5>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-bordered table-vcenter">
+                                <thead>
+                                    <tr style="background-color:#e5e6e6;">
+                                        <th rowspan="2" colspan="@dutiesAssignCol">
+                                            <div class="font-size-h5 text-center">@templateSection.SectionTitle</div>
+                                            <div>@templateSection.SectionInstructions</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="background-color:#e5e6e6;">
+                                        <th class="text-center text-uppercase" style="width:35%;">
+                                            @((templateSection.FirstColumnHeader != "")? templateSection.FirstColumnHeader: "duties assigned")
+                                        </th>
+                                        <th class="text-center text-uppercase" style="width: 35%;">
+                                            @((templateSection.FirstColumnHeader != "")? templateSection.FirstColumnHeader: "actual results achieved")
+                                        </th>
+                                        <th class="text-uppercase text-center" colspan="@ratingsCount">ratings</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center text-uppercase" scope="row"></th>
+                                        <th class="text-center text-uppercase" scope="row"></th>
+                                        @foreach (var item in Model.DefaultRatings)
+                                        {
+                                            <th class="text-center">@item.Score</th>
+                                        }
+                                    </tr>
+                                    @for (int i = 1; i < 5; i++)
+                                    {
+                                        <tr>
+                                            <td>@(i + ".")</td>
+                                            <td></td>
+                                            @foreach (var item in Model.DefaultRatings)
+                                            {
+                                                <td></td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else if (templateSection.SectionTypeId == 3)
+                    {
+                        <h5 class="mt-4">Section @templateSection.SetupId</h5>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-bordered table-vcenter">
+                                <thead>
+                                    <tr style="background-color:#e5e6e6;">
+                                        <th rowspan="2" colspan="4">
+                                            <div class="font-size-h5 text-center">@templateSection.SectionTitle</div>
+                                            <div>@templateSection.SectionInstructions</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="background-color:#e5e6e6;">
+                                        <th>S/N</th>
+                                        <th class="text-center text-uppercase" style="width:70%;" scope="row">
+                                            @((templateSection.FirstColumnHeader != "")? templateSection.FirstColumnHeader: "values")
+                                        </th>
+                                        <th class="text-center">MAX SCORE</th>
+                                        <th class="text-uppercase text-center">MARK OBTAINED</th>
+                                    </tr>
+                                    @{ 
+                                        int num = 1;
+                                        foreach (var detail in templateSection.AppraisalSectionDetails)
+                                        {
+                                            <tr>
+                                                <td>@num</td>
+                                                <td>
+                                                    @detail.Title1
+                                                    <div>
+                                                        <ul>
+                                                            @foreach (var breakdown in detail.SectionDetailBreakdowns)
+                                                            {
+                                                                <li class="mt-1">@breakdown.Title</li>
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                                <td class="text-center">@detail.MaxScore</td>
+                                                <td></td>
+                                            </tr>
+                                            ++num;
+                                        }
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td class="text-right font-w700" colspan="2">Mark Obtainable</td>
+                                        <td class="text-center font-w700">@templateSection.TotalMarkObtainable</td>
+                                        <td colspan="@ratingsCount" class="text-center font-w700"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    }
+                    else if (templateSection.SectionTypeId == 4)
+                    {
+                        <h5 class="mt-4">Section @templateSection.SetupId</h5>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-bordered table-vcenter">
+                                <thead>
+                                    <tr style="background-color:#e5e6e6;">
+                                        <th rowspan="2" colspan="@dutiesAssignCol">
+                                            <div class="font-size-h5 text-center">@templateSection.SectionTitle</div>
+                                            <div>@templateSection.SectionInstructions</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="background-color:#e5e6e6;">
+                                        <th class="text-center text-uppercase" style="width:65%;" scope="row">
+                                            @((templateSection.FirstColumnHeader != "")? templateSection.FirstColumnHeader: "values")
+                                        </th>
+                                        <th class="text-center" style="width:70px">Weight</th>
+                                        <th class="text-uppercase text-center" colspan="@ratingsCount">ratings</th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"></th>
+                                        <td></td>
+                                        @foreach (var item in Model.DefaultRatings)
+                                        {
+                                            <th class="text-center">@item.Score</th>
+                                        }
+                                    </tr>
+                                    @foreach (var detail in templateSection.AppraisalSectionDetails)
+                                    {
+                                        <tr>
+                                            <td>@detail.Title1</td>
+                                            <td class="text-center">@detail.MaxScore</td>
+                                            @foreach (var item in Model.DefaultRatings)
+                                            {
+                                                <td></td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td class="text-right font-w700">Mark Obtainable</td>
+                                        <td class="text-center font-w700">@templateSection.TotalMarkObtainable</td>
+                                        <td colspan="@ratingsCount" class="text-center font-w700">Mark Obtained =</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    }
+                }
+            }
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/js")
+
+    <script>
+        $(function () {
+            
+        });
+    </script>
+</body>
+</html>

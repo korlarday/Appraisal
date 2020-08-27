@@ -33,7 +33,7 @@
                 <div class="block-content block-content-full">
                     <!-- DataTables init on table by adding .js-dataTable-buttons class, functionality is initialized in js/pages/be_tables_datatables.min.js which was auto compiled from _es6/pages/be_tables_datatables.js -->
                     <div class="table-responsive">
-                        <table class="table table-hover table-vcenter">
+                        <table class="table table-hover table-vcenter" id="table">
                             <thead>
                                 <tr>
                                     <th class="text-center" style="width: 50px;">#</th>
@@ -43,14 +43,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @{ 
+                                @{
                                     int num = 1;
                                     foreach (var item in Model)
                                     {
                                         <tr>
                                             <th class="text-center" scope="row">@num</th>
                                             <td class="font-w600">
-                                                <a href="/configurations/edit-appraisal-template/@item.Slug">@item.TemplateName</a>
+                                                <a href="/configurations/view-appraisal-template/@item.Slug" target="_blank">@item.TemplateName</a>
                                             </td>
                                             <td class="text-center">
                                                 @item.NumberOfSections
@@ -60,7 +60,7 @@
                                                     <a href="/configurations/edit-appraisal-template/@item.Slug" class="btn btn-sm btn-primary" data-toggle="tooltip" title="Edit">
                                                         <i class="fa fa-pencil-alt"></i>
                                                     </a>
-                                                    <button type="button" class="btn btn-sm btn-primary" data-toggle="tooltip" title="Delete">
+                                                    <button type="button" class="btn btn-sm btn-danger delete_template" data-templateId="@item.Id" data-toggle="tooltip" title="Delete">
                                                         <i class="fa fa-times"></i>
                                                     </button>
                                                 </div>
@@ -78,3 +78,51 @@
     </div>
     <!-- END Elements -->
 </div>
+
+
+@section Scripts {
+
+    <script>
+        $(function () {
+            /*
+             * Delete Subject js
+             */
+            $("#table").on("click", ".delete_template", function (e) {
+                var $this = $(this);
+                e.preventDefault();
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to rever this!",
+                    type: "warning",
+                    showCancelButton: !0,
+                    customClass: { confirmButton: "btn btn-danger m-1", cancelButton: "btn btn-secondary m-1" },
+                    confirmButtonText: "Yes, delete it!",
+                    html: !1,
+                    preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
+
+                }).then(function (n) {
+                    if (n.value) {
+                        var id = $this.attr("data-templateId");
+                        var url = "/api/configurations/PostDeleteAppraisalTemplate";
+
+                        $.post(url, { id: id }, function (data) {
+                            Swal.fire("Deleted!", "Template has been deleted.", "success");
+                            $this.closest('tr').fadeOut("slow", function () {
+                                $(this).remove();
+                            });
+                        });
+                    }
+                    else {
+                        "cancel" === n.dismiss && Swal.fire("Cancelled", "Template file is safe :)", "error")
+                    }
+
+                })
+                //if (!confirm("Are you sure you want to delete")) return false;
+                //var $this = $(this);
+                //var id = $this.parent().parent().children(".id").text();
+
+            })
+        })
+                    ////////////////////////////////////////////////////////////////////
+    </script>
+}
