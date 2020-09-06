@@ -48,6 +48,12 @@ namespace AprraisalApplication.Models
         public DbSet<SectionResult> SectionResults { get; set; }
         public DbSet<SectionDetailResult> SectionDetailResults { get; set; }
         public DbSet<ItemBreakdownResult> ItemBreakdownResults { get; set; }
+        public DbSet<AppraiseeSectionDetail> AppraiseeSectionDetails { get; set; }
+        public DbSet<AppraiseeProgress> AppraiseeProgresses { get; set; }
+        public DbSet<InitiatedAppraisalTemplate> InitiatedAppraisalTemplates { get; set; }
+        public DbSet<InitiatedTemplateSection> InitiatedTemplateSections { get; set; }
+        public DbSet<InitiatedSectionDetail> InitiatedSectionDetails { get; set; }
+        public DbSet<InitiatedSectionDetailBreakdown> InitiatedSectionDetailBreakdowns { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

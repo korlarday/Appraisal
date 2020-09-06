@@ -7,6 +7,17 @@ namespace AprraisalApplication.Models.MigrationModels
 {
     public class AppraiserPersonalData
     {
+        public AppraiserPersonalData()
+        {
+
+        }
+        public AppraiserPersonalData(Employee appraiser)
+        {
+            AppraiserId = appraiser.Id;
+            JobTitleId = appraiser.JobTitleId;
+            GradeId = appraiser.GradeId;
+        }
+
         public int Id { get; set; }
         public Employee Appraiser { get; set; }
         public int AppraiserId { get; set; }

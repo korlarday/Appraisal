@@ -45,5 +45,59 @@ namespace AprraisalApplication.Repositories
             }
             db.SaveChanges();
         }
+
+        internal List<Employee> SearchEmployeesUsingDeptAndState(List<string> departments, List<string> states)
+        {
+            List<Employee> employees = db.Employees
+                                            .Include(x => x.Department)
+                                            .Include(x => x.State)
+                                            .ToList();
+            List<Employee> empDepartmentFilter = new List<Employee>();
+            List<Employee> empStateFilter = new List<Employee>();
+
+            // filter the departments
+            if (!departments.Contains("all"))
+            {
+                foreach (var employee in employees)
+                {
+                    if (departments.Contains(employee.DepartmentId.ToString()))
+                    {
+                        empDepartmentFilter.Add(employee);
+                    }
+                }
+            }
+            else
+            {
+                // if selected department contains all
+                empDepartmentFilter = employees;
+            }
+
+            // filter the locations
+            if (!states.Contains("all"))
+            {
+                foreach (var employee in empDepartmentFilter)
+                {
+                    if (states.Contains(employee.StateId.ToString()))
+                    {
+                        empStateFilter.Add(employee);
+                    }
+                }
+            }
+            else
+            {
+                // if selected state contains all
+                empStateFilter = empDepartmentFilter;
+            }
+
+            return empStateFilter;
+        }
+
+        internal List<Employee> GetAllEmployees()
+        {
+            return db.Employees
+                    .Include(x => x.Department)
+                    .Include(x => x.State)
+                    .ToList();
+        }
     }
 }

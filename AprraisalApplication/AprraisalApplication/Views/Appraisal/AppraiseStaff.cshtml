@@ -1,0 +1,493 @@
+﻿@model AprraisalApplication.Models.ViewModels.AppraiseStaffVM
+
+@{
+    ViewBag.Title = "Appraise Staff";
+}
+
+
+@{
+    ViewBag.Title = "Ongoing Appraisal";
+    int columns = Model.DefaultRatings.Count() + 1;
+    int dutiesAssignCol = Model.DefaultRatings.Count() + 2;
+    int ratingsCount = Model.DefaultRatings.Count();
+    var sectionResult = Model.Appraisee.SectionResults;
+}
+
+@section Stylesheet{
+    <style>
+        #content-body {
+            max-width: 1000px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 50px;
+        }
+
+        .table-bordered td, .table-bordered th {
+            border: 1px solid grey;
+        }
+
+        .table thead th {
+            border-bottom: 1px solid grey;
+        }
+
+        .titles {
+            font-weight: bold;
+        }
+
+        .details {
+            font-size: 14px;
+        }
+
+        .text-header {
+            text-decoration: underline;
+            text-transform: uppercase;
+        }
+    </style>
+}
+
+<!-- Hero -->
+<div class="bg-body-light">
+    <div class="content content-full">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Appraisal</h1>
+            <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Home</li>
+                    <li class="breadcrumb-item">Appraisal</li>
+                    <li class="breadcrumb-item active" aria-current="page">Appraisal</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
+<!-- Page Content -->
+<div class="content">
+    <!-- Elements -->
+    <div class="block block-rounded block-bordered">
+        <div class="block-header block-header-default">
+            <h3 class="block-title">Appraise Team Member</h3>
+        </div>
+        <div class="block-content">
+            <div class="block block-rounded">
+                <div class="block-content block-content-full">
+                    <span style="display:none" id="appraiseeId">@Model.Appraisee.Id</span>
+                    <div class="row">
+                        <h6 class="col-12 text-header">Personal Data: Appraisee</h6>
+                        <div class="col-md-6 details">
+                            <div class="mt-4">
+                                <div class="row">
+                                    <div class="col-6 titles">Name of Employee: </div>
+                                    <div class="col-6">@Model.Employee.Firstname @Model.Employee.Lastname</div>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="row">
+                                    <div class="col-6 titles">Date of Employment: </div>
+                                    <div class="col-6">@Model.Employee.DateOfEmployment.ToString("dd-MMM-yyyy")</div>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="row">
+                                    <div class="col-6 titles">Grade: </div>
+                                    <div class="col-6 capitalize-text">@Model.Employee.Grade.Name</div>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="row">
+                                    <span class="col-6 titles">Appraisal Period: </span>
+                                    <span class="col-6">
+                                        @Model.NewAppraisal.AppraisalPeriodStartDate.ToString("MMM-yyyy")
+                                        To
+                                        @Model.NewAppraisal.AppraisalPeriodEndDate.ToString("MMM-yyyy")
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 details">
+                            <div class="mt-4">
+                                <div class="row">
+                                    <div class="col-6 titles">Department: </div>
+                                    <div class="col-6 capitalize-text">@Model.Employee.Department.Name</div>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="row">
+                                    <div class="col-6 titles">Location: </div>
+                                    <div class="col-6 capitalize-text">@Model.Employee.State.Description</div>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="row">
+                                    <div class="col-6 titles">Date of Last Promotion: </div>
+                                    <div class="col-6">
+                                        @if (Model.Employee.DateOfLastPromotion != null)
+                                        {
+                                            @Model.Employee.DateOfLastPromotion.Value.ToString("dd-MMM-yyyy")
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="row">
+                                    <div class="col-6 titles">Qualifications: </div>
+                                    <div class="col-6 capitalize-text">
+                                        @foreach (var item in Model.Employee.EmployeeQualifications)
+                                        {
+                                            <span>@item.Qualification.Name, </span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-5">
+                        <h6 class="col-12 text-header">Personal Data: Appraiser</h6>
+                        <div class="col-md-6 details">
+                            <div class="mt-4">
+                                <div class="row">
+                                    <div class="col-6 titles">Appraiser's Name: </div>
+                                    <div class="col-6">
+                                        @Model.Appraisee.AppraiserPersonalData.Appraiser.Firstname
+                                        @Model.Appraisee.AppraiserPersonalData.Appraiser.Lastname
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="row">
+                                    <div class="col-6 titles">Grade: </div>
+                                    <div class="col-6 capitalize-text">@Model.Appraisee.AppraiserPersonalData.Appraiser.Grade.Name</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 details">
+                            <div class="mt-4">
+                                <div class="row">
+                                    <div class="col-6 titles">Job Title: </div>
+                                    <div class="col-6 capitalize-text">@Model.Appraisee.AppraiserPersonalData.JobTitle.Name</div>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="row">
+                                    <div class="col-6 titles">Department: </div>
+                                    <div class="col-6 capitalize-text">@Model.Appraisee.AppraiserPersonalData.Appraiser.Department.Name</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <h6 class="mt-4 text-header mt-5">Career history with the company</h6>
+                        <div class="table-responsive mb-4 details">
+                            <table class="table table-bordered table-vcenter">
+                                <thead>
+                                    <tr>
+                                        <th style="width:40px;">S/N</th>
+                                        <th style="width:110px">Date</th>
+                                        <th style="width:150px">Department/Unit</th>
+                                        <th style="width:130px">Grade</th>
+                                        <th>Trainings Attended</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        int num = 1;
+                                        foreach (var training in Model.Appraisee.AppraiseeCareerHistoryWithCompanies.OrderByDescending(x => x.Date))
+                                        {
+                                            <tr>
+                                                <th class="text-center">@num</th>
+                                                <td>@training.Date.ToString("dd MMM yyyy")</td>
+                                                <td class="capitalize-text">@training.Department.Name</td>
+                                                <td class="capitalize-text">@training.Grade.Name</td>
+                                                <td>@training.TrainingAttended</td>
+                                            </tr>
+                                            ++num;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    @foreach (var templateSection in Model.InitiatedAppraisalTemplate.InitiatedTemplateSections)
+                    {
+                        if (templateSection.IsDeleted == false)
+                        {
+                            if (templateSection.SectionTypeId == 1)
+                            {
+                                <div class="section-item" data-sectionTypeId="1" data-sectionId="@templateSection.Id">
+                                    <h5 class="mt-4">Section @templateSection.SetupId</h5>
+                                    <div class="table-responsive mb-4 details">
+                                        <table class="table table-bordered table-vcenter">
+                                            <thead>
+                                                <tr style="background-color:#e5e6e6;">
+                                                    <th rowspan="2" colspan="@columns">
+                                                        <div class="font-size-h5 text-center">@templateSection.SectionTitle</div>
+                                                        <div>@templateSection.SectionInstructions</div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr style="background-color:#e5e6e6;">
+                                                    <th class="text-center text-uppercase" style="width:70%;" scope="row">
+                                                        @((templateSection.FirstColumnHeader != "")? templateSection.FirstColumnHeader: "tasks performed")
+                                                    </th>
+                                                    <th class="text-uppercase text-center" colspan="@ratingsCount">ratings</th>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-center text-uppercase" scope="row"></th>
+                                                    @foreach (var item in Model.DefaultRatings)
+                                                    {
+                                                        <th class="text-center">@item.Score</th>
+                                                    }
+                                                </tr>
+                                                @{ 
+                                                    var sections = sectionResult.Where(x => x.InitiatedTemplateSectionId == templateSection.Id).SingleOrDefault();
+                                                }
+                                                @foreach (var sectionDetail in sections.SectionDetailResults.OrderBy(x => x.Number))
+                                                {
+                                                    <tr class="task-row">
+                                                        <td class="pr-5">
+                                                            <div class="row p-1">
+                                                                <span class="col-1 count" style="">@sectionDetail.Number.</span>
+                                                                <span>@sectionDetail.Title1</span>
+                                                                @*<button style="display:none" class="btn btn-link text-danger col-1 delete-row" data-toggle="tooltip" title="Delete Row"><i class="fa fa-times"></i></button>*@
+                                                            </div>
+                                                        </td>
+                                                        @foreach (var item in Model.DefaultRatings)
+                                                        {
+                                                            <td></td>
+                                                        }
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                        <button class="btn btn-success btn-sm addTaskRow"><i class="fa fa-plus"></i> Add Row</button>
+                                    </div>
+                                </div>
+                            }
+                            else if (templateSection.SectionTypeId == 2)
+                            {
+                                <div class="section-item" data-sectionTypeId="2" data-sectionId="@templateSection.Id">
+                                    <h5 class="mt-4">Section @templateSection.SetupId</h5>
+                                    <div class="table-responsive mb-4">
+                                        <table class="table table-bordered table-vcenter">
+                                            <thead>
+                                                <tr style="background-color:#e5e6e6;">
+                                                    <th rowspan="2" colspan="@dutiesAssignCol">
+                                                        <div class="font-size-h5 text-center">@templateSection.SectionTitle</div>
+                                                        <div>@templateSection.SectionInstructions</div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr style="background-color:#e5e6e6;">
+                                                    <th class="text-center text-uppercase" style="width:35%;">
+                                                        @((templateSection.FirstColumnHeader != "")? templateSection.FirstColumnHeader: "duties assigned")
+                                                    </th>
+                                                    <th class="text-center text-uppercase" style="width: 35%;">
+                                                        @((templateSection.SecondColumnHeader != "")? templateSection.SecondColumnHeader: "actual results achieved")
+                                                    </th>
+                                                    <th class="text-uppercase text-center" colspan="@ratingsCount">ratings</th>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-center text-uppercase" scope="row"></th>
+                                                    <th class="text-center text-uppercase" scope="row"></th>
+                                                    @foreach (var item in Model.DefaultRatings)
+                                                    {
+                                                        <th class="text-center">@item.Score</th>
+                                                    }
+                                                </tr>
+                                                @{
+                                                    var sections = sectionResult.Where(x => x.InitiatedTemplateSectionId == templateSection.Id).SingleOrDefault();
+                                                }
+                                                @foreach (var sectionDetail in sections.SectionDetailResults.OrderBy(x => x.Number))
+                                                {
+                                                    <tr class="task-row">
+                                                        <td>
+                                                            <div class="row p-1">
+                                                                <span class="col-1 count mr-2">@sectionDetail.Number.</span>
+                                                                <span>@sectionDetail.Title1</span>
+                                                            </div>
+                                                        </td>
+                                                        <td class="pl-4">
+                                                            <div class="row">
+                                                                <span>@sectionDetail.Title2</span>
+                                                            </div>
+                                                        </td>
+                                                        @foreach (var item in Model.DefaultRatings)
+                                                        {
+                                                            <td></td>
+                                                        }
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                        <button class="btn btn-success btn-sm addTaskRow"><i class="fa fa-plus"></i> Add Row</button>
+                                    </div>
+                                </div>
+                            }
+                            else if (templateSection.SectionTypeId == 3)
+                            {
+                                <div class="section-item" data-sectionTypeId="3" data-sectionId="@templateSection.Id">
+                                    <h5 class="mt-4">Section @templateSection.SetupId</h5>
+                                    <div class="table-responsive mb-4">
+                                        <span class="breakdown-value" style="display:none">@templateSection.BreakdownValueBy</span>
+                                        <table class="table table-bordered table-vcenter">
+                                            <thead>
+                                                <tr style="background-color:#e5e6e6;">
+                                                    <th rowspan="2" colspan="4">
+                                                        <div class="font-size-h5 text-center">@templateSection.SectionTitle</div>
+                                                        <div>@templateSection.SectionInstructions</div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr style="background-color:#e5e6e6;">
+                                                    <th>S/N</th>
+                                                    <th class="text-center text-uppercase" style="width:70%;" scope="row">
+                                                        @((templateSection.FirstColumnHeader != "")? templateSection.FirstColumnHeader: "values")
+                                                    </th>
+                                                    <th class="text-center">MAX SCORE</th>
+                                                    <th class="text-uppercase text-center">MARK OBTAINED</th>
+                                                </tr>
+                                                @{
+                                                    var sections = sectionResult.Where(x => x.InitiatedTemplateSectionId == templateSection.Id).SingleOrDefault();
+                                                }
+                                                
+                                                @{
+                                                    int count = 1;
+                                                    foreach (var detail in templateSection.InitiatedSectionDetails)
+                                                    {
+                                                        var detailResult = sections.SectionDetailResults.Where(x => x.SectionDetailId == detail.Id).SingleOrDefault();
+                                                        <tr class="quantitative-values">
+                                                            <td>@count</td>
+                                                            <td data-sectionDetailId="@detail.Id" class="section-detail">
+                                                                <span class="detail-title">@detail.Title1</span>
+                                                                <div>
+                                                                    <ul>
+                                                                        @foreach (var breakdown in detail.InitiatedSectionDetailBreakdowns)
+                                                                        {
+                                                                            var result = detailResult.ItemBreakdownResults.Where(x => x.InitiatedSectionDetailBreakdownId == breakdown.Id).SingleOrDefault();
+                                                                            <li class="mt-1">
+                                                                                <span class="breakdown-title">@breakdown.Title</span>
+                                                                                @if (templateSection.BreakdownValueBy == "appraisee")
+                                                                                {
+                                                                                    <input type="number" data-breakdownId="@breakdown.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;display:inline;" disabled />
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input type="number" data-breakdownId="@breakdown.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;display:inline;" />
+                                                                                }
+                                                                            </li>
+                                                                        }
+                                                                    </ul>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-center">@detail.MaxScore</td>
+                                                            <td></td>
+                                                        </tr>
+                                                        ++count;
+                                                    }
+                                                }
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td class="text-right font-w700" colspan="2">Mark Obtainable</td>
+                                                    <td class="text-center font-w700">@templateSection.TotalMarkObtainable</td>
+                                                    <td colspan="@ratingsCount" class="text-center font-w700"></td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            }
+                            else if (templateSection.SectionTypeId == 4)
+                            {
+                                <div class="section-item" data-sectionTypeId="4" data-sectionId="@templateSection.Id">
+                                    <h5 class="mt-4">Section @templateSection.SetupId</h5>
+                                    <div class="table-responsive mb-4">
+                                        <table class="table table-bordered table-vcenter">
+                                            <thead>
+                                                <tr style="background-color:#e5e6e6;">
+                                                    <th rowspan="2" colspan="@dutiesAssignCol">
+                                                        <div class="font-size-h5 text-center">@templateSection.SectionTitle</div>
+                                                        <div>@templateSection.SectionInstructions</div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr style="background-color:#e5e6e6;">
+                                                    <th class="text-center text-uppercase" style="width:65%;" scope="row">
+                                                        @((templateSection.FirstColumnHeader != "")? templateSection.FirstColumnHeader: "values")
+                                                    </th>
+                                                    <th class="text-center" style="width:70px">Weight</th>
+                                                    <th class="text-uppercase text-center" colspan="@ratingsCount">ratings</th>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row"></th>
+                                                    <td></td>
+                                                    @foreach (var item in Model.DefaultRatings)
+                                                    {
+                                                        <th class="text-center">@item.Score</th>
+                                                    }
+                                                </tr>
+                                                @foreach (var detail in templateSection.InitiatedSectionDetails)
+                                                {
+                                                    <tr>
+                                                        <td>@detail.Title1</td>
+                                                        <td class="text-center">@detail.MaxScore</td>
+                                                        @foreach (var item in Model.DefaultRatings)
+                                                        {
+                                                            <td></td>
+                                                        }
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td class="text-right font-w700">Mark Obtainable</td>
+                                                    <td class="text-center font-w700">@templateSection.TotalMarkObtainable</td>
+                                                    <td colspan="@ratingsCount" class="text-center font-w700">Mark Obtained =</td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+
+                    <div class="row mt-4">
+                        <div style="margin:auto">
+                            <button class="btn btn-primary" id="submitAppraisal">
+                                Submit Appraisal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Elements -->
+</div>
+
+
+@section Scripts {
+
+    <script>
+        $(function () {
+            var $texts = $(".capitalize-text");
+            $.each($texts, function () {
+                $(this).text(capitalize($(this).text()));
+            })
+            function capitalize(text) {
+                return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+            }
+            
+            
+        })
+                        ////////////////////////////////////////////////////////////////////
+    </script>
+}

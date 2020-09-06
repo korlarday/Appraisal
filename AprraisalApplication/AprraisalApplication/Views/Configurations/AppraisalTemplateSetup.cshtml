@@ -196,6 +196,13 @@
                                     <label>Total Points in this section</label>
                                     <input type="number" class="form-control sectionTotalPoints" style="max-width:350px" placeholder="">
                                 </div>
+                                <div class="form-group">
+                                    <label>Breakdown values should be entered by</label>
+                                    <select class="form-control breakdown-value" style="max-width:350px">
+                                        <option value="appraiser">Appraiser</option>
+                                        <option value="appraisee">Appraisee</option>
+                                    </select>
+                                </div>
                                 <div class="form-group" style="display:none">
                                     <label>Section Type</label>
                                     <select class="form-control sectionType" style="max-width:350px">
@@ -520,6 +527,7 @@
                     var $sectionSecondColHeader = $this.find(".sectionSecondColHeader").val();
                     var $sectionPercentageScore = $this.find(".sectionPercentageScore").val();
                     var $sectionTotalPoints = $this.find(".sectionTotalPoints").val();
+                    var $sectionBreakdownValueBy = $this.find(".breakdown-value").val();
                     var $sectionType = $this.find(".sectionType").val();
                     var $derivedSection = $this.find(".derivedSection").val();
                     var $qualitativeDetails = [];
@@ -590,7 +598,8 @@
                         sectionTypeId: $sectionTypeId,
                         derivedSection: $derivedSection,
                         sectionSecondColHeader: $sectionSecondColHeader,
-                        qualitativeDetails: $qualitativeDetails
+                        qualitativeDetails: $qualitativeDetails,
+                        breakdownValueBy: $sectionBreakdownValueBy
                     };
                     $appraisalTemplate.push(obj);
 
@@ -614,7 +623,6 @@
                     return false;
                 }
 
-                console.log($percentageTotal);
                 if ($percentageTotal != 100) {
                     Swal.fire("Oops...", "Total percentage score obtainable of all sections must equal 100%!", "error");
                     return false;

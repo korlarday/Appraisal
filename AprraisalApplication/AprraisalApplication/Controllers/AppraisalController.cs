@@ -1,4 +1,9 @@
-﻿using AprraisalApplication.Models.Attributes;
+﻿using AprraisalApplication.Models;
+using AprraisalApplication.Models.Attributes;
+using AprraisalApplication.Models.MigrationModels;
+using AprraisalApplication.Models.ViewModels;
+using AprraisalApplication.Persistence;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +17,202 @@ namespace AprraisalApplication.Controllers
     [CompleteYourProfile]
     public class AppraisalController : Controller
     {
+        public readonly ApplicationDbContext db;
+        public readonly UnitOfWork _unitOfWork;
+        public AppraisalController()
+        {
+            db = new ApplicationDbContext();
+            _unitOfWork = new UnitOfWork(db);
+        }
+
         [ActionName("new-appraisal")]
         public ActionResult NewAppraisal()
         {
-            return View();
+            NewAppraisalVM model = new NewAppraisalVM
+            {
+                States = _unitOfWork.Resources.GetAllStates(),
+                Departments = _unitOfWork.Resources.GetAllDepartments(),
+                AppraisalTypes = new SelectList(_unitOfWork.Appraisal.GetAppraisalTypes(), "Id", "Name"),
+                IsSubmitted = false,
+                State = new List<string>(),
+                Department = new List<string>(),
+                AppraisalPeriodStartDate = DateTime.Now,
+                AppraisalPeriodEndDate = DateTime.Now
+            };
+            return View("NewAppraisal", model);
+        }
+
+        [ActionName("new-appraisal")]
+        [HttpPost, ValidateAntiForgeryToken]
+        public ActionResult NewAppraisal(NewAppraisalVM model)
+        {
+            model.States = _unitOfWork.Resources.GetAllStates();
+            model.Departments = _unitOfWork.Resources.GetAllDepartments();
+            model.AppraisalTypes = new SelectList(_unitOfWork.Appraisal.GetAppraisalTypes(), "Id", "Name");
+            if (!ModelState.IsValid)
+            {
+                return View("NewAppraisal", model);
+            }
+            // if department is not selected
+            if(model.Department == null || model.Department.Count() < 1)
+            {
+                ModelState.AddModelError("Department", "Please select a department for the appraisal");
+                return View("NewAppraisal", model);
+            }
+            // if state/location is not selected
+            if (model.State == null || model.State.Count() < 1)
+            {
+                ModelState.AddModelError("State", "Please select the location for the appraisal");
+                return View("NewAppraisal", model);
+            }
+
+            // fetch all employees with the department and location selected
+            model.AppraisalEmployees = _unitOfWork.Office.SearchEmployeesUsingDeptAndState(model.Department, model.State);
+            model.IsSubmitted = true;
+
+            return View("NewAppraisal", model);
+        }
+    
+        [ActionName("initiated-appraisals")]
+        public ActionResult InitiatedAppraisals()
+        {
+            List<NewAppraisal> model = _unitOfWork.Appraisal.GetAllInitiatedAppraisals();
+            return View("InitiatedAppraisals", model);
+        }
+
+        [ActionName("view-appraisal")]
+        public ActionResult ViewAppraisal(string slug)
+        {
+            NewAppraisal appraisal = _unitOfWork.Appraisal.GetAppraisalBySlug(slug);
+            if(appraisal == null)
+            {
+                return HttpNotFound();
+            }
+            ViewAppraisalVM model = new ViewAppraisalVM
+            {
+                Appraisal = appraisal,
+                AppraisalParticipants = _unitOfWork.Appraisal.GetAppraisalParticipants(slug)
+            };
+            return View("ViewAppraisal", model);
+        }
+
+        [ActionName("edit-appraisal")]
+        public ActionResult EditAppraisal(string slug)
+        {
+            NewAppraisal appraisal = _unitOfWork.Appraisal.GetAppraisalBySlug(slug);
+            if (appraisal == null)
+            {
+                return HttpNotFound();
+            }
+            List<Employee> selectedEmployee = new List<Employee>();
+            List<Employee> otherEmployee = new List<Employee>();
+
+            List<Employee> employees = _unitOfWork.Office.GetAllEmployees();
+            foreach (var employee in employees)
+            {
+                if(appraisal.AppraisalStaffs.Select(x => x.EmployeeId).Contains(employee.Id))
+                {
+                    selectedEmployee.Add(employee);
+                }
+                else
+                {
+                    otherEmployee.Add(employee);
+                }
+            }
+            ViewAppraisalVM model = new ViewAppraisalVM
+            {
+                Appraisal = appraisal,
+                SelectedEmployees = selectedEmployee,
+                OtherEmployees = otherEmployee,
+                AppraisalTypes = new SelectList(_unitOfWork.Appraisal.GetAppraisalTypes(), "Id", "Name")
+            };
+            return View("EditAppraisal", model);
+        }
+    
+        [ActionName("ongoing-appraisal")]
+        public ActionResult OngoingAppraisal()
+        {
+            string userId = User.Identity.GetUserId();
+            Employee employee = _unitOfWork.Account.GetEmployeeByUserId(userId);
+
+            // initialize the ViewModel
+            OngoingAppraisalVM model = new OngoingAppraisalVM();
+            model.InitiatedAppraisalTemplate = new InitiatedAppraisalTemplate();
+            model.Employee = employee;
+            model.DefaultRatings = _unitOfWork.Resources.GetDefaultRatings();
+
+            // is there an ongoing appraisal?
+            AppraisalStaff appraisal = _unitOfWork.Appraisal.GetEmployeeOngoingAppraisal(employee.Id);
+            if (appraisal == null)
+                model.IsThereAnOngoingAppraisal = false;
+            else 
+                model.IsThereAnOngoingAppraisal = true;
+
+            // check if appraisal has been initialized
+            Appraisee appraisee = new Appraisee();
+            if (model.IsThereAnOngoingAppraisal)
+            {
+                model.NewAppraisal = _unitOfWork.Appraisal.GetNewAppraisalById(appraisal.NewAppraisalId);
+                appraisee = _unitOfWork.Appraisal.GetAppraisee(employee.Id, appraisal.NewAppraisalId);
+                if (appraisee == null)
+                    model.IsAppraisalInitialized = false;
+                else
+                    model.IsAppraisalInitialized = true;
+            }
+            
+            if(model.IsAppraisalInitialized && model.IsThereAnOngoingAppraisal)
+            {
+                model.InitiatedAppraisalTemplate = _unitOfWork.AppraisalTemplate
+                                                    .GetInitiatedAppraisalTemplateById(appraisee.InitiatedAppraisalTemplateId);
+                model.Appraisee = appraisee;
+            }
+            
+            if(model.IsThereAnOngoingAppraisal && model.IsAppraisalInitialized && model.Appraisee.AppraiseeProgress.AppraiseeSubmit)
+            {
+                return View("AppraisalSubmitted", model);
+            }
+            return View("OngoingAppraisal", model);
+        }
+    
+        public ActionResult Appraisees()
+        {
+            string applicationUserId = User.Identity.GetUserId();
+            AppraiseesVM model = new AppraiseesVM()
+            {
+                Appraisees = _unitOfWork.Appraisal.GetMyAppraisees(applicationUserId)
+            };
+            return View(model);
+        }
+    
+        [ActionName("appraise-members")]
+        public ActionResult AppraiseMembers()
+        {
+            string userId = User.Identity.GetUserId();
+            AppraiseMembersVM model = new AppraiseMembersVM()
+            {
+                AppraiseeAndProgresses = _unitOfWork.Appraisal.GetAppraiseesAndProgress(userId)
+            };
+            return View("AppraiseMembers", model);
+        }
+
+        [ActionName("appraise-staff")]
+        public ActionResult AppraiseStaff(string slug)
+        {
+            string appraiseeUserId = slug;
+            Employee employee = _unitOfWork.Account.GetEmployeeByUserId(appraiseeUserId);
+            AppraisalStaff appraisal = _unitOfWork.Appraisal.GetEmployeeOngoingAppraisal(employee.Id);
+            Appraisee appraisee = _unitOfWork.Appraisal.GetAppraisee(employee.Id, appraisal.NewAppraisalId);
+            InitiatedAppraisalTemplate InitiatedAppraisalTemplate = _unitOfWork.AppraisalTemplate
+                                                    .GetInitiatedAppraisalTemplateById(appraisee.InitiatedAppraisalTemplateId);
+            AppraiseStaffVM model = new AppraiseStaffVM
+            {
+                DefaultRatings = _unitOfWork.Resources.GetDefaultRatings(),
+                NewAppraisal = _unitOfWork.Appraisal.GetNewAppraisalById(appraisal.NewAppraisalId),
+                Employee = employee,
+                Appraisee = appraisee,
+                InitiatedAppraisalTemplate = InitiatedAppraisalTemplate
+            };
+            return View("AppraiseStaff", model);
         }
     }
 }

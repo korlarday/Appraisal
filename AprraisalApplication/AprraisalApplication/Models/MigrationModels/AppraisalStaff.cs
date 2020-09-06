@@ -8,9 +8,19 @@ namespace AprraisalApplication.Models.MigrationModels
     public class AppraisalStaff
     {
         public int Id { get; set; }
-        public int NewAppraisalStaff { get; set; }
+        public int NewAppraisalId { get; set; }
         public Employee Employee { get; set; }
         public int EmployeeId { get; set; }
         public bool IsCompleted { get; set; }
+        public AppraisalStaff()
+        {
+
+        }
+        public AppraisalStaff(int newAppraisalId, int employeeId)
+        {
+            NewAppraisalId = newAppraisalId;
+            EmployeeId = employeeId;
+            IsCompleted = false;
+        }
     }
 }

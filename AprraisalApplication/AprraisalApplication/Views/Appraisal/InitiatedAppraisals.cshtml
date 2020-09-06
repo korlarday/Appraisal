@@ -1,0 +1,139 @@
+﻿@model IEnumerable<AprraisalApplication.Models.MigrationModels.NewAppraisal>
+
+@{
+    ViewBag.Title = "Initiated Appraisals";
+}
+
+
+<!-- Hero -->
+<div class="bg-body-light">
+    <div class="content content-full">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Initiated Appraisals</h1>
+            <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Home</li>
+                    <li class="breadcrumb-item">Appraisal</li>
+                    <li class="breadcrumb-item active" aria-current="page">Initiated Appraisals</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
+<!-- Page Content -->
+<div class="content">
+    <!-- Elements -->
+    <div class="block block-rounded block-bordered">
+        <div class="block-header block-header-default">
+            <h3 class="block-title">Appraisals</h3>
+        </div>
+        <div class="block-content">
+            <div class="block block-rounded block-bordered">
+                <div class="block-content block-content-full">
+                    <!-- DataTables init on table by adding .js-dataTable-buttons class, functionality is initialized in js/pages/be_tables_datatables.min.js which was auto compiled from _es6/pages/be_tables_datatables.js -->
+                    <div class="table-responsive">
+                        <table class="table table-hover table-vcenter" id="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 50px;">#</th>
+                                    <th>Appraisal Title</th>
+                                    <th class="d-none d-sm-table-cell">Date Initiated</th>
+                                    <th style="width: 80px">Participants</th>
+                                    <th>Status</th>
+                                    <th class="text-center" style="width: 100px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int num = 1;
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <th class="text-center" scope="row">@num</th>
+                                            <td class="font-w600">
+                                                <a href="/appraisal/view-appraisal/@item.Slug">@item.AppraisalTitle</a>
+                                            </td>
+                                            <td class="text-sm-left">
+                                                @item.DateInitiated.ToString("dd-MMM-yyyy")
+                                            </td>
+                                            <td class="text-center">
+                                                @item.AppraisalStaffs.Count()
+                                            </td>
+                                            <td class="">
+                                                <span class="badge badge-success">Ongoing</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="btn-group">
+                                                    <a href="/appraisal/view-appraisal/@item.Slug" class="btn btn-sm btn-primary" data-toggle="tooltip" title="View">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+                                                    <a href="/appraisal/edit-appraisal/@item.Slug" class="btn btn-sm btn-warning" data-toggle="tooltip" title="Edit">
+                                                        <i class="fa fa-pencil-alt"></i>
+                                                    </a>
+                                                    @*<button type="button" class="btn btn-sm btn-danger delete_template" data-templateId="@item.Id" data-toggle="tooltip" title="Delete">
+                                                        <i class="fa fa-times"></i>
+                                                    </button>*@
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        ++num;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Elements -->
+</div>
+
+
+@section Scripts {
+
+    <script>
+        $(function () {
+            /*
+             * Delete Subject js
+             */
+            $("#table").on("click", ".delete_template", function (e) {
+                var $this = $(this);
+                e.preventDefault();
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to rever this!",
+                    type: "warning",
+                    showCancelButton: !0,
+                    customClass: { confirmButton: "btn btn-danger m-1", cancelButton: "btn btn-secondary m-1" },
+                    confirmButtonText: "Yes, delete it!",
+                    html: !1,
+                    preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
+
+                }).then(function (n) {
+                    if (n.value) {
+                        var id = $this.attr("data-templateId");
+                        var url = "/api/configurations/PostDeleteAppraisalTemplate";
+
+                        $.post(url, { id: id }, function (data) {
+                            Swal.fire("Deleted!", "Template has been deleted.", "success");
+                            $this.closest('tr').fadeOut("slow", function () {
+                                $(this).remove();
+                            });
+                        });
+                    }
+                    else {
+                        "cancel" === n.dismiss && Swal.fire("Cancelled", "Template file is safe :)", "error")
+                    }
+
+                })
+                //if (!confirm("Are you sure you want to delete")) return false;
+                //var $this = $(this);
+                //var id = $this.parent().parent().children(".id").text();
+
+            })
+        })
+                    ////////////////////////////////////////////////////////////////////
+    </script>
+}

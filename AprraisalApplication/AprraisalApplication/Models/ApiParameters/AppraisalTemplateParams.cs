@@ -26,6 +26,7 @@ namespace AprraisalApplication.Models.ApiParameters
         public string SectionType { get; set; }
         public byte SectionTypeId { get; set; }
         public int DerivedSection { get; set; }
+        public string BreakdownValueBy { get; set; }
         public List<QualitativeDetail> QualitativeDetails { get; set; }
     }
 

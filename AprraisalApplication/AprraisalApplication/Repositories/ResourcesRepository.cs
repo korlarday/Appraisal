@@ -86,7 +86,7 @@ namespace AprraisalApplication.Repositories
             return db.Branches.Where(x => x.IsDeleted == false).Include(x => x.State).ToList();
         }
 
-        internal IEnumerable<State> GetAllStates()
+        internal List<State> GetAllStates()
         {
             return db.States.Where(x => x.IsDeleted == false).ToList();
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AprraisalApplication.Models.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -8,15 +9,23 @@ namespace AprraisalApplication.Models.MigrationModels
 {
     public class SectionResult
     {
+
         public int Id { get; set; }
-        public int AppraieeId { get; set; }
-        public AppraisalTemplateSection AppraisalTemplateSection { get; set; }
-        public int AppraisalTemplateSectionId { get; set; }
+        public int AppraiseeId { get; set; }
+        public InitiatedTemplateSection InitiatedTemplateSection { get; set; }
+        public int InitiatedTemplateSectionId { get; set; }
         public double Score { get; set; }
         public ICollection<SectionDetailResult> SectionDetailResults { get; set; }
         public SectionResult()
         {
             SectionDetailResults = new Collection<SectionDetailResult>();
+        }
+
+        public SectionResult(int appraiseeId, int initiatedTemplateSectionId)
+        {
+            AppraiseeId = appraiseeId;
+            InitiatedTemplateSectionId = initiatedTemplateSectionId;
+            Score = 0;
         }
     }
 }

@@ -161,6 +161,24 @@ namespace AprraisalApplication.Repositories
             }
         }
 
+        internal InitiatedAppraisalTemplate GetInitiatedAppraisalTemplateById(int initiatedAppraisalTemplateId)
+        {
+            return db.InitiatedAppraisalTemplates.Where(x => x.Id == initiatedAppraisalTemplateId)
+                                        .Include(x => x.InitiatedTemplateSections
+                                            .Select(d => d.InitiatedSectionDetails
+                                            .Select(p => p.InitiatedSectionDetailBreakdowns)))
+                                        .SingleOrDefault();
+        }
+
+        internal AppraisalTemplate GetAppraisalTemplateById(int appraisalTemplateId)
+        {
+            return db.AppraisalTemplates.Where(x => x.Id == appraisalTemplateId)
+                                        .Include(x => x.AppraisalTemplateSections
+                                            .Select(d => d.AppraisalSectionDetails
+                                            .Select(p => p.SectionDetailBreakdowns)))
+                                        .SingleOrDefault();
+        }
+
         internal List<AppraisalUserTemplate> GetAppraisalUserTemplates()
         {
             return db.AppraisalUserTemplates.Include(x => x.ApplicationUser)

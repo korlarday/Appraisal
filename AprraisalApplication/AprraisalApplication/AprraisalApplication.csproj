@@ -187,6 +187,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\api\AppraisalController.cs" />
     <Compile Include="Controllers\api\ConfigurationsController.cs" />
     <Compile Include="Controllers\api\EmployeesController.cs" />
     <Compile Include="Controllers\api\ResourcesController.cs" />
@@ -318,6 +319,50 @@
     <Compile Include="Migrations\202008272106078_AddingAppraisalProcessTables.Designer.cs">
       <DependentUpon>202008272106078_AddingAppraisalProcessTables.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202008281157363_SeedingAppraisalTypes.cs" />
+    <Compile Include="Migrations\202008281157363_SeedingAppraisalTypes.Designer.cs">
+      <DependentUpon>202008281157363_SeedingAppraisalTypes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008301422201_UpdatingNewAppraisalModel.cs" />
+    <Compile Include="Migrations\202008301422201_UpdatingNewAppraisalModel.Designer.cs">
+      <DependentUpon>202008301422201_UpdatingNewAppraisalModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009020749460_AddingAppraiseeProgress.cs" />
+    <Compile Include="Migrations\202009020749460_AddingAppraiseeProgress.Designer.cs">
+      <DependentUpon>202009020749460_AddingAppraiseeProgress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009030832331_AddingBreakdownAddedBy.cs" />
+    <Compile Include="Migrations\202009030832331_AddingBreakdownAddedBy.Designer.cs">
+      <DependentUpon>202009030832331_AddingBreakdownAddedBy.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009050608465_AddingInitiatedAppraisalTemplate.cs" />
+    <Compile Include="Migrations\202009050608465_AddingInitiatedAppraisalTemplate.Designer.cs">
+      <DependentUpon>202009050608465_AddingInitiatedAppraisalTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009051024053_ChangingFromApprasialTemplateToInitiatedTemplate.cs" />
+    <Compile Include="Migrations\202009051024053_ChangingFromApprasialTemplateToInitiatedTemplate.Designer.cs">
+      <DependentUpon>202009051024053_ChangingFromApprasialTemplateToInitiatedTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009051035347_CorrectingPrimaryKeyOnInitiatedSectionBreakdown.cs" />
+    <Compile Include="Migrations\202009051035347_CorrectingPrimaryKeyOnInitiatedSectionBreakdown.Designer.cs">
+      <DependentUpon>202009051035347_CorrectingPrimaryKeyOnInitiatedSectionBreakdown.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009060803178_CorrectionSectionResultsModel.cs" />
+    <Compile Include="Migrations\202009060803178_CorrectionSectionResultsModel.Designer.cs">
+      <DependentUpon>202009060803178_CorrectionSectionResultsModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009060849223_CorrectingResultBreakdownModel.cs" />
+    <Compile Include="Migrations\202009060849223_CorrectingResultBreakdownModel.Designer.cs">
+      <DependentUpon>202009060849223_CorrectingResultBreakdownModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009061344374_CorrectingInitiatedSectionDetail.cs" />
+    <Compile Include="Migrations\202009061344374_CorrectingInitiatedSectionDetail.Designer.cs">
+      <DependentUpon>202009061344374_CorrectingInitiatedSectionDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009062055339_CorrectingErrorInSectionResult.cs" />
+    <Compile Include="Migrations\202009062055339_CorrectingErrorInSectionResult.Designer.cs">
+      <DependentUpon>202009062055339_CorrectingErrorInSectionResult.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApiModels\NewBranchVM.cs" />
@@ -328,13 +373,17 @@
     <Compile Include="Models\ApiParameters\AppraisalUserParams.cs" />
     <Compile Include="Models\ApiParameters\BranchParams.cs" />
     <Compile Include="Models\ApiParameters\CareerHistoryParams.cs" />
+    <Compile Include="Models\ApiParameters\NewAppraisalParams.cs" />
     <Compile Include="Models\ApiParameters\NewDepartmentParams.cs" />
+    <Compile Include="Models\ApiParameters\StartEmployeeAppraisalParams.cs" />
+    <Compile Include="Models\ApiParameters\SubmitAppraisalParams.cs" />
     <Compile Include="Models\ApiParameters\UserAppraiserParams.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\Attributes\Appraisee.cs" />
     <Compile Include="Models\Attributes\CompleteYourProfile.cs" />
     <Compile Include="Models\Attributes\EmailConfirmation.cs" />
+    <Compile Include="Models\Constants\SectionTypeCS.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\MigrationModels\AppraisalDepartment.cs" />
     <Compile Include="Models\MigrationModels\AppraisalDepartmentTemplate.cs" />
@@ -347,6 +396,8 @@
     <Compile Include="Models\MigrationModels\AppraisalUserTemplate.cs" />
     <Compile Include="Models\MigrationModels\AppraiseeCareerHistoryWithCompany.cs" />
     <Compile Include="Models\MigrationModels\AppraiseePersonalData.cs" />
+    <Compile Include="Models\MigrationModels\AppraiseeProgress.cs" />
+    <Compile Include="Models\MigrationModels\AppraiseeSectionDetail.cs" />
     <Compile Include="Models\MigrationModels\AppraiserPersonalData.cs" />
     <Compile Include="Models\MigrationModels\Branch.cs" />
     <Compile Include="Models\MigrationModels\CareerHistory.cs" />
@@ -358,6 +409,10 @@
     <Compile Include="Models\MigrationModels\ExpectedValue.cs" />
     <Compile Include="Models\MigrationModels\Gender.cs" />
     <Compile Include="Models\MigrationModels\Grade.cs" />
+    <Compile Include="Models\MigrationModels\InitiatedAppraisalTemplate.cs" />
+    <Compile Include="Models\MigrationModels\InitiatedSectionDetail.cs" />
+    <Compile Include="Models\MigrationModels\InitiatedSectionDetailBreakdown.cs" />
+    <Compile Include="Models\MigrationModels\InitiatedTemplateSection.cs" />
     <Compile Include="Models\MigrationModels\ItemBreakdownResult.cs" />
     <Compile Include="Models\MigrationModels\JobTitle.cs" />
     <Compile Include="Models\MigrationModels\NewAppraisal.cs" />
@@ -372,16 +427,23 @@
     <Compile Include="Models\MigrationModels\Title.cs" />
     <Compile Include="Models\ViewModels\AccountLoginVM.cs" />
     <Compile Include="Models\ViewModels\AppraisalTemplateSetupVM.cs" />
+    <Compile Include="Models\ViewModels\AppraiseesVM.cs" />
+    <Compile Include="Models\ViewModels\AppraiseMembersVM.cs" />
+    <Compile Include="Models\ViewModels\AppraiseStaffVM.cs" />
     <Compile Include="Models\ViewModels\CreateEmployeeProfileVM.cs" />
     <Compile Include="Models\MigrationModels\DefaultUserAppraiser.cs" />
     <Compile Include="Models\ViewModels\EditCareerHistoryVM.cs" />
+    <Compile Include="Models\ViewModels\InitiatedAppraisalsVM.cs" />
     <Compile Include="Models\ViewModels\NewAccountVM.cs" />
+    <Compile Include="Models\ViewModels\NewAppraisalVM.cs" />
+    <Compile Include="Models\ViewModels\OngoingAppraisalVM.cs" />
     <Compile Include="Models\ViewModels\SetBranchVM.cs" />
     <Compile Include="Models\ViewModels\SetDepartmentVM.cs" />
     <Compile Include="Models\ViewModels\SetupDepartmentTemplateVM.cs" />
     <Compile Include="Models\ViewModels\SetupEmployeeAppraiserVM.cs" />
     <Compile Include="Models\ViewModels\SetupEmployeeTemplateVM.cs" />
     <Compile Include="Models\ViewModels\UserPartialVM.cs" />
+    <Compile Include="Models\ViewModels\ViewAppraisalVM.cs" />
     <Compile Include="Persistence\UnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AccountRepository.cs" />
@@ -4448,10 +4510,18 @@
     <Content Include="Views\Configurations\SetupDepartmentTemplate.cshtml" />
     <Content Include="Views\Configurations\SetupEmployeeTemplate.cshtml" />
     <Content Include="Views\Configurations\DepartmentSetup.cshtml" />
+    <Content Include="Views\Appraisal\NewAppraisal.cshtml" />
+    <Content Include="Views\Appraisal\InitiatedAppraisals.cshtml" />
+    <Content Include="Views\Appraisal\ViewAppraisal.cshtml" />
+    <Content Include="Views\Appraisal\EditAppraisal.cshtml" />
+    <Content Include="Views\Appraisal\OngoingAppraisal.cshtml" />
+    <Content Include="Views\Appraisal\AppraisalSubmitted.cshtml" />
+    <Content Include="Views\Appraisal\Appraisees.cshtml" />
+    <Content Include="Views\Appraisal\AppraiseMembers.cshtml" />
+    <Content Include="Views\Appraisal\AppraiseStaff.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Appraisal\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -4637,6 +4707,39 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202008272106078_AddingAppraisalProcessTables.resx">
       <DependentUpon>202008272106078_AddingAppraisalProcessTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008281157363_SeedingAppraisalTypes.resx">
+      <DependentUpon>202008281157363_SeedingAppraisalTypes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008301422201_UpdatingNewAppraisalModel.resx">
+      <DependentUpon>202008301422201_UpdatingNewAppraisalModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009020749460_AddingAppraiseeProgress.resx">
+      <DependentUpon>202009020749460_AddingAppraiseeProgress.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009030832331_AddingBreakdownAddedBy.resx">
+      <DependentUpon>202009030832331_AddingBreakdownAddedBy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009050608465_AddingInitiatedAppraisalTemplate.resx">
+      <DependentUpon>202009050608465_AddingInitiatedAppraisalTemplate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009051024053_ChangingFromApprasialTemplateToInitiatedTemplate.resx">
+      <DependentUpon>202009051024053_ChangingFromApprasialTemplateToInitiatedTemplate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009051035347_CorrectingPrimaryKeyOnInitiatedSectionBreakdown.resx">
+      <DependentUpon>202009051035347_CorrectingPrimaryKeyOnInitiatedSectionBreakdown.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009060803178_CorrectionSectionResultsModel.resx">
+      <DependentUpon>202009060803178_CorrectionSectionResultsModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009060849223_CorrectingResultBreakdownModel.resx">
+      <DependentUpon>202009060849223_CorrectingResultBreakdownModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009061344374_CorrectingInitiatedSectionDetail.resx">
+      <DependentUpon>202009061344374_CorrectingInitiatedSectionDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009062055339_CorrectingErrorInSectionResult.resx">
+      <DependentUpon>202009062055339_CorrectingErrorInSectionResult.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

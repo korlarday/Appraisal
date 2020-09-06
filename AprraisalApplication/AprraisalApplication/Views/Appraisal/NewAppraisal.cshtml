@@ -1,0 +1,300 @@
+﻿@model AprraisalApplication.Models.ViewModels.NewAppraisalVM
+
+@{
+    ViewBag.Title = "New Appraisal";
+}
+
+
+<!-- Hero -->
+<div class="bg-body-light">
+    <div class="content content-full">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">New Appraisal Setup</h1>
+            <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Appraisal</li>
+                    <li class="breadcrumb-item active" aria-current="page">New Appraisal</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
+<!-- Page Content -->
+<div class="content">
+    <!-- Elements -->
+    <div class="block block-rounded block-bordered">
+        <div class="block-header block-header-default">
+            <h3 class="block-title">Initial A New Appraisal Exersice</h3>
+        </div>
+        <div class="block-content">
+            @if (TempData["SM"] != null)
+            {
+                <div class="alert alert-success">
+                    <span>@TempData["SM"]</span>
+                </div>
+            }
+
+            @using (Html.BeginForm("new-appraisal", "Appraisal", FormMethod.Post))
+            {
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                @Html.AntiForgeryToken()
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        @Html.LabelFor(model => model.AppraisalTitle, new { @class = "col-sm-4 col-form-label" })
+                        <div class="col-sm-8">
+                            @Html.EditorFor(model => model.AppraisalTitle, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.AppraisalTitle, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        @Html.LabelFor(model => model.AppraisalTypeId, new { @class = "col-sm-4 col-form-label" })
+                        <div class="col-sm-8">
+                            @Html.DropDownListFor(model => model.AppraisalTypeId, Model.AppraisalTypes, "--Select Appraisal Type--", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.AppraisalTypeId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Location</label>
+                        <div class="col-sm-8">
+                            <select class="js-select2 form-control select-location" name="State[]" data-placeholder="Select Location" multiple>
+                                <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
+                                <option value="all" @(Model.State != null ? Model.State.Contains("all") ? "selected": "" : "")>All</option>
+                                @foreach (var item in Model.States)
+                                {
+                                    <option value="@item.Id" @(Model.State != null ? Model.State.Contains(item.Id.ToString()) ? "selected": "" : "")>@item.Description</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Department</label>
+                        <div class="col-sm-8">
+                            <select class="js-select2 form-control select-department" name="Department[]" data-placeholder="Select Department" multiple>
+                                <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
+                                <option value="all" @(Model.Department != null ? Model.Department.Contains("all") ? "selected": "" : "")>All</option>
+                                @foreach (var item in Model.Departments)
+                                {
+                                    <option value="@item.Id" @(Model.Department != null ? Model.Department.Contains(item.Id.ToString()) ? "selected": "": "")>@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        @Html.LabelFor(model => model.DueDate, new { @class = "col-sm-4 col-form-label" })
+                        <div class="col-sm-8">
+                            <input type="text" name="DueDate" id="DueDate" value="@Model.DueDate" class="form-control js-flatpickr bg-white" data-date-format="d-m-Y" />
+                            @Html.ValidationMessageFor(model => model.DueDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <h5>Appraisal Period</h5>
+                    <div class="form-group row">
+                        @Html.LabelFor(model => model.AppraisalPeriodStartDate, new { @class = "col-sm-4 col-form-label" })
+                        <div class="col-sm-8">
+                            <input type="text" name="AppraisalPeriodStartDate" value="@Model.AppraisalPeriodStartDate" id="AppraisalPeriodStartDate" class="form-control js-flatpickr bg-white" data-date-format="d-m-Y" />
+                            @Html.ValidationMessageFor(model => model.AppraisalPeriodStartDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        @Html.LabelFor(model => model.AppraisalPeriodEndDate, new { @class = "col-sm-4 col-form-label" })
+                        <div class="col-sm-8">
+                            <input type="text" name="AppraisalPeriodEndDate" value="@Model.AppraisalPeriodEndDate" id="AppraisalPeriodEndDate" class="form-control js-flatpickr bg-white" data-date-format="d-m-Y" />
+                            @Html.ValidationMessageFor(model => model.AppraisalPeriodEndDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-8 offset-sm-4">
+                            <button type="submit" class="btn btn-success bg-primary-dark-op mt-3">Search Employees</button>
+                        </div>
+                    </div>
+                </div>
+
+            }
+        </div>
+    </div>
+    <!-- END Elements -->
+
+    @if (Model.IsSubmitted)
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <div class="block block-rounded block-fx-pop">
+                    <div class="block-header block-header-default">
+                        <h3 class="block-title">Staff</h3>
+                    </div>
+                    <div class="block-content pb-3">
+                        @if (Model.AppraisalEmployees.Count() < 1)
+                        {
+                            <p>No Employees Found!</p>
+                        }
+                        else
+                        {
+                            <div class="table-responsive">
+
+                                <table class="table js-table-checkable  table-bordered table-striped table-vcenter js-dataTable-full">
+                                    <thead>
+                                        <tr>
+                                            <th>Select</th>
+                                            <th>Photo</th>
+                                            <th>Employee Name</th>
+                                            <th>Department</th>
+                                            <th>State</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="studentsBody">
+                                        @{
+                                            int num = 1;
+                                            foreach (var item in Model.AppraisalEmployees)
+                                            {
+                                                var imgsrc = String.Empty;
+                                                if (item.PassportImage != null) {
+                                                    var imgbase64 = Convert.ToBase64String(item.PassportImage);
+                                                    imgsrc = string.Format("data:image/jpg;base64,{0}", imgbase64);
+                                                }
+                                                <tr>
+                                                    <td class="text-center">
+                                                        <div class="custom-control custom-checkbox custom-control-primary d-inline-block">
+                                                            <input type="checkbox" class="custom-control-input select_employee" id="@item.Id" value="@item.Id" checked>
+                                                            <label class="custom-control-label" for="@item.Id"></label>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        @if (imgsrc != String.Empty)
+                                                        {
+                                                            <img class="img-avatar img-avatar48" src="@imgsrc" alt="Employee Photo">
+                                                        }
+                                                        else
+                                                        {
+                                                            <img class="img-avatar img-avatar48" src="~/Images/default.png" />
+                                                        }
+                                                    </td>
+                                                    <td class="employeeName">
+                                                        @item.Firstname @item.Lastname
+                                                    </td>
+                                                    <td>
+                                                        @item.Department.Name
+                                                    </td>
+                                                    <td class="text-lowercase">
+                                                        @item.State.Description
+                                                    </td>
+                                                </tr>
+                                                ++num;
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 offset-md-3">
+                                    <div class="form-group mt-5 text-center">
+                                        <button type="button" id="start-appraisal" class="btn btn-hero-primary">Start Appraisal Exercise</button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    }
+</div>
+<!-- END Page Content -->
+
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <!-- Page JS Helpers (Table Tools helpers) -->
+
+    <script>jQuery(function () { Dashmix.helpers(['table-tools-checkable', 'select2', 'flatpickr', 'datepicker']); });</script>
+    <script src="~/Content/Template/js/plugins/moment.js"></script>
+    <script>
+
+        $(function () {
+            $("#start-appraisal").on("click", function () {
+                var $this = $(this);
+                var $appraisalTitle = $("#AppraisalTitle").val();
+                var $appraisalTypeId = $("#AppraisalTypeId").val();
+                var $locations = $(".select-location").val();
+                var $departments = $(".select-department").val();
+                var $dueDate = $("#DueDate").val();
+                var $appraisalStartDate = $("#AppraisalPeriodStartDate").val();
+                var $appraisalEndDate = $("#AppraisalPeriodEndDate").val();
+                var $selectedEmployees = $(".select_employee");
+                var $selectedEmployeesArray = [];
+
+                if ($appraisalTitle == '' || $appraisalTypeId == '') {
+                    Swal.fire("Oops...", "All fields are required except the optional fields", "error");
+                    return;
+                }
+                var dueDateFormat = null;
+                if ($dueDate != '') {
+                    var isoDate = moment($dueDate, "DD-MM-YYYY");
+                    dueDateFormat = isoDate.format();
+                }
+                var startDate = null;
+                if ($appraisalStartDate != '') {
+                    var isoStartDateDate = moment($appraisalStartDate, "DD-MM-YYYY");
+                    startDate = isoStartDateDate.format();
+                }
+                var endDate = null;
+                if ($appraisalEndDate != '') {
+                    var isoEndDateDate = moment($appraisalEndDate, "DD-MM-YYYY");
+                    endDate = isoEndDateDate.format();
+                }
+                $.each($selectedEmployees, function () {
+                    var $empId = $(this).val();
+                    if ($(this).is(":checked")) {
+                        $selectedEmployeesArray.push(parseInt($empId));
+                    }
+                });
+
+                if ($selectedEmployeesArray.length < 1) {
+                    Swal.fire("Oops...", "No employee was selected for this appraisal exercise", "error");
+                    return;
+                }
+
+                $this.attr("disabled", true);
+                Dashmix.layout('header_loader_on');
+
+                var url = '/api/appraisal/PostInitialiseAppraisalExercise';
+                $.post(url,
+                    {
+                        appraisalTitle: $appraisalTitle,
+                        appraisalTypeId: $appraisalTypeId,
+                        states: $locations,
+                        departments: $departments,
+                        dueDate: dueDateFormat,
+                        startDate: startDate,
+                        endDate: endDate,
+                        selectedEmployees: $selectedEmployeesArray
+                    },
+                    function (data) {
+                        Dashmix.layout('header_loader_off');
+                        $this.attr("disabled", false);
+                        Swal.fire({
+                            title: "Success",
+                            text: "Appraisal exercise has been initiated",
+                            type: "success",
+                            showCancelButton: 0,
+                            customClass: { okButton: "btn btn-danger m-1" },
+                            html: !1,
+                            preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
+
+                        }).then(function (n) {
+                            if (n.value) {
+                                window.location.href = '/appraisal/initiated-appraisals';
+                            }
+                        });
+                    });
+            });
+        });
+    </script>
+}
+

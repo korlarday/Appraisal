@@ -23,6 +23,7 @@ namespace AprraisalApplication.Models.MigrationModels
         public int SetupId { get; set; }
         public int? DerivedSectionSetupId { get; set; }
         public bool IsDeleted { get; set; }
+        public string BreakdownValueBy { get; set; }
         public ICollection<AppraisalSectionDetail> AppraisalSectionDetails { get; set; }
         public AppraisalTemplateSection()
         {
@@ -41,6 +42,7 @@ namespace AprraisalApplication.Models.MigrationModels
             TotalPercentageObtainable = item.SectionPercentageScore;
             Optional = item.SectionType == "optional";
             SetupId = item.SectionSetupId;
+            BreakdownValueBy = item.BreakdownValueBy;
             if (item.SectionType == "optional") {
                 DerivedSectionSetupId = item.DerivedSection;
             } 
@@ -60,6 +62,7 @@ namespace AprraisalApplication.Models.MigrationModels
             TotalPercentageObtainable = item.SectionPercentageScore;
             Optional = item.SectionType == "optional";
             SetupId = item.SectionSetupId;
+            BreakdownValueBy = item.BreakdownValueBy;
             if (item.SectionType == "optional")
             {
                 DerivedSectionSetupId = item.DerivedSection;

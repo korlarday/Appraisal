@@ -24,6 +24,7 @@
 <!-- Page Content -->
 <div class="content">
     <!-- Elements -->
+    <a href="/configurations/appraisal-templates" class="btn btn-link"><i class="fa fa-arrow-left"></i> Back</a>
     <div class="block block-rounded block-bordered">
         <div class="block-header block-header-default">
             <h3 class="block-title">Edit Appraisal Template</h3>
@@ -197,6 +198,13 @@
                                     <label>Total Points in this section</label>
                                     <input type="number" class="form-control sectionTotalPoints" style="max-width:350px" placeholder="">
                                 </div>
+                                <div class="form-group">
+                                    <label>Breakdown values should be entered by</label>
+                                    <select class="form-control breakdown-value" style="max-width:350px">
+                                        <option value="appraiser">Appraiser</option>
+                                        <option value="appraisee">Appraisee</option>
+                                    </select>
+                                </div>
                                 <div class="form-group" style="display:none">
                                     <label>Section Type</label>
                                     <select class="form-control sectionType" style="max-width:350px">
@@ -227,7 +235,7 @@
                                             <th class="text-center rowCount d-flex" scope="row">1</th>
                                             <td class="font-w600">
                                                 <input type="text" class="form-control title" placeholder="">
-                                                <p style="overflow:hidden;" class="">
+                                                <div style="overflow:hidden;" class="">
                                                     <span class="mt-4 font-w700" style="display:block">Item Breakdown</span>
 
                                                     <div style="overflow:hidden; display:none" class="p-1 item-container">
@@ -245,7 +253,7 @@
                                                             <button class="btn btn-danger btn-sm ml-4 mt-1 removeItem"><i class="fa fa-times"></i></button>
                                                         </div>
                                                     </div>
-                                                </p>
+                                                </div>
                                                 <button class="btn btn-primary btn-sm add-item"><i class="fa fa-plus"></i> Add Item</button>
                                             </td>
                                             <td class="font-w600 d-flex">
@@ -548,6 +556,13 @@
                                                     <label>Total Points in this section</label>
                                                     <input type="number" class="form-control sectionTotalPoints" value="@item.TotalMarkObtainable" style="max-width:350px" placeholder="">
                                                 </div>
+                                                <div class="form-group">
+                                                    <label>Breakdown values should be entered by</label>
+                                                    <select class="form-control breakdown-value" style="max-width:350px">
+                                                        <option value="appraiser" @(item.BreakdownValueBy == "appraiser" ? "selected" : "")>Appraiser</option>
+                                                        <option value="appraisee" @(item.BreakdownValueBy == "appraisee" ? "selected" : "")>Appraisee</option>
+                                                    </select>
+                                                </div>
                                                 <div class="form-group" style="display:none">
                                                     <label>Section Type</label>
                                                     <select class="form-control sectionType" style="max-width:350px">
@@ -620,8 +635,7 @@
                                                                             <div style="overflow:hidden;" class="@("container" + num)">
 
                                                                                 <span class="mt-4 font-w700" style="display:block">Item Breakdown</span>
-
-                                                                                <div style="overflow:hidden; display:none" class="p-1 item-container">
+                                                                                <div style="overflow:hidden;display:none" class="item-container p-1">
                                                                                     <div class="float-left" style="width:50%">
                                                                                         <input type="text" class="form-control item-breakdown-text" />
                                                                                     </div>
@@ -636,10 +650,25 @@
                                                                                         <button class="btn btn-danger btn-sm ml-4 mt-1 removeItem"><i class="fa fa-times"></i></button>
                                                                                     </div>
                                                                                 </div>
+                                                                                @*<div style="overflow:hidden; display:none" class="p-1 item-container">
+                                                                                    <div class="float-left" style="width:50%">
+                                                                                        <input type="text" class="form-control item-breakdown-text" />
+                                                                                    </div>
+                                                                                    <div class="float-left pl-3" style="width:35%">
+                                                                                        <select class="value-type form-control">
+                                                                                            <option value="">Select Value Type</option>
+                                                                                            <option value="number">Number Value</option>
+                                                                                            <option value="money">Money Value</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                    <div class="float-left" style="width:9%">
+                                                                                        <button class="btn btn-danger btn-sm ml-4 mt-1 removeItem"><i class="fa fa-times"></i></button>
+                                                                                    </div>
+                                                                                </div>*@
 
                                                                                 @foreach (var breakdown in detail.SectionDetailBreakdowns)
                                                                                 {
-                                                                                    if(breakdown.IsDeleted == false)
+                                                                                    if (breakdown.IsDeleted == false)
                                                                                     {
                                                                                         <div style="overflow:hidden;" class="item-container p-1" data-breakdownId="@breakdown.Id">
                                                                                             <div class="float-left" style="width:50%">
@@ -648,8 +677,8 @@
                                                                                             <div class="float-left pl-3" style="width:35%">
                                                                                                 <select class="value-type form-control">
                                                                                                     <option value="">Select Value Type</option>
-                                                                                                    <option value="number" @(breakdown.ExpectedValueId == 1? "selected": "")>Number Value</option>
-                                                                                                    <option value="money" @(breakdown.ExpectedValueId == 2? "selected": "")>Money Value</option>
+                                                                                                    <option value="number" @(breakdown.ExpectedValueId == 1 ? "selected" : "")>Number Value</option>
+                                                                                                    <option value="money" @(breakdown.ExpectedValueId == 2 ? "selected" : "")>Money Value</option>
                                                                                                 </select>
                                                                                             </div>
                                                                                             <div class="float-left" style="width:9%">
@@ -918,6 +947,7 @@
                     var $sectionFirstColHeader = $this.find(".sectionFirstColHeader").val();
                     var $sectionSecondColHeader = $this.find(".sectionSecondColHeader").val();
                     var $sectionPercentageScore = $this.find(".sectionPercentageScore").val();
+                    var $sectionBreakdownValueBy = $this.find(".breakdown-value").val();
                     var $sectionTotalPoints = $this.find(".sectionTotalPoints").val();
                     var $sectionType = $this.find(".sectionType").val();
                     var $derivedSection = $this.find(".derivedSection").val();
@@ -995,7 +1025,8 @@
                         sectionTypeId: $sectionTypeId,
                         derivedSection: $derivedSection,
                         sectionSecondColHeader: $sectionSecondColHeader,
-                        qualitativeDetails: $qualitativeDetails
+                        qualitativeDetails: $qualitativeDetails,
+                        breakdownValueBy: $sectionBreakdownValueBy
                     };
                     $appraisalTemplate.push(obj);
 
@@ -1090,7 +1121,7 @@
                 }).then(function (n) {
                     if (n.value) {
                         $sectionId = $rootThis.attr("data-sectionId");
-                        if ($sectionId == '') {
+                        if ($sectionId == '' || $sectionId == null) {
                             $rootThis.closest(".appraisalSection").remove();
                         } else {
                             $.post('/api/configurations/PostDeleteAppraisalSection', { sectionId: $sectionId }, function (data) {
@@ -1173,6 +1204,7 @@
                 console.log("clicked")
                 var $this = $(this);
                 var $itemContainer = $this.closest("td").children("div:first");
+                console.log($itemContainer)
                 var $clone = $this.closest("td").find("div.item-container:first").clone();
                 $clone.show();
                 $itemContainer.append($clone);
@@ -1184,7 +1216,8 @@
                 //
                 var $this = $(this);
                 var $breakdownId = $this.attr("data-breakdownId");
-                if ($breakdownId == '') {
+                console.log('breakdownId',$breakdownId);
+                if ($breakdownId == '' || $breakdownId == null) {
                     $this.closest(".item-container").remove();
                 } else {
                     Swal.fire({
@@ -1233,7 +1266,7 @@
 
                 var $clone = $quantitativeIndicesSection.find("table tbody tr:first").clone();
                 $clone.find('.rowCount').text($rowCount);
-                $clone.find('td p').addClass('container' + $rowCount);
+                $clone.find('td div').addClass('container' + $rowCount);
                 $clone.show();
                 $quantitativeIndicesSection.find('table tbody').append($clone);
             });

@@ -1,0 +1,365 @@
+﻿@model AprraisalApplication.Models.ViewModels.ViewAppraisalVM
+
+@{
+    ViewBag.Title = "EditAppraisal";
+}
+
+
+<!-- Hero -->
+<div class="bg-body-light">
+    <div class="content content-full">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Appraisal</h1>
+            <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Appraisal</li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit Appraisal</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
+<!-- Page Content -->
+<div class="content">
+    <a href="/appraisal/initiated-appraisals" class="btn btn-primary btn-sm mb-1"><i class="fa fa-arrow-left"></i> Back</a>
+    <!-- Elements -->
+    <div class="block block-rounded block-bordered">
+        <div class="block-header block-header-default">
+            <h3 class="block-title">Edit Appraisal</h3>
+        </div>
+        <div class="block-content">
+            @if (TempData["SM"] != null)
+            {
+                <div class="alert alert-success">
+                    <span>@TempData["SM"]</span>
+                </div>
+            }
+
+
+            <div class="col-md-9">
+                <span style="display:none" id="appraisalId">@Model.Appraisal.Id</span>
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.Appraisal.AppraisalTitle, new { @class = "col-sm-4 col-form-label" })
+                    <div class="col-sm-8">
+                        @Html.EditorFor(model => model.Appraisal.AppraisalTitle, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.Appraisal.AppraisalTypeId, new { @class = "col-sm-4 col-form-label" })
+                    <div class="col-sm-8">
+                        @Html.DropDownListFor(model => model.Appraisal.AppraisalTypeId, Model.AppraisalTypes, "--Select Appraisal Type--", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.Appraisal.DueDate, new { @class = "col-sm-4 col-form-label" })
+                    <div class="col-sm-8">
+                        <input type="text" name="DueDate" id="DueDate" value="@Model.Appraisal.DueDate" class="form-control js-flatpickr bg-white" data-date-format="d-m-Y" />
+                    </div>
+                </div>
+                <h5>Appraisal Period</h5>
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.Appraisal.AppraisalPeriodStartDate, new { @class = "col-sm-4 col-form-label" })
+                    <div class="col-sm-8">
+                        <input type="text" name="AppraisalPeriodStartDate" value="@Model.Appraisal.AppraisalPeriodStartDate" id="AppraisalPeriodStartDate" class="form-control js-flatpickr bg-white" data-date-format="d-m-Y" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.Appraisal.AppraisalPeriodEndDate, new { @class = "col-sm-4 col-form-label" })
+                    <div class="col-sm-8">
+                        <input type="text" name="AppraisalPeriodEndDate" value="@Model.Appraisal.AppraisalPeriodEndDate" id="AppraisalPeriodEndDate" class="form-control js-flatpickr bg-white" data-date-format="d-m-Y" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- END Elements -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="block block-rounded block-fx-pop">
+                <div class="block-header block-header-default">
+                    <h3 class="block-title">Selected Employees</h3>
+                </div>
+                <div class="block-content pb-3">
+                    @if (Model.SelectedEmployees.Count() < 1)
+                    {
+                        <p>Record Empty!</p>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+
+                            <table class="table js-table-checkable  table-bordered table-striped table-vcenter js-dataTable-full">
+                                <thead>
+                                    <tr>
+                                        <th>Select</th>
+                                        <th>Photo</th>
+                                        <th>Employee Name</th>
+                                        <th>Department</th>
+                                        <th>State</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentsBody">
+                                    @{
+                                        int num = 1;
+                                        foreach (var item in Model.SelectedEmployees)
+                                        {
+                                            var imgsrc = String.Empty;
+                                            if (item.PassportImage != null)
+                                            {
+                                                var imgbase64 = Convert.ToBase64String(item.PassportImage);
+                                                imgsrc = string.Format("data:image/jpg;base64,{0}", imgbase64);
+                                            }
+                                            <tr>
+                                                <td class="text-center">
+                                                    <div class="custom-control custom-checkbox custom-control-primary d-inline-block">
+                                                        <input type="checkbox" class="custom-control-input select_employee" id="@item.Id" value="@item.Id" checked>
+                                                        <label class="custom-control-label" for="@item.Id"></label>
+                                                    </div>
+                                                </td>
+                                                <td class="text-center">
+                                                    @if (imgsrc != String.Empty)
+                                                    {
+                                                        <img class="img-avatar img-avatar48" src="@imgsrc" alt="Employee Photo">
+                                                    }
+                                                    else
+                                                    {
+                                                        <img class="img-avatar img-avatar48" src="~/Images/default.png" />
+                                                    }
+                                                </td>
+                                                <td class="employeeName">
+                                                    @item.Firstname @item.Lastname
+                                                </td>
+                                                <td>
+                                                    @item.Department.Name
+                                                </td>
+                                                <td class="text-lowercase">
+                                                    @item.State.Description
+                                                </td>
+                                            </tr>
+                                            ++num;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+
+
+                        </div>
+
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="block block-rounded block-fx-pop">
+                <div class="block-header block-header-default">
+                    <h3 class="block-title">Other Employees</h3>
+                </div>
+                <div class="block-content pb-3">
+                    @if (Model.OtherEmployees.Count() < 1)
+                    {
+                        <p>Empty Record!</p>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+
+                            <table class="table js-table-checkable  table-bordered table-striped table-vcenter js-dataTable-full">
+                                <thead>
+                                    <tr>
+                                        <th>Select</th>
+                                        <th>Photo</th>
+                                        <th>Employee Name</th>
+                                        <th>Department</th>
+                                        <th>State</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentsBody">
+                                    @{
+                                        int num = 1;
+                                        foreach (var item in Model.OtherEmployees)
+                                        {
+                                            var imgsrc = String.Empty;
+                                            if (item.PassportImage != null)
+                                            {
+                                                var imgbase64 = Convert.ToBase64String(item.PassportImage);
+                                                imgsrc = string.Format("data:image/jpg;base64,{0}", imgbase64);
+                                            }
+                                            <tr>
+                                                <td class="text-center">
+                                                    <div class="custom-control custom-checkbox custom-control-primary d-inline-block">
+                                                        <input type="checkbox" class="custom-control-input select_new_employee" id="@item.Id" value="@item.Id">
+                                                        <label class="custom-control-label" for="@item.Id"></label>
+                                                    </div>
+                                                </td>
+                                                <td class="text-center">
+                                                    @if (imgsrc != String.Empty)
+                                                    {
+                                                        <img class="img-avatar img-avatar48" src="@imgsrc" alt="Employee Photo">
+                                                    }
+                                                    else
+                                                    {
+                                                        <img class="img-avatar img-avatar48" src="~/Images/default.png" />
+                                                    }
+                                                </td>
+                                                <td class="employeeName">
+                                                    @item.Firstname @item.Lastname
+                                                </td>
+                                                <td>
+                                                    @item.Department.Name
+                                                </td>
+                                                <td class="text-lowercase">
+                                                    @item.State.Description
+                                                </td>
+                                            </tr>
+                                            ++num;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+
+
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="form-group mt-5 text-center">
+                <button type="button" id="update-appraisal" class="btn btn-hero-primary">Update Appraisal</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END Page Content -->
+
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <!-- Page JS Helpers (Table Tools helpers) -->
+
+    <script>jQuery(function () { Dashmix.helpers(['table-tools-checkable', 'select2', 'flatpickr', 'datepicker']); });</script>
+    <script src="~/Content/Template/js/plugins/moment.js"></script>
+    <script>
+
+        $(function () {
+            $("#update-appraisal").on("click", function () {
+                var $this = $(this);
+                var $appraisalId = parseInt($("#appraisalId").text());
+                var $appraisalTitle = $("#Appraisal_AppraisalTitle").val();
+                var $appraisalTypeId = $("#Appraisal_AppraisalTypeId").val();
+                var $dueDate = $("#DueDate").val();
+                var $appraisalStartDate = $("#AppraisalPeriodStartDate").val();
+                var $appraisalEndDate = $("#AppraisalPeriodEndDate").val();
+                var $selectedEmployees = $(".select_employee");
+                var $SelectNewEmployee = $(".select_new_employee");
+                var $selectedEmployeesArray = [];
+                var $newEmployeesArray = [];
+
+                console.log($appraisalTitle);
+                console.log($appraisalTypeId);
+
+                if ($appraisalTitle == '' || $appraisalTypeId == '' || $appraisalStartDate == '' || $appraisalEndDate == '') {
+                    Swal.fire("Oops...", "All fields are required except the optional fields", "error");
+                    return;
+                }
+                var dueDateFormat = null;
+                if ($dueDate != '') {
+                    var isoDate = moment($dueDate, "DD-MM-YYYY");
+                    dueDateFormat = isoDate.format();
+                }
+                var startDate = null;
+                if ($appraisalStartDate != '') {
+                    var isoStartDateDate = moment($appraisalStartDate, "DD-MM-YYYY");
+                    startDate = isoStartDateDate.format();
+                }
+                var endDate = null;
+                if ($appraisalEndDate != '') {
+                    var isoEndDateDate = moment($appraisalEndDate, "DD-MM-YYYY");
+                    endDate = isoEndDateDate.format();
+                }
+                $.each($selectedEmployees, function () {
+                    var $empId = $(this).val();
+                    if ($(this).is(":checked")) {
+                        $selectedEmployeesArray.push(parseInt($empId));
+                    }
+                });
+                $.each($SelectNewEmployee, function () {
+                    var $empId = $(this).val();
+                    if ($(this).is(":checked")) {
+                        $newEmployeesArray.push(parseInt($empId));
+                    }
+                });
+
+                console.log($selectedEmployeesArray);
+                console.log($newEmployeesArray)
+
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "Are you sure you want to update this appraisal",
+                    type: "warning",
+                    showCancelButton: !0,
+                    customClass: { confirmButton: "btn btn-danger m-1", cancelButton: "btn btn-secondary m-1" },
+                    confirmButtonText: "Yes, update it!",
+                    html: !1,
+                    preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
+
+                }).then(function (n) {
+                    if (n.value) {
+                        $this.attr("disabled", true);
+                        Dashmix.layout('header_loader_on');
+                        var url = '/api/appraisal/PostUpdateAppraisalExercise';
+                        $.post(url,
+                            {
+                                appraisalId: $appraisalId,
+                                appraisalTitle: $appraisalTitle,
+                                appraisalTypeId: $appraisalTypeId,
+                                dueDate: dueDateFormat,
+                                startDate: startDate,
+                                endDate: endDate,
+                                selectedEmployees: $selectedEmployeesArray,
+                                newSelectedEmployee: $newEmployeesArray
+                            },
+                            function (data) {
+                                Dashmix.layout('header_loader_off');
+                                $this.attr("disabled", false);
+                                Swal.fire({
+                                    title: "Success",
+                                    text: "Appraisal has been updated",
+                                    type: "success",
+                                    showCancelButton: 0,
+                                    customClass: { okButton: "btn btn-danger m-1" },
+                                    html: !1,
+                                    preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
+
+                                }).then(function (n) {
+                                    if (n.value) {
+                                        window.location.href = '/appraisal/initiated-appraisals';
+                                    }
+                                });
+                            });
+                    }
+                    else {
+                        "cancel" === n.dismiss && Swal.fire("Cancelled", "File is safe :)", "error")
+                    }
+
+                })
+            });
+        });
+    </script>
+}
+

@@ -1,7 +1,7 @@
 ﻿<nav id="sidebar" aria-label="Main Navigation">
     <!-- Side Header -->
     <div class="bg-header-dark">
-        <div class="content-header bg-white-10" style="background-color: #67737e !important">
+        <div class="content-header bg-white-10">
             <!-- Logo -->
             <a class="font-w600 text-white tracking-wide" href="/">
                 <span class="smini-visible">
@@ -43,6 +43,41 @@
                         <span class="nav-main-link-name">Dashboard</span>
                     </a>
                 </li>
+
+                <li class="nav-main-heading">Employee</li>
+                <li class="nav-main-item">
+                    <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                        <i class="nav-main-link-icon fa fa-border-all"></i>
+                        <span class="nav-main-link-name">Appraisal Exercise</span>
+                    </a>
+                    <ul class="nav-main-submenu">
+                        <li class="nav-main-item">
+                            <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "ongoing-appraisal" ? "active" : "")" href="/appraisal/ongoing-appraisal">
+                                <span class="nav-main-link-name">Ongoing Appraisal</span>
+                            </a>
+                        </li>
+                        <li class="nav-main-item">
+                            <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "previous-appraisals"
+                                ? "active" : "")" href="/appraisal/previous-appraisals">
+                                <span class="nav-main-link-name">Previous Appraisals</span>
+                            </a>
+                        </li>
+                        <li class="nav-main-item">
+                            <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "appraise-members" ||
+                                ViewContext.RouteData.Values["Action"].ToString() == "appraise-staff"
+                                ? "active" : "")" href="/appraisal/appraise-members">
+                                <span class="nav-main-link-name">Appraise Team Members</span>
+                            </a>
+                        </li>
+                        <li class="nav-main-item">
+                            <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "appraisees"
+                                ? "active" : "")" href="/appraisal/appraisees">
+                                <span class="nav-main-link-name">Appraisees</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
                 <li class="nav-main-heading">Appraisal</li>
                 <li class="nav-main-item">
                     <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
@@ -53,6 +88,14 @@
                         <li class="nav-main-item">
                             <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "new-appraisal" ? "active" : "")" href="/appraisal/new-appraisal">
                                 <span class="nav-main-link-name">New Appraisal</span>
+                            </a>
+                        </li>
+                        <li class="nav-main-item">
+                            <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "initiated-appraisals" ||
+                                ViewContext.RouteData.Values["Action"].ToString() == "view-appraisal" ||
+                                ViewContext.RouteData.Values["Action"].ToString() == "edit-appraisal"
+                                ? "active" : "")" href="/appraisal/initiated-appraisals">
+                                <span class="nav-main-link-name">Initiated Appraisals</span>
                             </a>
                         </li>
                     </ul>

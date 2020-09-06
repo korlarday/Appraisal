@@ -17,10 +17,12 @@ namespace AprraisalApplication.Models.Attributes
         public int AppraiseePersonalDataId { get; set; }
         public AppraiserPersonalData AppraiserPersonalData { get; set; }
         public int AppraiserPersonalDataId { get; set; }
-        public AppraisalTemplate AppraisalTemplate { get; set; }
-        public int AppraisalTemplateId { get; set; }
+        public InitiatedAppraisalTemplate InitiatedAppraisalTemplate { get; set; }
+        public int InitiatedAppraisalTemplateId { get; set; }
         public bool IsNew { get; set; }
         public bool IsCompleted { get; set; }
+        public AppraiseeProgress AppraiseeProgress { get; set; }
+        public int AppraiseeProgressId { get; set; }
         public ICollection<SectionResult> SectionResults { get; set; }
         public ICollection<AppraiseeCareerHistoryWithCompany> AppraiseeCareerHistoryWithCompanies { get; set; }
         public Appraisee()
@@ -28,5 +30,18 @@ namespace AprraisalApplication.Models.Attributes
             AppraiseeCareerHistoryWithCompanies = new Collection<AppraiseeCareerHistoryWithCompany>();
             SectionResults = new Collection<SectionResult>();
         }
+
+        public Appraisee(int newAppraisalId, int employeeId, int appraiseeId, int appraiserId, int initiatedTemplateId, int progressId)
+        {
+            NewAppraisalId = newAppraisalId;
+            EmployeeId = employeeId;
+            AppraiseePersonalDataId = appraiseeId;
+            AppraiserPersonalDataId = appraiserId;
+            InitiatedAppraisalTemplateId = initiatedTemplateId;
+            AppraiseeProgressId = progressId;
+            IsNew = true;
+            IsCompleted = false;
+        }
+
     }
 }
