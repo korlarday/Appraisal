@@ -76,13 +76,23 @@
                                             </p>
                                         </div>
                                     </div>
+                                    <hr />
                                     <div class="row text-center">
-                                        @if(item.AppraiseeProgress.AppraiseeSubmit && !item.AppraiseeProgress.SupervisorSubmit && !item.AppraiseeProgress.SupervisorReject)
+                                        @if (item.AppraiseeProgress.AppraiseeSubmit && !item.AppraiseeProgress.SupervisorSubmit && !item.AppraiseeProgress.SupervisorReject && !item.AppraiseeProgress.SupervisorAskForFeedback)
                                         {
                                             <a href="/appraisal/appraise-staff/@item.Employee.ApplicationUserId" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Appraise Staff</a>
-                                        }else if (!item.AppraiseeProgress.AppraiseeSubmit)
+                                        }
+                                        else if (!item.AppraiseeProgress.AppraiseeSubmit)
                                         {
-                                            <span>Not yet Submitted</span>
+                                            <div class="text-danger" style="margin:auto">Not yet Submitted</div>
+                                        }
+                                        else if (item.AppraiseeProgress.SupervisorReject && !item.AppraiseeProgress.SupervisorSubmit)
+                                        {
+                                            <div class="text-danger" style="margin:auto">Rejected for corrections</div>
+                                        }
+                                        else if (item.AppraiseeProgress.SupervisorAskForFeedback)
+                                        {
+                                            <div class="text-success" style="margin:auto">Returned to appraisee for appraisee's comments</div>
                                         }
                                     </div>
                                 </div>

@@ -17,11 +17,15 @@ namespace AprraisalApplication.Models.MigrationModels
             HRSubmit = false;
             HRReject = false;
             MDAcknowledgement = false;
+            FeedbackFromAppraisee = false;
+            SupervisorAskForFeedback = false;
         }
         public int Id { get; set; }
         public bool AppraiseeSubmit { get; set; }
         public bool SupervisorSubmit { get; set; }
         public bool SupervisorReject { get; set; }
+        public bool SupervisorAskForFeedback { get; set; }
+        public bool FeedbackFromAppraisee { get; set; }
         public bool HODSubmit { get; set; }
         public bool HODReject { get; set; }
         public bool HRSubmit { get; set; }

@@ -262,7 +262,7 @@
                             </div>
                         </div>
 
-                        foreach (var templateSection in Model.InitiatedAppraisalTemplate.InitiatedTemplateSections)
+                        foreach (var templateSection in Model.InitiatedAppraisalTemplate.InitiatedTemplateSections.OrderBy(x => x.SetupId))
                         {
                             if (templateSection.IsDeleted == false)
                             {

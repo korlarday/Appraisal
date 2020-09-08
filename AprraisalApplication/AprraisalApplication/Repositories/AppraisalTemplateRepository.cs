@@ -79,8 +79,7 @@ namespace AprraisalApplication.Repositories
                 if (item.TemplateId != null)
                 {
                     AppraisalUserTemplate userTemp = db.AppraisalUserTemplates
-                                                            .Where(x => x.ApplicationUserId == item.ApplicationUserId
-                                                                    && x.AppraisalTemplateId == item.TemplateId).SingleOrDefault();
+                                                            .Where(x => x.ApplicationUserId == item.ApplicationUserId).SingleOrDefault();
                     if (userTemp == null)
                     {
                         AppraisalUserTemplate newUserTemp = new AppraisalUserTemplate(item);
@@ -102,8 +101,7 @@ namespace AprraisalApplication.Repositories
                 if(item.TemplateId != null)
                 {
                     AppraisalDepartmentTemplate deptTemp = db.AppraisalDepartmentTemplates
-                                                            .Where(x => x.DepartmentId == item.DepartmentId
-                                                                    && x.AppraisalTemplateId == item.TemplateId).SingleOrDefault();
+                                                            .Where(x => x.DepartmentId == item.DepartmentId).SingleOrDefault();
                     if(deptTemp == null)
                     {
                         AppraisalDepartmentTemplate newDeptTemp = new AppraisalDepartmentTemplate(item);

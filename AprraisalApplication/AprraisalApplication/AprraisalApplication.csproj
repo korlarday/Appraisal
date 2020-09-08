@@ -363,6 +363,26 @@
     <Compile Include="Migrations\202009062055339_CorrectingErrorInSectionResult.Designer.cs">
       <DependentUpon>202009062055339_CorrectingErrorInSectionResult.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009080538109_AddingpropertytoAppraiseeProgress.cs" />
+    <Compile Include="Migrations\202009080538109_AddingpropertytoAppraiseeProgress.Designer.cs">
+      <DependentUpon>202009080538109_AddingpropertytoAppraiseeProgress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009080554579_AddingAppraiseeRejections.cs" />
+    <Compile Include="Migrations\202009080554579_AddingAppraiseeRejections.Designer.cs">
+      <DependentUpon>202009080554579_AddingAppraiseeRejections.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009080855229_AddTotalAndPercentageScoreToResult.cs" />
+    <Compile Include="Migrations\202009080855229_AddTotalAndPercentageScoreToResult.Designer.cs">
+      <DependentUpon>202009080855229_AddTotalAndPercentageScoreToResult.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009082041208_AddingAppraiseeComment.cs" />
+    <Compile Include="Migrations\202009082041208_AddingAppraiseeComment.Designer.cs">
+      <DependentUpon>202009082041208_AddingAppraiseeComment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009082105055_AddSupervisorAskforfeedback.cs" />
+    <Compile Include="Migrations\202009082105055_AddSupervisorAskforfeedback.Designer.cs">
+      <DependentUpon>202009082105055_AddSupervisorAskforfeedback.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApiModels\NewBranchVM.cs" />
@@ -375,6 +395,8 @@
     <Compile Include="Models\ApiParameters\CareerHistoryParams.cs" />
     <Compile Include="Models\ApiParameters\NewAppraisalParams.cs" />
     <Compile Include="Models\ApiParameters\NewDepartmentParams.cs" />
+    <Compile Include="Models\ApiParameters\SectionResultParams.cs" />
+    <Compile Include="Models\ApiParameters\SectionScoresParams.cs" />
     <Compile Include="Models\ApiParameters\StartEmployeeAppraisalParams.cs" />
     <Compile Include="Models\ApiParameters\SubmitAppraisalParams.cs" />
     <Compile Include="Models\ApiParameters\UserAppraiserParams.cs" />
@@ -395,8 +417,10 @@
     <Compile Include="Models\MigrationModels\AppraisalType.cs" />
     <Compile Include="Models\MigrationModels\AppraisalUserTemplate.cs" />
     <Compile Include="Models\MigrationModels\AppraiseeCareerHistoryWithCompany.cs" />
+    <Compile Include="Models\MigrationModels\AppraiseeComments.cs" />
     <Compile Include="Models\MigrationModels\AppraiseePersonalData.cs" />
     <Compile Include="Models\MigrationModels\AppraiseeProgress.cs" />
+    <Compile Include="Models\MigrationModels\AppraiseeRejection.cs" />
     <Compile Include="Models\MigrationModels\AppraiseeSectionDetail.cs" />
     <Compile Include="Models\MigrationModels\AppraiserPersonalData.cs" />
     <Compile Include="Models\MigrationModels\Branch.cs" />
@@ -4359,6 +4383,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\checkmark.png" />
     <Content Include="Images\ieilogo.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -4519,6 +4544,7 @@
     <Content Include="Views\Appraisal\Appraisees.cshtml" />
     <Content Include="Views\Appraisal\AppraiseMembers.cshtml" />
     <Content Include="Views\Appraisal\AppraiseStaff.cshtml" />
+    <Content Include="Views\Appraisal\SupervisorReject.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -4740,6 +4766,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009062055339_CorrectingErrorInSectionResult.resx">
       <DependentUpon>202009062055339_CorrectingErrorInSectionResult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009080538109_AddingpropertytoAppraiseeProgress.resx">
+      <DependentUpon>202009080538109_AddingpropertytoAppraiseeProgress.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009080554579_AddingAppraiseeRejections.resx">
+      <DependentUpon>202009080554579_AddingAppraiseeRejections.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009080855229_AddTotalAndPercentageScoreToResult.resx">
+      <DependentUpon>202009080855229_AddTotalAndPercentageScoreToResult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009082041208_AddingAppraiseeComment.resx">
+      <DependentUpon>202009082041208_AddingAppraiseeComment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009082105055_AddSupervisorAskforfeedback.resx">
+      <DependentUpon>202009082105055_AddSupervisorAskforfeedback.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -17,6 +17,7 @@ namespace AprraisalApplication.Models.ApiParameters
     }
     public class TaskPerformed
     {
+        public int? SectionDetailResultId { get; set; }
         public int Number { get; set; }
         public string Task { get; set; }
         public string TaskResult { get; set; }

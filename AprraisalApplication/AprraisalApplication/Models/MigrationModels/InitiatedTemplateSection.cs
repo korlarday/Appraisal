@@ -44,6 +44,7 @@ namespace AprraisalApplication.Models.MigrationModels
             SetupId = section.SetupId;
             BreakdownValueBy = section.BreakdownValueBy;
             DerivedSectionSetupId = section.DerivedSectionSetupId;
+            IsDeleted = section.IsDeleted;
         }
 
         internal void Update(AppraisalSectionParam item)

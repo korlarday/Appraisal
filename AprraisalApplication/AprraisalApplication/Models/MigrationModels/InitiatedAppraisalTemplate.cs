@@ -38,6 +38,7 @@ namespace AprraisalApplication.Models.MigrationModels
             Slug = template.Slug;
             Description = template.Description;
             DateCreated = DateTime.Now;
+            IsDeleted = template.IsDeleted;
         }
 
         internal void UpdateTemplate(AppraisalTemplateParams model)

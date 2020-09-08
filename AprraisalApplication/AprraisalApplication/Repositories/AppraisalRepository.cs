@@ -4,6 +4,7 @@ using AprraisalApplication.Models.Attributes;
 using AprraisalApplication.Models.Constants;
 using AprraisalApplication.Models.MigrationModels;
 using AprraisalApplication.Models.ViewModels;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -140,6 +141,216 @@ namespace AprraisalApplication.Repositories
                     }
                 }
             }
+        }
+
+        internal void ResubmitAppraisalToSupervisor(SubmitAppraisalParams model)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                using (var dbContextTransaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        // first get the appraisee
+                        Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.InitiatedAppraisalTemplate.InitiatedTemplateSections
+                                                                            .Select(s => s.InitiatedSectionDetails
+                                                                            .Select(b => b.InitiatedSectionDetailBreakdowns)))
+                                                            .Include(x => x.AppraiseeProgress)
+                                                            .Include(x => x.AppraiseeRejections)
+                                                            .SingleOrDefault();
+                        // update the task performed and the duties assigned
+                        foreach (var section in appraisee.InitiatedAppraisalTemplate.InitiatedTemplateSections)
+                        {
+                            if(section.IsDeleted == false)
+                            {
+                                // store section result
+                                Models.MigrationModels.SectionResult sectionResultDb = context.SectionResults.Where(x => x.AppraiseeId == appraisee.Id
+                                                                                                            && x.InitiatedTemplateSectionId == section.Id)
+                                                                                                        .SingleOrDefault();
+
+                                if (section.SectionTypeId == SectionTypeCS.TaskPerfomed)
+                                {
+                                    var sectionResult = model.SectionResults.Where(x => x.SectionId == section.Id).SingleOrDefault();
+                                
+                                    foreach (var item in sectionResult.TaskPerformed)
+                                    {
+                                        if(item.SectionDetailResultId == null)
+                                        {
+                                            SectionDetailResult detail = new SectionDetailResult(item, sectionResultDb.Id, section.Id);
+                                            context.SectionDetailResults.Add(detail);
+                                        }
+                                        else
+                                        {
+                                            SectionDetailResult detail = context.SectionDetailResults.Find(item.SectionDetailResultId);
+                                            detail.Update(item);
+                                        }
+                                    }
+                                }
+                                else if (section.SectionTypeId == SectionTypeCS.DutiesAssigned)
+                                {
+
+                                    var sectionResult = model.SectionResults.Where(x => x.SectionId == section.Id).SingleOrDefault();
+                                
+                                    foreach (var item in sectionResult.TaskPerformed)
+                                    {
+                                        if(item.SectionDetailResultId == null)
+                                        {
+                                            SectionDetailResult detail = new SectionDetailResult(item, sectionResultDb.Id, section.Id);
+                                            context.SectionDetailResults.Add(detail);
+                                        }
+                                        else
+                                        {
+                                            SectionDetailResult detail = context.SectionDetailResults.Find(item.SectionDetailResultId);
+                                            detail.Update(item);
+                                        }
+                                    }
+                                }
+                                else if (section.SectionTypeId == SectionTypeCS.Quantitative)
+                                {
+                                    var sectionResult = model.SectionResults.Where(x => x.SectionId == section.Id).SingleOrDefault();
+                                    if (sectionResult != null)
+                                    {
+                                        foreach (var item in section.InitiatedSectionDetails)
+                                        {
+                                            if (item.IsDeleted == false)
+                                            {
+                                                var sectionDetail = sectionResult.TaskPerformed.Where(x => x.Number == item.Id).SingleOrDefault();
+                                                SectionDetailResult detail = context.SectionDetailResults.Find(sectionDetail.SectionDetailResultId);
+                                                if (item.InitiatedSectionDetailBreakdowns != null && item.InitiatedSectionDetailBreakdowns.Count() > 0)
+                                                {
+                                                    foreach (var breakdown in sectionDetail.Breakdowns)
+                                                    {
+                                                        ItemBreakdownResult itemBreakdown = context.ItemBreakdownResults.Find(breakdown.BreakdownId);
+                                                        itemBreakdown.Value = breakdown.BreakdownValue;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                        
+                            }
+                        }
+
+                        // save the progress
+                        AppraiseeProgress progress = appraisee.AppraiseeProgress;
+                        progress.SupervisorReject = false;
+
+                        // change the rejection status
+                        List<AppraiseeRejection> rejections = appraisee.AppraiseeRejections.Where(x => x.New == true).ToList();
+                        foreach (var item in rejections)
+                        {
+                            item.New = false;
+                        }
+                        context.SaveChanges();
+                        dbContextTransaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        dbContextTransaction.Rollback();
+                        throw new System.ArgumentException(e.Message);
+                    }
+                }
+            }
+
+        }
+
+        internal void DeleteSectionResultDetailItem(SectionResultParams model)
+        {
+            SectionDetailResult result = db.SectionDetailResults.Find(model.SectionResultDetailId);
+            db.SectionDetailResults.Remove(result);
+            db.SaveChanges();
+        }
+
+        internal void RejectAppraisalToAppraisee(SectionScoresParams model)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                using (var dbContextTransaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        // first get the appraisee
+                        Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.AppraiseeProgress)
+                                                            .SingleOrDefault();
+                        string userId = HttpContext.Current.User.Identity.GetUserId();
+                        Employee employee = context.Employees.Where(x => x.ApplicationUserId == userId).SingleOrDefault();
+
+                        AppraiseeRejection rejection = new AppraiseeRejection(model.AppraiseeId, model.RejectionReason, employee.Id);
+                        context.AppraiseeRejections.Add(rejection);
+
+                        // update the appraisee progress
+                        var progress = appraisee.AppraiseeProgress;
+                        progress.SupervisorReject = true;
+                        progress.SupervisorSubmit = false;
+
+                        context.SaveChanges();
+                        dbContextTransaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        dbContextTransaction.Rollback();
+                        throw new System.ArgumentException(e.Message);
+                    }
+                }
+            }
+
+        }
+
+        internal void ScoreAppraisalSections(SectionScoresParams model)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                using (var dbContextTransaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        // first get the appraisee
+                        Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.SectionResults)
+                                                            .Include(x => x.AppraiseeProgress)
+                                                            .SingleOrDefault();
+
+                        var sectionResults = appraisee.SectionResults.ToList();
+                        foreach (var sectionResult in sectionResults)
+                        {
+                            var sectionScore = model.SectionScoresResults.Where(x => x.SectionResultId == sectionResult.Id).SingleOrDefault();
+                            if(sectionScore != null)
+                            {
+                                sectionResult.TotalScore = sectionScore.SectionTotalScore;
+                                sectionResult.PercentageScore = sectionScore.SectionPercentageScore;
+                                foreach (var detail in sectionResult.SectionDetailResults)
+                                {
+                                    var detailScore = sectionScore.SectionDetailsScore.Where(x => x.SectionResultDetailId == detail.Id).SingleOrDefault();
+                                    if(detailScore != null)
+                                    {
+                                        detail.Score = detailScore.Score;
+                                    }
+                                }
+
+                            }
+                        }
+
+                        // update the appraisee progress
+                        var progress = appraisee.AppraiseeProgress;
+                        progress.SupervisorReject = false;
+                        progress.SupervisorSubmit = false;
+                        progress.SupervisorAskForFeedback = true;
+
+                        
+                        context.SaveChanges();
+                        dbContextTransaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        dbContextTransaction.Rollback();
+                        throw new System.ArgumentException(e.Message);
+                    }
+                }
+            }
+
         }
 
         internal void SubmitAppraisalToSupervisor(SubmitAppraisalParams model)
@@ -330,6 +541,10 @@ namespace AprraisalApplication.Repositories
                 {
                     try
                     {
+                        // add the appraisee comments
+                        AppraiseeComments comments = new AppraiseeComments();
+                        context.AppraiseeComments.Add(comments);
+
                         // add the appraisee progress
                         AppraiseeProgress progress = new AppraiseeProgress();
                         context.AppraiseeProgresses.Add(progress);
@@ -343,7 +558,7 @@ namespace AprraisalApplication.Repositories
                         context.AppraiserPersonalDatas.Add(appraiserPd);
                         context.SaveChanges();
 
-                        Appraisee newAppraisee = new Appraisee(newAppraisalId, employeeId, appraiseePD.Id, appraiserPd.Id, template.Id, progress.Id);
+                        Appraisee newAppraisee = new Appraisee(newAppraisalId, employeeId, appraiseePD.Id, appraiserPd.Id, template.Id, progress.Id, comments.Id);
                         context.Appraisees.Add(newAppraisee);
                         context.SaveChanges();
 
@@ -504,6 +719,7 @@ namespace AprraisalApplication.Repositories
                                 .Include(x => x.AppraiserPersonalData.Appraiser.Grade)
                                 .Include(x => x.AppraiseeCareerHistoryWithCompanies.Select(d => d.Department))
                                 .Include(x => x.AppraiseeProgress)
+                                .Include(x => x.AppraiseeRejections)
                                 .Include(x => x.SectionResults
                                     .Select(d => d.SectionDetailResults.Select(b => b.ItemBreakdownResults)))
                                 .SingleOrDefault();

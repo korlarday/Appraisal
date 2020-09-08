@@ -41,5 +41,11 @@ namespace AprraisalApplication.Models.MigrationModels
             Title2 = item.Title2;
             Number = item.Id;
         }
+
+        internal void Update(TaskPerformed item)
+        {
+            Title1 = item.Task;
+            Title2 = item.TaskResult;
+        }
     }
 }

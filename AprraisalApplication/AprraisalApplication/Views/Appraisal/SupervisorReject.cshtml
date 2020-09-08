@@ -1,17 +1,11 @@
-﻿@model AprraisalApplication.Models.ViewModels.AppraiseStaffVM
+﻿@model AprraisalApplication.Models.ViewModels.OngoingAppraisalVM
 
 @{
-    ViewBag.Title = "Appraise Staff";
-}
-
-
-@{
-    ViewBag.Title = "Ongoing Appraisal";
+    ViewBag.Title = "Supervisor Reject";
     int columns = Model.DefaultRatings.Count() + 1;
     int dutiesAssignCol = Model.DefaultRatings.Count() + 2;
     int ratingsCount = Model.DefaultRatings.Count();
     var sectionResult = Model.Appraisee.SectionResults;
-    var highestRating = Model.DefaultRatings.OrderByDescending(x => x.Score).FirstOrDefault();
 }
 
 @section Stylesheet{
@@ -43,27 +37,9 @@
             text-decoration: underline;
             text-transform: uppercase;
         }
-        td.task-performed-rate:hover{
-            cursor:pointer;
-            background-color:antiquewhite;
+        .hide{
+            display:none !important;
         }
-        td.qualitative-rate:hover {
-            cursor: pointer;
-            background-color: antiquewhite;
-        }
-        td.duties-assigned:hover {
-            cursor: pointer;
-            background-color: antiquewhite;
-        }
-        td.check{
-            background: url("../../Images/checkmark.png") center center no-repeat;
-            background-size: 25px;
-        }
-        .score{
-            border-bottom: 1px solid black;
-            text-align: center;
-        }
-        
     </style>
 }
 
@@ -71,12 +47,12 @@
 <div class="bg-body-light">
     <div class="content content-full">
         <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
-            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Appraisal</h1>
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Ongoing Appraisal</h1>
             <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">Home</li>
                     <li class="breadcrumb-item">Appraisal</li>
-                    <li class="breadcrumb-item active" aria-current="page">Appraisal</li>
+                    <li class="breadcrumb-item active" aria-current="page">Ongoing Appraisal</li>
                 </ol>
             </nav>
         </div>
@@ -88,13 +64,32 @@
     <!-- Elements -->
     <div class="block block-rounded block-bordered">
         <div class="block-header block-header-default">
-            <h3 class="block-title">Appraise Team Member</h3>
+            <h3 class="block-title">Ongoing Appraisal</h3>
         </div>
         <div class="block-content">
             <div class="block block-rounded">
                 <div class="block-content block-content-full">
                     <span style="display:none" id="appraiseeId">@Model.Appraisee.Id</span>
-                    <span style="display:none" id="highestRating">@highestRating.Score</span>
+                    <div class="row">
+                        <div class="offset-6 text-danger">
+                            <div style="font-weight:bold">Your appraisal form was rejected by your supervisor for corrections</div>
+                            <div style="text-decoration:underline">Rejection reasons</div>
+                            <div>
+                                <ul>
+                                    @foreach (var reason in Model.Appraisee.AppraiseeRejections.OrderByDescending(x => x.DateRejected))
+                                    {
+                                        <li>
+                                            @reason.RejectionReason 
+                                            @if (reason.New)
+                                            {
+                                                <span class="badge badge-warning">New</span>
+                                            }
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <h6 class="col-12 text-header">Personal Data: Appraisee</h6>
                         <div class="col-md-6 details">
@@ -240,12 +235,7 @@
                             var currentResultSection = sectionResult.Where(x => x.InitiatedTemplateSectionId == templateSection.Id).SingleOrDefault();
                             if (templateSection.SectionTypeId == 1)
                             {
-                                <div class="section-item"
-                                     data-sectionTypeId="1"
-                                     data-sectionId="@currentResultSection.Id"
-                                     data-percentageScore="@templateSection.TotalPercentageObtainable"
-                                     data-obtainableScore="@templateSection.TotalMarkObtainable">
-
+                                <div class="section-item" data-sectionTypeId="1" data-sectionId="@templateSection.Id">
                                     <h5 class="mt-4">Section @templateSection.SetupId</h5>
                                     <div class="table-responsive mb-4 details">
                                         <table class="table table-bordered table-vcenter">
@@ -276,14 +266,18 @@
                                                     <tr class="task-row" data-sectionResultDetailId="@sectionDetail.Id">
                                                         <td class="pr-5">
                                                             <div class="row p-1">
-                                                                <span class="col-1 count" style="">@sectionDetail.Number.</span>
-                                                                <span>@sectionDetail.Title1</span>
-                                                                @*<button style="display:none" class="btn btn-link text-danger col-1 delete-row" data-toggle="tooltip" title="Delete Row"><i class="fa fa-times"></i></button>*@
+                                                                <span class="col-1 count" style="position:relative;top:8px">@sectionDetail.Number.</span>
+                                                                <input type="text" value="@sectionDetail.Title1" class="form-control col-10" style="display:inline !important" />
+                                                                <button class="btn btn-link text-danger col-1 delete-row @(sectionDetail.Number == 1 ? "hide":"")" 
+                                                                        data-toggle="tooltip" 
+                                                                        title="Delete Row"
+                                                                        data-sectionResultDetailId="@sectionDetail.Id"><i class="fa fa-times"></i></button>
+                                                                
                                                             </div>
                                                         </td>
                                                         @foreach (var item in Model.DefaultRatings)
                                                         {
-                                                            <td class="task-performed-rate" data-rateScore="@item.Score"></td>
+                                                            <td></td>
                                                         }
                                                     </tr>
                                                 }
@@ -291,32 +285,11 @@
                                         </table>
                                         <button class="btn btn-success btn-sm addTaskRow"><i class="fa fa-plus"></i> Add Row</button>
                                     </div>
-                                    <div class="row score-section">
-                                        <div class="col-6">
-                                            <div class="row">
-                                                <div class="col-4">Total Score:</div>
-                                                <div class="col-2 totalScore score"></div>/
-                                                <div class="col-2 score">@templateSection.TotalMarkObtainable</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="row">
-                                                <div class="col-5">Percentage Score:</div>
-                                                <div class="col-2 percentageScore score"></div>/
-                                                <div class="col-2 score">@templateSection.TotalPercentageObtainable %</div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
-                                <hr />
                             }
                             else if (templateSection.SectionTypeId == 2)
                             {
-                                <div class="section-item" 
-                                     data-sectionTypeId="2" 
-                                     data-sectionId="@currentResultSection.Id"
-                                     data-percentageScore="@templateSection.TotalPercentageObtainable"
-                                     data-obtainableScore="@templateSection.TotalMarkObtainable">
+                                <div class="section-item" data-sectionTypeId="2" data-sectionId="@templateSection.Id">
                                     <h5 class="mt-4">Section @templateSection.SetupId</h5>
                                     <div class="table-responsive mb-4">
                                         <table class="table table-bordered table-vcenter">
@@ -351,18 +324,22 @@
                                                     <tr class="task-row" data-sectionResultDetailId="@sectionDetail.Id">
                                                         <td>
                                                             <div class="row p-1">
-                                                                <span class="col-1 count mr-2">@sectionDetail.Number.</span>
-                                                                <span>@sectionDetail.Title1</span>
+                                                                <span class="col-1 count" style="position:relative;top:8px">@sectionDetail.Number.</span>
+                                                                <input type="text" value="@sectionDetail.Title1" class="form-control col-10 duties" style="display:inline !important" />
                                                             </div>
                                                         </td>
                                                         <td class="pl-4">
                                                             <div class="row">
-                                                                <span>@sectionDetail.Title2</span>
+                                                                <input type="text" value="@sectionDetail.Title2" class="form-control col-10 resultAchieved" style="display:inline !important" />
+                                                                <button class="btn btn-link text-danger col-1 delete-row @(sectionDetail.Number == 1 ? "hide":"")" 
+                                                                        data-toggle="tooltip" 
+                                                                        title="Delete Row"
+                                                                        data-sectionResultDetailId="@sectionDetail.Id"><i class="fa fa-times"></i></button>
                                                             </div>
                                                         </td>
                                                         @foreach (var item in Model.DefaultRatings)
                                                         {
-                                                            <td class="duties-assigned" data-rateScore="@item.Score"></td>
+                                                            <td></td>
                                                         }
                                                     </tr>
                                                 }
@@ -370,34 +347,11 @@
                                         </table>
                                         <button class="btn btn-success btn-sm addTaskRow"><i class="fa fa-plus"></i> Add Row</button>
                                     </div>
-                                    <div class="row score-section">
-                                        <div class="col-6">
-                                            <div class="row">
-                                                <div class="col-4">Total Score:</div>
-                                                <div class="col-2 totalScore score"></div>/
-                                                <div class="col-2 score">@templateSection.TotalMarkObtainable</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="row">
-                                                <div class="col-5">Percentage Score:</div>
-                                                <div class="col-2 percentageScore score"></div>/
-                                                <div class="col-2 score">@templateSection.TotalPercentageObtainable %</div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
-                                
-                                <hr />
                             }
                             else if (templateSection.SectionTypeId == 3)
                             {
-                                <div class="section-item" 
-                                     data-sectionTypeId="3" 
-                                     data-sectionId="@currentResultSection.Id"
-                                     data-percentageScore="@templateSection.TotalPercentageObtainable"
-                                     data-obtainableScore="@templateSection.TotalMarkObtainable">
-
+                                <div class="section-item" data-sectionTypeId="3" data-sectionId="@templateSection.Id">
                                     <h5 class="mt-4">Section @templateSection.SetupId</h5>
                                     <div class="table-responsive mb-4">
                                         <span class="breakdown-value" style="display:none">@templateSection.BreakdownValueBy</span>
@@ -424,7 +378,7 @@
                                                     foreach (var detail in templateSection.InitiatedSectionDetails)
                                                     {
                                                         var detailResult = currentResultSection.SectionDetailResults.Where(x => x.SectionDetailId == detail.Id).SingleOrDefault();
-                                                        <tr class="quantitative-values" data-sectionResultDetailId="@detailResult.Id">
+                                                        <tr class="quantitative-values" data-sectionResultDetailId="@detail.Id">
                                                             <td>@count</td>
                                                             <td data-sectionDetailId="@detail.Id" class="section-detail">
                                                                 <span class="detail-title">@detail.Title1</span>
@@ -437,21 +391,15 @@
                                                                                 <span class="breakdown-title">@breakdown.Title</span>
                                                                                 @if (templateSection.BreakdownValueBy == "appraisee")
                                                                                 {
-                                                                                    <input type="number" data-breakdownId="@breakdown.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;display:inline;" disabled />
-                                                                                }
-                                                                                else
-                                                                                {
-                                                                                    <input type="number" data-breakdownId="@breakdown.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;display:inline;" />
+                                                                                    <input type="number" data-breakdownId="@result.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:200px;display:inline;" />
                                                                                 }
                                                                             </li>
                                                                         }
                                                                     </ul>
                                                                 </div>
                                                             </td>
-                                                            <td class="text-center max-score">@detail.MaxScore</td>
-                                                            <td>
-                                                                <input type="number" class="form-control enter-score" />
-                                                            </td>
+                                                            <td class="text-center">@detail.MaxScore</td>
+                                                            <td></td>
                                                         </tr>
                                                         ++count;
                                                     }
@@ -466,32 +414,11 @@
                                             </tfoot>
                                         </table>
                                     </div>
-                                    <div class="row score-section">
-                                        <div class="col-6">
-                                            <div class="row">
-                                                <div class="col-4">Total Score:</div>
-                                                <div class="col-2 totalScore score"></div>/
-                                                <div class="col-2 score">@templateSection.TotalMarkObtainable</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="row">
-                                                <div class="col-5">Percentage Score:</div>
-                                                <div class="col-2 percentageScore score"></div>/
-                                                <div class="col-2 score">@templateSection.TotalPercentageObtainable %</div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
-                                <hr />
                             }
                             else if (templateSection.SectionTypeId == 4)
                             {
-                                <div class="section-item" 
-                                     data-sectionTypeId="4" 
-                                     data-sectionId="@currentResultSection.Id"
-                                     data-percentageScore="@templateSection.TotalPercentageObtainable"
-                                     data-obtainableScore="@templateSection.TotalMarkObtainable">
+                                <div class="section-item" data-sectionTypeId="4" data-sectionId="@templateSection.Id">
                                     <h5 class="mt-4">Section @templateSection.SetupId</h5>
                                     <div class="table-responsive mb-4">
                                         <table class="table table-bordered table-vcenter">
@@ -521,13 +448,12 @@
                                                 </tr>
                                                 @foreach (var detail in templateSection.InitiatedSectionDetails)
                                                 {
-                                                    var sectionDetailResult = currentResultSection.SectionDetailResults.Where(x => x.SectionDetailId == detail.Id).SingleOrDefault();
-                                                    <tr class="task-row" data-sectionResultDetailId="@sectionDetailResult.Id">
+                                                    <tr>
                                                         <td>@detail.Title1</td>
                                                         <td class="text-center">@detail.MaxScore</td>
                                                         @foreach (var item in Model.DefaultRatings)
                                                         {
-                                                            <td class="qualitative-rate" data-rateScore="@item.Score"></td>
+                                                            <td></td>
                                                         }
                                                     </tr>
                                                 }
@@ -536,59 +462,21 @@
                                                 <tr>
                                                     <td class="text-right font-w700">Mark Obtainable</td>
                                                     <td class="text-center font-w700">@templateSection.TotalMarkObtainable</td>
-                                                    <td colspan="@ratingsCount" class="text-center font-w700"></td>
+                                                    <td colspan="@ratingsCount" class="text-center font-w700">Mark Obtained =</td>
                                                 </tr>
                                             </tfoot>
                                         </table>
                                     </div>
-                                    <div class="row score-section">
-                                        <div class="col-6">
-                                            <div class="row">
-                                                <div class="col-4">Total Score:</div>
-                                                <div class="col-2 totalScore score"></div>/
-                                                <div class="col-2 score">@templateSection.TotalMarkObtainable</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="row">
-                                                <div class="col-5">Percentage Score:</div>
-                                                <div class="col-2 percentageScore score"></div>/
-                                                <div class="col-2 score">@templateSection.TotalPercentageObtainable %</div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
-                                <hr />
                             }
                         }
                     }
 
                     <div class="row mt-4">
                         <div style="margin:auto">
-                            <button class="btn btn-primary mr-4" id="submitAppraisal">
+                            <button class="btn btn-primary" id="submitAppraisal">
                                 Submit Appraisal
                             </button>
-                            <button class="btn btn-danger" id="rejectAppraisal">
-                                Reject Appraisal
-                            </button>
-                        </div>
-                    </div>
-                    <div id="rejection-div" style="display:none;">
-                        <div class="row mt-5">
-                            <h5 class="col-12 text-center">Rejection Reason</h5>
-                            <div class="col-12">
-                                <textarea class="form-control" id="rejectionReasonText" rows="5" style="width:400px;margin:auto"></textarea>
-                            </div>
-                        </div>
-                        <div class="row mt-4">
-                            <div style="margin:auto">
-                                <button class="btn btn-danger mr-4" id="submitReject">
-                                    Submit
-                                </button>
-                                <button class="btn btn-primary mr-4" id="cancelReject">
-                                    Cancel
-                                </button>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -610,188 +498,280 @@
             function capitalize(text) {
                 return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
             }
-
-            // ratings for task performed
-            $("table").on("click", "td.task-performed-rate", function () {
+            $("#startAppraisal").on("click", function () {
                 var $this = $(this);
-                $this.closest("tr").find(".check").removeClass("check");
-                $this.addClass("check");
-                var $sectionDiv = $this.closest(".section-item");
-                var $obtainableScore = parseInt($sectionDiv.attr("data-obtainableScore"));
-                var $percentageScore = parseInt($sectionDiv.attr("data-percentageScore"));
-                var $highestScore = parseInt($("#highestRating").text());
-                var $table = $this.closest("table");
-                var $rows = $table.find(".task-row");
-                var $totalItemScores = 0;
-                var $totalPossibleScore = 0;
-                $.each($rows, function () {
-                    $totalPossibleScore += $highestScore;
-                    var $itemScore = parseInt($(this).find(".check").attr("data-rateScore"));
-                    console.log($itemScore);
-                    if (isNaN($itemScore)) {
-                        $itemScore = 0;
-                    }
-                    $totalItemScores += $itemScore;
-                });
-                var $sectionScore = (($totalItemScores / $totalPossibleScore) * $obtainableScore).toFixed(1);
-                var $sectionPercentageScore = (($sectionScore / $obtainableScore) * $percentageScore).toFixed(1);
-                $sectionDiv.find(".totalScore").text($sectionScore);
-                $sectionDiv.find(".percentageScore").text($sectionPercentageScore);
+                var $employeeId = $this.attr("data-employeeId");
+                var $newAppraisalId = $this.attr("data-newAppraisalId");
+
+                $this.attr("disabled", true);
+                Dashmix.layout('header_loader_on');
+
+                var url = '/api/appraisal/PostStartEmployeeAppraisal';
+                $.post(url,
+                    {
+                        employeeId: $employeeId,
+                        newAppraisalId: $newAppraisalId,
+                    },
+                    function (data) {
+                        Dashmix.layout('header_loader_off');
+                        $this.attr("disabled", false);
+                        if (data == "exists") {
+                            Swal.fire({
+                                title: "Success",
+                                text: "Appraisal exercise has already been initiated",
+                                type: "success",
+                                showCancelButton: 0,
+                                customClass: { okButton: "btn btn-danger m-1" },
+                                html: !1,
+                                preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
+
+                            }).then(function (n) {
+                                if (n.value) {
+                                    window.location.href = '/appraisal/ongoing-appraisal';
+                                }
+                            });
+                        }
+                        else if (data == "no appraiser") {
+                            Swal.fire("Oops...", "Your appraisal supervisor has not been selected", "error");
+                        }
+                        else if (data == "no template") {
+                            Swal.fire("Oops...", "Your appraisal template has not been selected", "error");
+                        }
+                        else if (data == "initialized") {
+                            Swal.fire({
+                                title: "Success",
+                                text: "Appraisal exercise has been initiated",
+                                type: "success",
+                                showCancelButton: 0,
+                                customClass: { okButton: "btn btn-danger m-1" },
+                                html: !1,
+                                preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
+
+                            }).then(function (n) {
+                                if (n.value) {
+                                    window.location.href = '/appraisal/ongoing-appraisal';
+                                }
+                            });
+                        }
+                        else if (data == "failed") {
+                            Swal.fire({
+                                title: "Failed",
+                                text: "Sorry something went wrong while initializing your appraisal",
+                                type: "failed",
+                                showCancelButton: 0,
+                                customClass: { okButton: "btn btn-danger m-1" },
+                                html: !1,
+                                preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
+
+                            }).then(function (n) {
+                                if (n.value) {
+                                    window.location.href = '/appraisal/ongoing-appraisal';
+                                }
+                            });
+                        }
+
+                    });
             });
 
-            // ratings for qualititative
-            $("table").on("click", "td.qualitative-rate", function () {
+            // when you click on add row (for task performed)
+            $(".addTaskRow").on("click", function () {
                 var $this = $(this);
-                $this.closest("tr").find(".check").removeClass("check");
-                $this.addClass("check");
-                var $sectionDiv = $this.closest(".section-item");
-                var $obtainableScore = parseInt($sectionDiv.attr("data-obtainableScore"));
-                var $percentageScore = parseInt($sectionDiv.attr("data-percentageScore"));
-                var $highestScore = parseInt($("#highestRating").text());
-                var $table = $this.closest("table");
-                var $rows = $table.find(".task-row");
-                var $totalItemScores = 0;
-                var $totalPossibleScore = 0;
-                $.each($rows, function () {
-                    $totalPossibleScore += $highestScore;
-                    var $itemScore = parseInt($(this).find(".check").attr("data-rateScore"));
-                    console.log($itemScore);
-                    if (isNaN($itemScore)) {
-                        $itemScore = 0;
-                    }
-                    $totalItemScores += $itemScore;
-                });
-                var $sectionScore = (($totalItemScores / $totalPossibleScore) * $obtainableScore).toFixed(1);
-                var $sectionPercentageScore = (($sectionScore / $obtainableScore) * $percentageScore).toFixed(1);
-                $sectionDiv.find(".totalScore").text($sectionScore);
-                $sectionDiv.find(".percentageScore").text($sectionPercentageScore);
-            });
+                var $tr = $this.closest("div").find("table tbody tr.task-row:first").clone();
+                var $rows = $this.closest("div").find("table tbody tr.task-row");
 
-            // ratings for duties assigned
-            $("table").on("click", "td.duties-assigned", function () {
-                var $this = $(this);
-                $this.closest("tr").find(".check").removeClass("check");
-                $this.addClass("check");
-                var $sectionDiv = $this.closest(".section-item");
-                var $obtainableScore = parseInt($sectionDiv.attr("data-obtainableScore"));
-                var $percentageScore = parseInt($sectionDiv.attr("data-percentageScore"));
-                var $highestScore = parseInt($("#highestRating").text());
-                var $table = $this.closest("table");
-                var $rows = $table.find(".task-row");
-                var $totalItemScores = 0;
-                var $totalPossibleScore = 0;
-                $.each($rows, function () {
-                    $totalPossibleScore += $highestScore;
-                    var $itemScore = parseInt($(this).find(".check").attr("data-rateScore"));
-                    console.log($itemScore);
-                    if (isNaN($itemScore)) {
-                        $itemScore = 0;
-                    }
-                    $totalItemScores += $itemScore;
-                });
-                var $sectionScore = (($totalItemScores / $totalPossibleScore) * $obtainableScore).toFixed(1);
-                var $sectionPercentageScore = (($sectionScore / $obtainableScore) * $percentageScore).toFixed(1);
-                $sectionDiv.find(".totalScore").text($sectionScore);
-                $sectionDiv.find(".percentageScore").text($sectionPercentageScore);
-            });
+                var $numbersTaken = [];
+                var $length = $rows.length + 2;
 
-            // ratings for quantitative
-            $("table").on("blur", "td .enter-score", function () {
-                var $this = $(this);
-                var $score = parseInt($this.val());
-                var $itemMaxScore = parseInt($this.closest("tr").find(".max-score").text());
-                if (isNaN($score)) {
-                    Swal.fire("Error!", "Only number values are allowed.", "error");
-                    return;
+                $.each($rows, function () {
+                    var $num = parseInt($(this).find(".count").text().replace('.', ''));
+                    $numbersTaken.push($num);
+                });
+                var $rowCount = 0;
+                for (var i = 1; i < $length; i++) {
+                    if (!$numbersTaken.includes(i)) {
+                        $rowCount = i;
+                        break;
+                    }
                 }
-                if ($score > $itemMaxScore) {
-                    Swal.fire("Error!", "Score cannot be greater than the max score allowed", "error");
-                    $this.val(0);
-                }
-                var $sectionDiv = $this.closest(".section-item");
-                var $obtainableScore = parseInt($sectionDiv.attr("data-obtainableScore"));
-                var $percentageScore = parseInt($sectionDiv.attr("data-percentageScore"));
-                var $maxScore = parseInt($this.closest("tr").find(".max-score").text());
-                var $table = $this.closest("table");
-                var $rows = $table.find(".quantitative-values");
-                var $totalItemScores = 0;
-                var $totalPossibleScore = 0;
-                $.each($rows, function () {
-                    var max = parseInt($(this).find(".max-score").text());
-                    $totalPossibleScore += max;
-                    var $itemScore = parseInt($(this).find(".enter-score").val());
-                    if (isNaN($itemScore)) {
-                        $itemScore = 0;
-                    }
-                    $totalItemScores += $itemScore;
-                });
-                var $sectionScore = (($totalItemScores / $totalPossibleScore) * $obtainableScore).toFixed(1);
-                var $sectionPercentageScore = (($sectionScore / $obtainableScore) * $percentageScore).toFixed(1);
-                $sectionDiv.find(".totalScore").text($sectionScore);
-                $sectionDiv.find(".percentageScore").text($sectionPercentageScore);
+
+                var $count = $tr.find(".count").text();
+                $count = parseInt($count.replace('.', '')) + 1;
+                $tr.find("input").val("");
+                $tr.find(".count").text($rowCount + ".");
+                $tr.find(".delete-row").removeClass("hide");
+                $tr.find(".delete-row").removeAttr("data-sectionResultDetailId");
+                $tr.removeAttr("data-sectionResultDetailId");
+                $tr.find(".delete-row").show();
+                $this.closest("div").find("table tbody").append($tr);
             });
 
-            // submit appraisal
+            // when you click on add row (for duties)
+            //$(".addDutiesRow").on("click", function () {
+
+            //})data-sectionResultDetailId
+
+            // when you click on remove row for task performed
+            $("tbody").on("click", ".delete-row", function () {
+                var $this = $(this);
+                var $sectionResultDetailId = $this.attr("data-sectionResultDetailId");
+                if ($sectionResultDetailId == null || isNaN($sectionResultDetailId)) {
+                    $this.closest("tr").remove();
+                } else {
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "Are you sure you want to remove the item?",
+                        type: "warning",
+                        showCancelButton: !0,
+                        customClass: { confirmButton: "btn btn-danger m-1", cancelButton: "btn btn-secondary m-1" },
+                        confirmButtonText: "Yes, Delete it!",
+                        html: !1,
+                        preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
+
+                    }).then(function (n) {
+                        if (n.value) {
+                            var $appraiseeId = parseInt($("#appraiseeId").text());
+                            var url = "/api/Appraisal/PostRemoveSectionResultDetail";
+
+                            $.post(url, {
+                                sectionResultDetailId: $sectionResultDetailId
+                            }, function (data) {
+                                $this.closest("tr").remove();
+                            });
+                        }
+                        else {
+                            "cancel" === n.dismiss && Swal.fire("Cancelled", "cancelled", "error")
+                        }
+                    });
+                }
+            })
+
+            // when you click on submit appraisal
             $("#submitAppraisal").on("click", function () {
-                var $this = $(this);
                 var $sections = $(".section-item");
-                var $appraiseeId = parseInt($("#appraiseeId").text());
-                var $ratingsValid = true;
+                var $valid = true;
+                var $quatitativeValid = true;
+                var $quatitativeFilledBy = '';
                 var $sectionResults = [];
                 $.each($sections, function () {
                     var $sectionTypeId = $(this).attr("data-sectionTypeId");
-                    var $sectionId = parseInt($(this).attr("data-sectionId"));
-                    var $sectionTotalScore = parseFloat($(this).find(".score-section .totalScore").text());
-                    var $sectionPercentageScore = parseFloat($(this).find(".score-section .percentageScore").text());
-                    var $sectionDetailsArray = [];
-                    if ($sectionTypeId == 1 || $sectionTypeId == 2 || $sectionTypeId == 4) {
+                    var $sectionId = $(this).attr("data-sectionId");
+                    if ($sectionTypeId == 1) {
+                        var $taskAssignedArray = []
+
                         var $rows = $(this).find("table tbody tr.task-row");
                         $.each($rows, function () {
-                            var $sectionDetailId = parseInt($(this).attr("data-sectionResultDetailId"));
-                            var $score = parseInt($(this).find(".check").attr("data-rateScore"));
-                            if ($score == null || isNaN($score)) {
-                                $ratingsValid = false;
+                            var $task = $(this).find("td input").val();
+                            var $sectionDetailResultId = $(this).attr("data-sectionResultDetailId");
+                            var $count = parseInt($(this).find(".count").text().replace('.', ''));
+                            if ($task == '') {
+                                $valid = false;
                             }
                             var obj = {
-                                sectionResultDetailId: $sectionDetailId,
-                                score: $score
+                                task: $task,
+                                taskResult: '',
+                                number: $count,
+                                sectionDetailResultId: $sectionDetailResultId
                             }
-                            $sectionDetailsArray.push(obj);
-                        })
+                            $taskAssignedArray.push(obj);
+                        });
+
+                        var $taskPerfomed = {
+                            sectionId: $sectionId,
+                            taskPerformed: $taskAssignedArray
+                        }
+                        $sectionResults.push($taskPerfomed);
+                    }
+                    else if ($sectionTypeId == 2) {
+                        var $taskAssignedArray = []
+
+                        var $rows = $(this).find("table tbody tr.task-row");
+                        $.each($rows, function () {
+                            var $task = $(this).find("td input.duties").val();
+                            var $sectionDetailResultId = $(this).attr("data-sectionResultDetailId");
+                            var $resultAchieved = $(this).find("td input.resultAchieved").val();
+                            var $count = parseInt($(this).find(".count").text().replace('.', ''));
+                            if ($task == '' || $resultAchieved == '') {
+                                $valid = false;
+                            }
+                            var obj = {
+                                task: $task,
+                                taskResult: $resultAchieved,
+                                number: $count,
+                                sectionDetailResultId: $sectionDetailResultId
+                            }
+                            $taskAssignedArray.push(obj);
+                        });
+
+                        var $taskPerfomed = {
+                            sectionId: $sectionId,
+                            taskPerformed: $taskAssignedArray
+                        }
+                        $sectionResults.push($taskPerfomed);
                     }
                     else if ($sectionTypeId == 3) {
+                        var $ValuesArray = []
+                        var $breakdownValue = $(this).find('.breakdown-value').text();
+                        $quatitativeFilledBy = $breakdownValue;
                         var $rows = $(this).find("table tbody tr.quantitative-values");
                         $.each($rows, function () {
-                            var $sectionDetailId = parseInt($(this).attr("data-sectionResultDetailId"));
-                            var $score = parseInt($(this).find(".enter-score").val());
-                            if ($score == null || isNaN($score)) {
-                                $ratingsValid = false;
+                            var $breakdowns = $(this).find("input");
+                            var $sectionDetailResultId = $(this).attr("data-sectionResultDetailId");
+                            var $breakdownArray = [];
+                            $.each($breakdowns, function () {
+                                var $breakdownValue = $(this).val();
+                                var $text = $(this).closest("li").find(".breakdown-title").text();
+                                var $breakdownId = parseInt($(this).attr("data-breakdownId"));
+                                var obj = {
+                                    breakdownValue: $breakdownValue,
+                                    breakdownText: $text,
+                                    breakdownId: $breakdownId
+                                }
+                                $breakdownArray.push(obj);
+                            });
+                            if ($(this).find("input").val() == '') {
+                                $quatitativeValid = false;
                             }
+
+                            var $detailTitle = $(this).find(".detail-title").text();
+                            var $detailId = parseInt($(this).find(".section-detail").attr("data-sectionDetailId"));
                             var obj = {
-                                sectionResultDetailId: $sectionDetailId,
-                                score: $score
+                                sectionDetailResultId: $sectionDetailResultId,
+                                task: $detailTitle,
+                                taskResult: '',
+                                number: $detailId,
+                                breakdowns: $breakdownArray
                             }
-                            $sectionDetailsArray.push(obj);
+                            $ValuesArray.push(obj);
                         });
+                        var $taskPerfomed = {
+                            sectionId: $sectionId,
+                            taskPerformed: $ValuesArray
+                        }
+                        $sectionResults.push($taskPerfomed);
                     }
-                    var sectionResult = {
-                        sectionResultId: $sectionId,
-                        sectionTotalScore: $sectionTotalScore,
-                        sectionPercentageScore: $sectionPercentageScore,
-                        sectionDetailsScore: $sectionDetailsArray
-                    };
-                    $sectionResults.push(sectionResult);
+                    else if ($sectionTypeId == 4) {
+                        var $taskPerfomed = {
+                            sectionId: $sectionId,
+                            taskPerformed: []
+                        }
+                        $sectionResults.push($taskPerfomed);
+                    }
                 });
-                if (!$ratingsValid) {
-                    Swal.fire("Error!", "One or more items have not been rated.", "error");
+
+                if (!$valid) {
+                    Swal.fire("Error!", "One or more empty fields detected.", "error");
                     return;
                 }
-                
-                //
+                if ($quatitativeFilledBy == "appraisee") {
+                    if (!$quatitativeValid) {
+                        Swal.fire("Error!", "One or more empty fields detected in the quantitavie section.", "error");
+                        return;
+                    }
+                }
                 console.log($sectionResults);
                 Swal.fire({
                     title: "Are you sure?",
-                    text: "Are you sure you want to submit this appraisal?",
+                    text: "Are you sure you want to submit the appraisal to your supervisor?",
                     type: "warning",
                     showCancelButton: !0,
                     customClass: { confirmButton: "btn btn-danger m-1", cancelButton: "btn btn-secondary m-1" },
@@ -801,15 +781,16 @@
 
                 }).then(function (n) {
                     if (n.value) {
-                        var url = "/api/Appraisal/PostScoreAppraisalSections";
+                        var $appraiseeId = parseInt($("#appraiseeId").text());
+                        var url = "/api/Appraisal/PostResubmitAppraisalToSupervisor";
 
                         $.post(url, {
                             appraiseeId: $appraiseeId,
-                            sectionScoresResults: $sectionResults
+                            sectionResults: $sectionResults
                         }, function (data) {
                             Swal.fire({
                                 title: "Success",
-                                text: "This appraisal has been submitted to the appraisee for his/her review",
+                                text: "Your appraisal has been resubmitted to your supervisor",
                                 type: "success",
                                 showCancelButton: 0,
                                 customClass: { okButton: "btn btn-danger m-1" },
@@ -818,7 +799,7 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/appraise-members';
+                                    window.location.href = '/appraisal/ongoing-appraisal';
                                 }
                             });
                         });
@@ -828,47 +809,7 @@
                     }
                 });
             });
-
-            // 
-            $("#rejectAppraisal").on("click", function () {
-                $("#rejection-div").show();
-            });
-            $("#cancelReject").on("click", function () {
-                $("#rejection-div").hide();
-            });
-
-            // when you click on submit reject
-            $("#submitReject").on("click", function () {
-                var $appraiseeId = parseInt($("#appraiseeId").text());
-                var $rejectionReason = $("#rejectionReasonText").val();
-                //check if rejection reason text is not empty
-                if ($rejectionReason == '') {
-                    Swal.fire("Error!", "You need to enter a rejection reason!", "error");
-                    return;
-                }
-
-                var url = "/api/Appraisal/PostRejectAppraisalToAppraisee";
-                $.post(url, {
-                    appraiseeId: $appraiseeId,
-                    rejectionReason: $rejectionReason
-                }, function (data) {
-                    Swal.fire({
-                        title: "Success",
-                        text: "This appraisal has been retured back to the appraisee with the rejection reason specified",
-                        type: "success",
-                        showCancelButton: 0,
-                        customClass: { okButton: "btn btn-danger m-1" },
-                        html: !1,
-                        preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
-
-                    }).then(function (n) {
-                        if (n.value) {
-                            window.location.href = '/appraisal/appraise-members';
-                        }
-                    });
-                });
-            })
         })
-        ////////////////////////////////////////////////////////////////////
+                                ////////////////////////////////////////////////////////////////////
     </script>
 }

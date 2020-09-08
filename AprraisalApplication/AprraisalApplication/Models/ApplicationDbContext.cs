@@ -54,7 +54,8 @@ namespace AprraisalApplication.Models
         public DbSet<InitiatedTemplateSection> InitiatedTemplateSections { get; set; }
         public DbSet<InitiatedSectionDetail> InitiatedSectionDetails { get; set; }
         public DbSet<InitiatedSectionDetailBreakdown> InitiatedSectionDetailBreakdowns { get; set; }
-
+        public DbSet<AppraiseeRejection> AppraiseeRejections { get; set; }
+        public DbSet<AppraiseeComments> AppraiseeComments { get; set; }
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {

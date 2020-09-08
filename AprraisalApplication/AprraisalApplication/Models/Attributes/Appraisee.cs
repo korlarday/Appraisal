@@ -23,15 +23,19 @@ namespace AprraisalApplication.Models.Attributes
         public bool IsCompleted { get; set; }
         public AppraiseeProgress AppraiseeProgress { get; set; }
         public int AppraiseeProgressId { get; set; }
+        public AppraiseeComments AppraiseeComments { get; set; }
+        public int AppraiseeCommentsId { get; set; }
         public ICollection<SectionResult> SectionResults { get; set; }
         public ICollection<AppraiseeCareerHistoryWithCompany> AppraiseeCareerHistoryWithCompanies { get; set; }
+        public ICollection<AppraiseeRejection> AppraiseeRejections { get; set; }
         public Appraisee()
         {
             AppraiseeCareerHistoryWithCompanies = new Collection<AppraiseeCareerHistoryWithCompany>();
             SectionResults = new Collection<SectionResult>();
+            AppraiseeRejections = new Collection<AppraiseeRejection>();
         }
 
-        public Appraisee(int newAppraisalId, int employeeId, int appraiseeId, int appraiserId, int initiatedTemplateId, int progressId)
+        public Appraisee(int newAppraisalId, int employeeId, int appraiseeId, int appraiserId, int initiatedTemplateId, int progressId, int commentsId)
         {
             NewAppraisalId = newAppraisalId;
             EmployeeId = employeeId;
@@ -41,6 +45,7 @@ namespace AprraisalApplication.Models.Attributes
             AppraiseeProgressId = progressId;
             IsNew = true;
             IsCompleted = false;
+            AppraiseeCommentsId = commentsId;
         }
 
     }

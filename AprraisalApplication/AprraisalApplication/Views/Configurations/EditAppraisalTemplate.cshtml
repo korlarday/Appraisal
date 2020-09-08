@@ -1172,7 +1172,7 @@
             $("#sectionContainer").on("click", ".deleteQualitativeRow", function () {
                 var $this = $(this);
                 var $detailId = $this.attr("data-detailId");
-                if ($detailId == '') {
+                if ($detailId == null) {
                     $this.closest("tr").remove();
                 } else {
                     Swal.fire({

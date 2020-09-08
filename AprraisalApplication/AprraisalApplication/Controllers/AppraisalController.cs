@@ -169,6 +169,10 @@ namespace AprraisalApplication.Controllers
             
             if(model.IsThereAnOngoingAppraisal && model.IsAppraisalInitialized && model.Appraisee.AppraiseeProgress.AppraiseeSubmit)
             {
+                if (model.Appraisee.AppraiseeProgress.SupervisorReject)
+                {
+                    return View("SupervisorReject", model); 
+                }
                 return View("AppraisalSubmitted", model);
             }
             return View("OngoingAppraisal", model);

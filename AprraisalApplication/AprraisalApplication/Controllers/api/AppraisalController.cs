@@ -43,5 +43,29 @@ namespace AprraisalApplication.Controllers.api
             _unitOfWork.Appraisal.SubmitAppraisalToSupervisor(model);
             return Ok();
         }
+
+        public IHttpActionResult PostScoreAppraisalSections([FromBody] SectionScoresParams model)
+        {
+            _unitOfWork.Appraisal.ScoreAppraisalSections(model);
+            return Ok();
+        }
+
+        public IHttpActionResult PostRejectAppraisalToAppraisee([FromBody] SectionScoresParams model)
+        {
+            _unitOfWork.Appraisal.RejectAppraisalToAppraisee(model);
+            return Ok();
+        }
+
+        public IHttpActionResult PostRemoveSectionResultDetail([FromBody] SectionResultParams model)
+        {
+            _unitOfWork.Appraisal.DeleteSectionResultDetailItem(model);
+            return Ok();
+        }
+
+        public IHttpActionResult PostResubmitAppraisalToSupervisor([FromBody] SubmitAppraisalParams model)
+        {
+            _unitOfWork.Appraisal.ResubmitAppraisalToSupervisor(model);
+            return Ok();
+        }
     }
 }

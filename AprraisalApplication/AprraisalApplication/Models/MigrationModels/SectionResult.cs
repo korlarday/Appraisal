@@ -14,7 +14,8 @@ namespace AprraisalApplication.Models.MigrationModels
         public int AppraiseeId { get; set; }
         public InitiatedTemplateSection InitiatedTemplateSection { get; set; }
         public int InitiatedTemplateSectionId { get; set; }
-        public double Score { get; set; }
+        public double PercentageScore { get; set; }
+        public double TotalScore { get; set; }
         public ICollection<SectionDetailResult> SectionDetailResults { get; set; }
         public SectionResult()
         {
@@ -25,7 +26,8 @@ namespace AprraisalApplication.Models.MigrationModels
         {
             AppraiseeId = appraiseeId;
             InitiatedTemplateSectionId = initiatedTemplateSectionId;
-            Score = 0;
+            PercentageScore = 0;
+            TotalScore = 0;
         }
     }
 }

@@ -53,7 +53,7 @@
     <div id="content-body">
         <h1 class="text-center font-size-h4 text-uppercase">@Model.AppraisalTemplate.TemplateName</h1>
         <div class="row">
-            @foreach (var templateSection in Model.AppraisalTemplate.AppraisalTemplateSections)
+            @foreach (var templateSection in Model.AppraisalTemplate.AppraisalTemplateSections.OrderBy(x => x.SetupId))
             {
                 if(templateSection.IsDeleted == false)
                 {
