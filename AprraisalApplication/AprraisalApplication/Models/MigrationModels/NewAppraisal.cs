@@ -27,6 +27,7 @@ namespace AprraisalApplication.Models.MigrationModels
         [Display(Name = "Period End Date")]
         public DateTime AppraisalPeriodEndDate { get; set; }
         public string Slug { get; set; }
+        public bool IsCompleted { get; set; }
         public ICollection<Appraisee> Appraisees { get; set; }
         public ICollection<AppraisalDepartment> AppraisalDepartments { get; set; }
         public ICollection<AppraisalLocation> AppraisalLocations { get; set; }

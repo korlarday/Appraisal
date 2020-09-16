@@ -9,11 +9,13 @@ namespace AprraisalApplication.Models.ViewModels
     public class AppraiseMembersVM
     {
         public List<AppraiseeAndProgress> AppraiseeAndProgresses { get; set; }
+        public NewAppraisal NewAppraisal { get; set; }
 
     }
     public class AppraiseeAndProgress
     {
         public Employee Employee { get; set; }
         public AppraiseeProgress AppraiseeProgress { get; set; }
+        public NewAppraisal NewAppraisal { get; set; }
     }
 }

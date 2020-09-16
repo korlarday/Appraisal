@@ -1,0 +1,91 @@
+﻿@model IEnumerable<AprraisalApplication.Models.ViewModels.ViewEmployeesRoles>
+
+@{
+    ViewBag.Title = "Manage Roles";
+}
+
+
+<!-- Hero -->
+<div class="bg-body-light">
+    <div class="content content-full">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Employee Roles</h1>
+            <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Home</li>
+                    <li class="breadcrumb-item">Appraisal</li>
+                    <li class="breadcrumb-item active" aria-current="page">Manage Roles</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
+<!-- Page Content -->
+<div class="content">
+    <!-- Elements -->
+    <div class="block block-rounded block-bordered">
+        <div class="block-header block-header-default">
+            <h3 class="block-title">Roles</h3>
+        </div>
+        <div class="block-content">
+            @if (TempData["SM"] != null)
+            {
+                <div class="alert alert-success">
+                    <span>@TempData["SM"]</span>
+                </div>
+            }
+            <div class="block block-rounded block-bordered">
+                <div class="block-content block-content-full">
+                    <!-- DataTables init on table by adding .js-dataTable-buttons class, functionality is initialized in js/pages/be_tables_datatables.min.js which was auto compiled from _es6/pages/be_tables_datatables.js -->
+                    <div class="table-responsive">
+                        <table class="table table-hover table-vcenter js-dataTable-full-pagination" id="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 50px;">#</th>
+                                    <th>Name</th>
+                                    <th class="d-none d-sm-table-cell">Department</th>
+                                    <th>Roles</th>
+                                    <th class="text-center" style="width: 100px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int num = 1;
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <th class="text-center" scope="row">@num</th>
+                                            <td class="font-w600">
+                                                @item.Employee.Firstname @item.Employee.Lastname
+                                            </td>
+                                            <td class="text-sm-left">
+                                                @item.Employee.Department.Name
+                                            </td>
+                                            <td>
+                                                @if (item.Roles != null && item.Roles.Count() > 0)
+                                                {
+                                                    foreach (var role in item.Roles)
+                                                    {
+                                                        <span>@role,</span>
+                                                    }
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="/configurations/edit-employee-roles/@item.Employee.ApplicationUserId" class="btn btn-sm btn-primary" data-toggle="tooltip" title="Edit Roles">
+                                                    Edit
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        ++num;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Elements -->
+</div>

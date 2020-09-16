@@ -1,0 +1,810 @@
+﻿@model AprraisalApplication.Models.ViewModels.AppraiseStaffVM
+
+
+@{
+    Layout = null;
+    int columns = Model.DefaultRatings.Count() + 1;
+    int dutiesAssignCol = Model.DefaultRatings.Count() + 2;
+    int ratingsCount = Model.DefaultRatings.Count();
+    var sectionResult = Model.Appraisee.SectionResults;
+    var highestRating = Model.DefaultRatings.OrderByDescending(x => x.Score).FirstOrDefault();
+    double totalPercentageScore = 0;
+
+    var sigsrc = String.Empty;
+
+    if (Model.Employee.SignatureImage != null)
+    {
+        var sigbase64 = Convert.ToBase64String(Model.Employee.SignatureImage);
+        sigsrc = string.Format("data:image/jpg;base64,{0}", sigbase64);
+    }
+
+    var appraiserSigsrc = String.Empty;
+
+    if (Model.Appraisee.AppraiserPersonalData.Appraiser.SignatureImage != null)
+    {
+        var sigbase64 = Convert.ToBase64String(Model.Appraisee.AppraiserPersonalData.Appraiser.SignatureImage);
+        appraiserSigsrc = string.Format("data:image/jpg;base64,{0}", sigbase64);
+    }
+
+    var hodSigsrc = String.Empty;
+
+    if (Model.HodEmployee != null)
+    {
+        var sigbase64 = Convert.ToBase64String(Model.HodEmployee.SignatureImage);
+        hodSigsrc = string.Format("data:image/jpg;base64,{0}", sigbase64);
+    }
+
+    var hrSigsrc = String.Empty;
+
+    if (Model.HrEmployee != null)
+    {
+        var sigbase64 = Convert.ToBase64String(Model.HrEmployee.SignatureImage);
+        hrSigsrc = string.Format("data:image/jpg;base64,{0}", sigbase64);
+    }
+
+    var mdSigsrc = String.Empty;
+
+    if (Model.MdEmployee != null)
+    {
+        var sigbase64 = Convert.ToBase64String(Model.MdEmployee.SignatureImage);
+        mdSigsrc = string.Format("data:image/jpg;base64,{0}", sigbase64);
+    }
+
+    // to calculate total percentage score
+    double overallScore = sectionResult.Sum(x => x.PercentageScore);
+
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>View Previous Appraisal</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+
+    <meta name="description" content="View Previous Appraisal">
+    <meta name="author" content="pixelcave">
+    <meta name="robots" content="noindex, nofollow">
+
+
+    <!-- Icons -->
+    <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
+    <link rel="shortcut icon" href="~/Images/ieilogo.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="~/Images/ieilogo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="~/Images/ieilogo.png">
+    <!-- END Icons -->
+    <!-- Stylesheets -->
+    <!-- Fonts and Dashmix framework -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,400i,600,700">
+
+
+    @Styles.Render("~/Content/css")
+    <style>
+        #content-body {
+            max-width: 1000px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 50px;
+        }
+
+        .table-bordered td, .table-bordered th {
+            border: 1px solid grey;
+        }
+
+        .table thead th {
+            border-bottom: 1px solid grey;
+        }
+
+        .titles {
+            font-weight: bold;
+        }
+
+        .details {
+            font-size: 16px;
+        }
+
+        .text-header {
+            text-decoration: underline;
+            text-transform: uppercase;
+        }
+
+        .check {
+            background: url("../../Images/checkmark.png") center center no-repeat;
+            background-size: 25px;
+        }
+
+        .score {
+            border-bottom: 1px solid black;
+            text-align: center;
+        }
+
+        .header {
+            border-bottom: 1px solid grey;
+            margin-bottom: 30px;
+        }
+
+        .information {
+            width: 50%;
+            float: left;
+        }
+
+        .rating-div {
+            width: 150px;
+            float: left;
+        }
+
+        .rating-box {
+            width: 50px;
+            border: 1px solid black;
+            height: 50px;
+        }
+
+        .score-title {
+            width: 40%;
+            float: left;
+        }
+
+        .score-display {
+            width: 60px;
+            float: left;
+        }
+    </style>
+</head>
+<body>
+    <div id="content-body">
+        <div class="header">
+            <div style="width:150px;margin:auto">
+                <img src="~/Images/ieilogo.png" style="width:100%" />
+            </div>
+            <div>
+                <h3 class="text-center text-uppercase">@Model.NewAppraisal.AppraisalTitle</h3>
+            </div>
+        </div>
+        <div>
+            <div class="row" style="overflow:hidden">
+                <h6 class="col-xs-12 text-header">Personal Data: Appraisee</h6>
+                <div class="col-lg-6 details information">
+                    <div class="mt-4">
+                        <div class="row mb-0 pb-0" style="overflow:hidden">
+                            <div class="col-lg-6 titles information">Name of Employee: </div>
+                            <div class="col-lg-6 information">@Model.Employee.Firstname @Model.Employee.Lastname</div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="row mb-3" style="overflow:hidden">
+                            <div class="col-lg-6 titles information">Date of Employment: </div>
+                            <div class="col-lg-6 information">@Model.Employee.DateOfEmployment.ToString("dd-MMM-yyyy")</div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="row mb-3" style="overflow:hidden">
+                            <div class="col-lg-6 titles information">Grade: </div>
+                            <div class="col-lg-6 capitalize-text information">@Model.Employee.Grade.Name</div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="row mb-3" style="overflow:hidden">
+                            <span class="col-lg-6 titles information">Appraisal Period: </span>
+                            <span class="col-lg-6 information">
+                                @Model.NewAppraisal.AppraisalPeriodStartDate.ToString("MMM-yyyy")
+                                To
+                                @Model.NewAppraisal.AppraisalPeriodEndDate.ToString("MMM-yyyy")
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 details information">
+                    <div class="mt-4">
+                        <div class="row" style="overflow:hidden">
+                            <div class="col-lg-6 titles information">Department: </div>
+                            <div class="col-lg-6 capitalize-text information">@Model.Employee.Department.Name</div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="row" style="overflow:hidden">
+                            <div class="col-lg-6 titles information">Location: </div>
+                            <div class="col-lg-6 capitalize-text information">@Model.Employee.State.Description</div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="row" style="overflow:hidden">
+                            <div class="col-lg-6 titles information">Date of Last Promotion: </div>
+                            <div class="col-lg-6 information">
+                                @if (Model.Employee.DateOfLastPromotion != null)
+                                {
+                                    @Model.Employee.DateOfLastPromotion.Value.ToString("dd-MMM-yyyy")
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="row" style="overflow:hidden">
+                            <div class="col-lg-6 titles information">Qualifications: </div>
+                            <div class="col-lg-6 capitalize-text information">
+                                @foreach (var item in Model.Employee.EmployeeQualifications)
+                                {
+                                    <span>@item.Qualification.Name, </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top:30px;overflow:hidden">
+                <div>
+                    <h6 class="col-12 text-header">Personal Data: Appraiser</h6>
+                    <div class="col-md-6 details information">
+                        <div class="mt-4">
+                            <div class="row" style="overflow:hidden">
+                                <div class="col-6 titles information">Appraiser's Name: </div>
+                                <div class="col-6 information">
+                                    @Model.Appraisee.AppraiserPersonalData.Appraiser.Firstname
+                                    @Model.Appraisee.AppraiserPersonalData.Appraiser.Lastname
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <div class="row" style="overflow:hidden">
+                                <div class="col-6 titles information">Grade: </div>
+                                <div class="col-6 capitalize-text information">@Model.Appraisee.AppraiserPersonalData.Appraiser.Grade.Name</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 details information">
+                        <div class="mt-4">
+                            <div class="row" style="overflow:hidden">
+                                <div class="col-6 titles information">Job Title: </div>
+                                <div class="col-6 capitalize-text information">@Model.Appraisee.AppraiserPersonalData.JobTitle.Name</div>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <div class="row" style="overflow:hidden">
+                                <div class="col-6 titles information">Department: </div>
+                                <div class="col-6 capitalize-text information">@Model.Appraisee.AppraiserPersonalData.Appraiser.Department.Name</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <h6 class="mt-4 text-header mt-5">Summary Rating</h6>
+                <div style="overflow:hidden">
+                    @{
+                        int length = Model.SummaryRatings.Count() - 1;
+                        var ratings = Model.SummaryRatings;
+                        bool findRate = false;
+                        for (int i = 0; i <= length; i++)
+                        {
+                            bool scoreInRate = false;
+                            string rate = "";
+                            if (i == 0)
+                            {
+                                rate = "Below " + ratings[1].Score;
+                                if (findRate == false)
+                                {
+                                    if ((ratings[i + 1].Score - 1) >= overallScore)
+                                    {
+                                        scoreInRate = true;
+                                        findRate = true;
+                                    }
+                                }
+                            }
+                            else if (i != 0 && i != length)
+                            {
+                                rate = ratings[i].Score + " - " + (ratings[i + 1].Score - 1).ToString();
+                                if (findRate == false)
+                                {
+                                    if ((ratings[i + 1].Score - 1) >= overallScore)
+                                    {
+                                        scoreInRate = true;
+                                        findRate = true;
+                                    }
+                                }
+                            }
+                            else if (i == length)
+                            {
+                                rate = ratings[i].Score + " & Above";
+                                if (findRate == false)
+                                {
+                                    if (100 >= overallScore)
+                                    {
+                                        scoreInRate = true;
+                                        findRate = true;
+                                    }
+                                }
+                            }
+                            <div class="rating-div">
+                                <div>@rate</div>
+                                <div class="rating-box @(scoreInRate == true? "check" : "")"></div>
+                                <div>@ratings[i].Rating</div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <h6 class="mt-4 text-header mt-5">Career history with the company</h6>
+                <div class="table-responsive mb-4 details">
+                    <table class="table table-bordered table-vcenter">
+                        <thead>
+                            <tr>
+                                <th style="width:40px;">S/N</th>
+                                <th style="width:130px">Date</th>
+                                <th style="width:150px">Department/Unit</th>
+                                <th style="width:130px">Grade</th>
+                                <th>Trainings Attended</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int num = 1;
+                                foreach (var training in Model.Appraisee.AppraiseeCareerHistoryWithCompanies.OrderByDescending(x => x.Date))
+                                {
+                                    <tr>
+                                        <th class="text-center">@num</th>
+                                        <td>@training.Date.ToString("dd MMM yyyy")</td>
+                                        <td class="capitalize-text">@training.Department.Name</td>
+                                        <td class="capitalize-text">@training.Grade.Name</td>
+                                        <td>@training.TrainingAttended</td>
+                                    </tr>
+                                    ++num;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            @foreach (var templateSection in Model.InitiatedAppraisalTemplate.InitiatedTemplateSections.OrderBy(x => x.SetupId))
+            {
+                if (templateSection.IsDeleted == false)
+                {
+                    var currentResultSection = sectionResult.Where(x => x.InitiatedTemplateSectionId == templateSection.Id).SingleOrDefault();
+                    if (templateSection.SectionTypeId == 1)
+                    {
+                        totalPercentageScore += currentResultSection.PercentageScore;
+                        <div class="section-item"
+                             data-sectionTypeId="1"
+                             data-sectionId="@currentResultSection.Id"
+                             data-percentageScore="@templateSection.TotalPercentageObtainable"
+                             data-obtainableScore="@templateSection.TotalMarkObtainable">
+
+                            <h5 class="mt-4">Section @templateSection.SetupId</h5>
+                            <div class="table-responsive mb-4 details">
+                                <table class="table table-bordered table-vcenter">
+                                    <thead>
+                                        <tr style="background-color:#e5e6e6;">
+                                            <th rowspan="2" colspan="@columns">
+                                                <div class="font-size-h5 text-center">@templateSection.SectionTitle</div>
+                                                <div>@templateSection.SectionInstructions</div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="background-color:#e5e6e6;">
+                                            <th class="text-center text-uppercase" style="width:70%;" scope="row">
+                                                @((templateSection.FirstColumnHeader != "")? templateSection.FirstColumnHeader: "tasks performed")
+                                            </th>
+                                            <th class="text-uppercase text-center" colspan="@ratingsCount">ratings</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-center text-uppercase" scope="row"></th>
+                                            @foreach (var item in Model.DefaultRatings)
+                                            {
+                                                <th class="text-center">@item.Score</th>
+                                            }
+                                        </tr>
+                                        @foreach (var sectionDetail in currentResultSection.SectionDetailResults.OrderBy(x => x.Number))
+                                        {
+                                            <tr class="task-row" data-sectionResultDetailId="@sectionDetail.Id">
+                                                <td class="pr-5">
+                                                    <div class="row p-1">
+                                                        <span class="col-1 count" style="">@sectionDetail.Number.</span>
+                                                        <span>@sectionDetail.Title1</span>
+                                                        @*<button style="display:none" class="btn btn-link text-danger col-1 delete-row" data-toggle="tooltip" title="Delete Row"><i class="fa fa-times"></i></button>*@
+                                                    </div>
+                                                </td>
+                                                @foreach (var item in Model.DefaultRatings)
+                                                {
+                                                    <td class="@(sectionDetail.Score == item.Score? "check": "")"></td>
+                                                }
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row score-section" style="overflow:hidden;">
+                                <div class="information">
+                                    <div class="row">
+                                        <div class="ml-3 score-title">Total Score:</div>
+                                        <div class="totalScore score-display score">@currentResultSection.TotalScore <span class="ml-3">/</span></div>
+                                        <div class="score score-display">@templateSection.TotalMarkObtainable</div>
+                                    </div>
+                                </div>
+                                <div class="information">
+                                    <div class="row">
+                                        <div class="score-title">Percentage Score:</div>
+                                        <div class="percentageScore score score-display">@currentResultSection.PercentageScore <span class="ml-2">/</span></div>
+                                        <div class="score score-display">@templateSection.TotalPercentageObtainable %</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="mb-5" />
+                    }
+                    else if (templateSection.SectionTypeId == 2)
+                    {
+                        totalPercentageScore += currentResultSection.PercentageScore;
+                        <div class="section-item"
+                             data-sectionTypeId="2"
+                             data-sectionId="@currentResultSection.Id"
+                             data-percentageScore="@templateSection.TotalPercentageObtainable"
+                             data-obtainableScore="@templateSection.TotalMarkObtainable">
+                            <h5 class="mt-4">Section @templateSection.SetupId</h5>
+                            <div class="table-responsive mb-4">
+                                <table class="table table-bordered table-vcenter">
+                                    <thead>
+                                        <tr style="background-color:#e5e6e6;">
+                                            <th rowspan="2" colspan="@dutiesAssignCol">
+                                                <div class="font-size-h5 text-center">@templateSection.SectionTitle</div>
+                                                <div>@templateSection.SectionInstructions</div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="background-color:#e5e6e6;">
+                                            <th class="text-center text-uppercase" style="width:35%;">
+                                                @((templateSection.FirstColumnHeader != "")? templateSection.FirstColumnHeader: "duties assigned")
+                                            </th>
+                                            <th class="text-center text-uppercase" style="width: 35%;">
+                                                @((templateSection.SecondColumnHeader != "")? templateSection.SecondColumnHeader: "actual results achieved")
+                                            </th>
+                                            <th class="text-uppercase text-center" colspan="@ratingsCount">ratings</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-center text-uppercase" scope="row"></th>
+                                            <th class="text-center text-uppercase" scope="row"></th>
+                                            @foreach (var item in Model.DefaultRatings)
+                                            {
+                                                <th class="text-center">@item.Score</th>
+                                            }
+                                        </tr>
+                                        @foreach (var sectionDetail in currentResultSection.SectionDetailResults.OrderBy(x => x.Number))
+                                        {
+                                            <tr class="task-row" data-sectionResultDetailId="@sectionDetail.Id">
+                                                <td>
+                                                    <div class="row p-1">
+                                                        <span class="col-1 count mr-2">@sectionDetail.Number.</span>
+                                                        <span>@sectionDetail.Title1</span>
+                                                    </div>
+                                                </td>
+                                                <td class="pl-4">
+                                                    <div class="row">
+                                                        <span>@sectionDetail.Title2</span>
+                                                    </div>
+                                                </td>
+                                                @foreach (var item in Model.DefaultRatings)
+                                                {
+                                                    <td class="@(sectionDetail.Score == item.Score? "check": "")"></td>
+                                                }
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row score-section" style="overflow:hidden;">
+                                <div class="information">
+                                    <div class="row">
+                                        <div class="ml-3 score-title">Total Score:</div>
+                                        <div class="totalScore score-display score">@currentResultSection.TotalScore <span class="ml-3">/</span></div>
+                                        <div class="score score-display">@templateSection.TotalMarkObtainable</div>
+                                    </div>
+                                </div>
+                                <div class="information">
+                                    <div class="row">
+                                        <div class="score-title">Percentage Score:</div>
+                                        <div class="percentageScore score score-display">@currentResultSection.PercentageScore <span class="ml-2">/</span></div>
+                                        <div class="score score-display">@templateSection.TotalPercentageObtainable %</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="mb-5" />
+                    }
+                    else if (templateSection.SectionTypeId == 3)
+                    {
+                        totalPercentageScore += currentResultSection.PercentageScore;
+                        <div class="section-item"
+                             data-sectionTypeId="3"
+                             data-sectionId="@currentResultSection.Id"
+                             data-percentageScore="@templateSection.TotalPercentageObtainable"
+                             data-obtainableScore="@templateSection.TotalMarkObtainable">
+
+                            <h5 class="mt-4">Section @templateSection.SetupId</h5>
+                            <div class="table-responsive mb-4">
+                                <span class="breakdown-value" style="display:none">@templateSection.BreakdownValueBy</span>
+                                <table class="table table-bordered table-vcenter" style="overflow:hidden">
+                                    <thead>
+                                        <tr style="background-color:#e5e6e6;">
+                                            <th rowspan="2" colspan="4">
+                                                <div class="font-size-h5 text-center">@templateSection.SectionTitle</div>
+                                                <div>@templateSection.SectionInstructions</div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="background-color:#e5e6e6;">
+                                            <th>S/N</th>
+                                            <th class="text-center text-uppercase" style="width:70%;" scope="row">
+                                                @((templateSection.FirstColumnHeader != "")? templateSection.FirstColumnHeader: "values")
+                                            </th>
+                                            <th class="text-center">MAX SCORE</th>
+                                            <th class="text-uppercase text-center">MARK OBTAINED</th>
+                                        </tr>
+                                        @{
+                                            int count = 1;
+                                            foreach (var detail in templateSection.InitiatedSectionDetails)
+                                            {
+                                                var detailResult = currentResultSection.SectionDetailResults.Where(x => x.SectionDetailId == detail.Id).SingleOrDefault();
+                                                <tr class="quantitative-values" data-sectionResultDetailId="@detailResult.Id">
+                                                    <td>@count</td>
+                                                    <td data-sectionDetailId="@detail.Id" class="section-detail">
+                                                        <span class="detail-title">@detail.Title1</span>
+                                                        <div>
+                                                            <ul>
+                                                                @foreach (var breakdown in detail.InitiatedSectionDetailBreakdowns)
+                                                                {
+                                                                    var result = detailResult.ItemBreakdownResults.Where(x => x.InitiatedSectionDetailBreakdownId == breakdown.Id).SingleOrDefault();
+                                                                    <li class="mt-1">
+                                                                        <span class="breakdown-title">@breakdown.Title</span>
+                                                                        @result.Value
+                                                                    </li>
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center max-score">@detail.MaxScore</td>
+                                                    <td>
+                                                        @detailResult.Score
+                                                    </td>
+                                                </tr>
+                                                ++count;
+                                            }
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td class="text-right font-w700" colspan="2">Mark Obtainable</td>
+                                            <td class="text-center font-w700">@templateSection.TotalMarkObtainable</td>
+                                            <td colspan="@ratingsCount" class="text-center font-w700"></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <div class="row score-section" style="overflow:hidden;">
+                                <div class="information">
+                                    <div class="row">
+                                        <div class="ml-3 score-title">Total Score:</div>
+                                        <div class="totalScore score-display score">@currentResultSection.TotalScore <span class="ml-3">/</span></div>
+                                        <div class="score score-display">@templateSection.TotalMarkObtainable</div>
+                                    </div>
+                                </div>
+                                <div class="information">
+                                    <div class="row">
+                                        <div class="score-title">Percentage Score:</div>
+                                        <div class="percentageScore score score-display">@currentResultSection.PercentageScore <span class="ml-2">/</span></div>
+                                        <div class="score score-display">@templateSection.TotalPercentageObtainable %</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="mb-5" />
+                    }
+                    else if (templateSection.SectionTypeId == 4)
+                    {
+                        totalPercentageScore += currentResultSection.PercentageScore;
+                        <div class="section-item"
+                             data-sectionTypeId="4"
+                             data-sectionId="@currentResultSection.Id"
+                             data-percentageScore="@templateSection.TotalPercentageObtainable"
+                             data-obtainableScore="@templateSection.TotalMarkObtainable">
+                            <h5 class="mt-4">Section @templateSection.SetupId</h5>
+                            <div class="table-responsive mb-4">
+                                <table class="table table-bordered table-vcenter">
+                                    <thead>
+                                        <tr style="background-color:#e5e6e6;">
+                                            <th rowspan="2" colspan="@dutiesAssignCol">
+                                                <div class="font-size-h5 text-center">@templateSection.SectionTitle</div>
+                                                <div>@templateSection.SectionInstructions</div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="background-color:#e5e6e6;">
+                                            <th class="text-center text-uppercase" style="width:65%;" scope="row">
+                                                @((templateSection.FirstColumnHeader != "")? templateSection.FirstColumnHeader: "values")
+                                            </th>
+                                            <th class="text-center" style="width:70px">Weight</th>
+                                            <th class="text-uppercase text-center" colspan="@ratingsCount">ratings</th>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"></th>
+                                            <td></td>
+                                            @foreach (var item in Model.DefaultRatings)
+                                            {
+                                                <th class="text-center">@item.Score</th>
+                                            }
+                                        </tr>
+                                        @foreach (var detail in templateSection.InitiatedSectionDetails)
+                                        {
+                                            var sectionDetailResult = currentResultSection.SectionDetailResults.Where(x => x.SectionDetailId == detail.Id).SingleOrDefault();
+                                            <tr class="task-row" data-sectionResultDetailId="@sectionDetailResult.Id">
+                                                <td>@detail.Title1</td>
+                                                <td class="text-center">@detail.MaxScore</td>
+                                                @foreach (var item in Model.DefaultRatings)
+                                                {
+                                                    <td class="@(sectionDetailResult.Score == item.Score? "check": "")"></td>
+                                                }
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td class="text-right font-w700">Mark Obtainable</td>
+                                            <td class="text-center font-w700">@templateSection.TotalMarkObtainable</td>
+                                            <td colspan="@ratingsCount" class="text-center font-w700"></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <div class="row score-section" style="overflow:hidden;">
+                                <div class="information">
+                                    <div class="row">
+                                        <div class="ml-3 score-title">Total Score:</div>
+                                        <div class="totalScore score-display score">@currentResultSection.TotalScore <span class="ml-3">/</span></div>
+                                        <div class="score score-display">@templateSection.TotalMarkObtainable</div>
+                                    </div>
+                                </div>
+                                <div class="information">
+                                    <div class="row">
+                                        <div class="score-title">Percentage Score:</div>
+                                        <div class="percentageScore score score-display">@currentResultSection.PercentageScore <span class="ml-2">/</span></div>
+                                        <div class="score score-display">@templateSection.TotalPercentageObtainable %</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="mb-5" />
+                    }
+                }
+            }
+            <div class="row">
+                <div class="offset-2 col-8 p-5 my-5" style="border: 1px solid grey">
+                    <div class="row" style="overflow:hidden">
+                        <div class="offset-3 col-4 font-weight-bolder" style="width:50%;float:left">Final Score:</div>
+                        <div class="col-2 totalScore score font-weight-bolder" style="width:20%;float:left">@totalPercentageScore%</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="offset-1 col-10 pt-4 pb-5" style="border:1px solid grey;">
+                    <div class="mb-3">
+                        <span class="font-weight-bolder">Appraisee's Comments </span>
+                    </div>
+                    <div class="mb-5 pb-3" style="border-bottom:1px dashed grey;line-height:2em">@Model.Appraisee.AppraiseeComments.AppraiseeComment</div>
+                    <div class="row pb-0" style="margin-top:70px;">
+                        <div class="col-2 ml-3" style="border-top:1px dashed grey;width:100px;float:left;">
+                            <div>Signature</div>
+                            <div style="width:100px;position:relative;top:-70px;margin-bottom:0"><img src="@sigsrc" style="width:100%" /></div>
+                        </div>
+                        <div class="offset-7 col-2" style="border-top:1px dashed grey;width:100px;float:left">
+                            <div>Date</div>
+                            <div style="width:100px;position:relative;top:-50px;margin-bottom:0">@Model.Appraisee.AppraiseeComments.AppraiseeCommentDate.ToShortDateString()</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="offset-1 col-10 pt-4 pb-5" style="border:1px solid grey;">
+                    <div class="mb-3">
+                        <span class="font-weight-bolder">Appraiser's Comments </span>
+                    </div>
+                    <div class="mb-5 pb-3" style="border-bottom:1px dashed grey;line-height:2em">@Model.Appraisee.AppraiseeComments.AppraiserComment</div>
+                    <div class="row pb-0" style="margin-top:70px;">
+                        <div class="col-2 ml-3" style="border-top:1px dashed grey;width:100px;float:left;">
+                            <div>Signature</div>
+                            <div style="width:100px;position:relative;top:-70px;margin-bottom:0"><img src="@appraiserSigsrc" style="width:100%" /></div>
+                        </div>
+                        <div class="offset-7 col-2" style="border-top:1px dashed grey;width:100px;float:left">
+                            <div>Date</div>
+                            <div style="width:100px;position:relative;top:-50px;margin-bottom:0">@Model.Appraisee.AppraiseeComments.AppraiserCommentDate.ToShortDateString()</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            @if (Model.HodEmployee != null)
+            {
+                <div class="row mt-5">
+                    <div class="offset-1 col-10 pt-4 pb-5" style="border:1px solid grey;">
+                        <div class="mb-3">
+                            <span class="font-weight-bolder">HOD's Comments </span>
+                        </div>
+                        <div class="mb-5 pb-3" style="border-bottom:1px dashed grey;line-height:2em">@Model.Appraisee.AppraiseeComments.HodComment</div>
+                        <div class="row pb-0" style="margin-top:70px;">
+                            <div class="col-2 ml-3" style="border-top:1px dashed grey;width:100px;float:left;">
+                                <div>Signature</div>
+                                <div style="width:100px;position:relative;top:-70px;margin-bottom:0"><img src="@hodSigsrc" style="width:100%" /></div>
+                            </div>
+                            <div class="offset-7 col-2" style="border-top:1px dashed grey;width:100px;float:left">
+                                <div>Date</div>
+                                <div style="width:100px;position:relative;top:-50px;margin-bottom:0">@Model.Appraisee.AppraiseeComments.HodCommentDate.ToShortDateString()</div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (Model.HrEmployee != null)
+            {
+                <div class="row mt-5">
+                    <div class="offset-1 col-10 pt-4 pb-5" style="border:1px solid grey;">
+                        <div class="mb-3">
+                            <span class="font-weight-bolder">HR's Comments </span>
+                        </div>
+                        <div class="mb-5 pb-3" style="border-bottom:1px dashed grey;line-height:2em">@Model.Appraisee.AppraiseeComments.HrComment</div>
+                        <div class="row pb-0" style="margin-top:70px;">
+                            <div class="col-2 ml-3" style="border-top:1px dashed grey;width:100px;float:left;">
+                                <div>Signature</div>
+                                <div style="width:100px;position:relative;top:-70px;margin-bottom:0"><img src="@hrSigsrc" style="width:100%" /></div>
+                            </div>
+                            <div class="offset-7 col-2" style="border-top:1px dashed grey;width:100px;float:left">
+                                <div>Date</div>
+                                <div style="width:100px;position:relative;top:-50px;margin-bottom:0">@Model.Appraisee.AppraiseeComments.HrCommentDate.ToShortDateString()</div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (Model.MdEmployee != null)
+            {
+                <div class="row mt-5">
+                    <div class="offset-1 col-10 pt-4 pb-5" style="border:1px solid grey;">
+                        <div class="mb-3">
+                            <span class="font-weight-bolder">MD's Comments </span>
+                        </div>
+                        <div class="mb-5 pb-3" style="border-bottom:1px dashed grey;line-height:2em">@Model.Appraisee.AppraiseeComments.MdComment</div>
+                        <div class="row pb-0" style="margin-top:70px;">
+                            <div class="col-2 ml-3" style="border-top:1px dashed grey;width:100px;float:left;">
+                                <div>Signature</div>
+                                <div style="width:100px;position:relative;top:-70px;margin-bottom:0"><img src="@mdSigsrc" style="width:100%" /></div>
+                            </div>
+                            <div class="offset-7 col-2" style="border-top:1px dashed grey;width:100px;float:left">
+                                <div>Date</div>
+                                <div style="width:100px;position:relative;top:-50px;margin-bottom:0">@Model.Appraisee.AppraiseeComments.MdCommentDate.ToShortDateString()</div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/js")
+
+    <script>
+        $(function () {
+
+        });
+    </script>
+</body>
+</html>

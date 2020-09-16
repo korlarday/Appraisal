@@ -20,14 +20,14 @@ namespace AprraisalApplication.Models.MigrationModels
         {
 
         }
-        public AppraiseeRejection(int appraiseeId, string rejectionReason, int employeeId)
+        public AppraiseeRejection(int appraiseeId, string rejectionReason, int employeeId, string rejectedByPosition)
         {
             AppraiseeId = appraiseeId;
             RejectionReason = rejectionReason;
             RejectedById = employeeId;
             DateRejected = DateTime.Now;
             New = true;
-            RejectedByPosition = "supervisor";
+            RejectedByPosition = rejectedByPosition;
         }
     }
 }

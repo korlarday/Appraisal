@@ -10,6 +10,7 @@ namespace AprraisalApplication.Models.ApiParameters
         public int AppraiseeId { get; set; }
         public List<SectionScoresResult> SectionScoresResults { get; set; }
         public string RejectionReason { get; set; }
+        public string AppraiserComment { get; set; }
     }
     public class SectionScoresResult
     {
@@ -22,5 +23,6 @@ namespace AprraisalApplication.Models.ApiParameters
     {
         public int SectionResultDetailId { get; set; }
         public int Score { get; set; }
+        public List<Breakdown> Breakdowns { get; set; }
     }
 }

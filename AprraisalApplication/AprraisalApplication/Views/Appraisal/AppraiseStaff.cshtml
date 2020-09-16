@@ -85,6 +85,7 @@
 <!-- END Hero -->
 <!-- Page Content -->
 <div class="content">
+    <a class="btn btn-link btn-sm mb-2" href="/appraisal/appraise-members"><i class="fa fa-arrow-left"></i> Back</a>
     <!-- Elements -->
     <div class="block block-rounded block-bordered">
         <div class="block-header block-header-default">
@@ -289,7 +290,6 @@
                                                 }
                                             </tbody>
                                         </table>
-                                        <button class="btn btn-success btn-sm addTaskRow"><i class="fa fa-plus"></i> Add Row</button>
                                     </div>
                                     <div class="row score-section">
                                         <div class="col-6">
@@ -368,7 +368,6 @@
                                                 }
                                             </tbody>
                                         </table>
-                                        <button class="btn btn-success btn-sm addTaskRow"><i class="fa fa-plus"></i> Add Row</button>
                                     </div>
                                     <div class="row score-section">
                                         <div class="col-6">
@@ -437,11 +436,11 @@
                                                                                 <span class="breakdown-title">@breakdown.Title</span>
                                                                                 @if (templateSection.BreakdownValueBy == "appraisee")
                                                                                 {
-                                                                                    <input type="number" data-breakdownId="@breakdown.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;display:inline;" disabled />
+                                                                                    <input type="number" data-breakdownId="@result.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;display:inline;" disabled />
                                                                                 }
                                                                                 else
                                                                                 {
-                                                                                    <input type="number" data-breakdownId="@breakdown.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;display:inline;" />
+                                                                                    <input type="number" data-breakdownId="@result.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;display:inline;" />
                                                                                 }
                                                                             </li>
                                                                         }
@@ -737,6 +736,7 @@
                 var $sections = $(".section-item");
                 var $appraiseeId = parseInt($("#appraiseeId").text());
                 var $ratingsValid = true;
+                var $quantitativeValid = true;
                 var $sectionResults = [];
                 $.each($sections, function () {
                     var $sectionTypeId = $(this).attr("data-sectionTypeId");
@@ -761,15 +761,41 @@
                     }
                     else if ($sectionTypeId == 3) {
                         var $rows = $(this).find("table tbody tr.quantitative-values");
+                        var $breakdownValueBy = $(this).find('.breakdown-value').text();
+                        console.log($breakdownValueBy);
+                        var $quatitativeFilledBy = $breakdownValueBy;
                         $.each($rows, function () {
                             var $sectionDetailId = parseInt($(this).attr("data-sectionResultDetailId"));
                             var $score = parseInt($(this).find(".enter-score").val());
+
+                            // test start
+                            var $breakdowns = $(this).find("input.input-breakdown");
+                            var $breakdownArray = [];
+                            $.each($breakdowns, function () {
+                                var $breakdownValue = parseInt($(this).val());
+                                var $text = $(this).closest("li").find(".breakdown-title").text();
+                                var $breakdownId = parseInt($(this).attr("data-breakdownId"));
+                                var obj = {
+                                    breakdownValue: $breakdownValue,
+                                    breakdownText: $text,
+                                    breakdownId: $breakdownId
+                                }
+                                $breakdownArray.push(obj);
+                                if ($quatitativeFilledBy == 'appraiser') {
+                                    if ($breakdownValue == '' || $breakdownValue == null || isNaN($breakdownValue)) {
+                                        $quantitativeValid = false;
+                                    }
+                                }
+                            });
+                            // test end
+                            console.log($breakdownArray);
                             if ($score == null || isNaN($score)) {
                                 $ratingsValid = false;
                             }
                             var obj = {
                                 sectionResultDetailId: $sectionDetailId,
-                                score: $score
+                                score: $score,
+                                breakdowns: $breakdownArray
                             }
                             $sectionDetailsArray.push(obj);
                         });
@@ -782,6 +808,11 @@
                     };
                     $sectionResults.push(sectionResult);
                 });
+
+                if (!$quantitativeValid) {
+                    Swal.fire("Error!", "One or more empty fields detected in the quantitave section.", "error");
+                    return;
+                }
                 if (!$ratingsValid) {
                     Swal.fire("Error!", "One or more items have not been rated.", "error");
                     return;

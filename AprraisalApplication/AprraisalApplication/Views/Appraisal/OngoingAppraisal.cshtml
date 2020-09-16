@@ -54,6 +54,7 @@
 <!-- END Hero -->
 <!-- Page Content -->
 <div class="content">
+    <a class="btn btn-link btn-sm mb-2" href="/appraisal/ongoing-appraisals-all"><i class="fa fa-arrow-left"></i> Back</a>
     <!-- Elements -->
     <div class="block block-rounded block-bordered">
         <div class="block-header block-header-default">
@@ -106,7 +107,7 @@
 
                         <hr />
                         <div class="text-danger">
-                            Please, make sure your profile is updated before starting an appraisal exercise <br />
+                            Note: Make sure your profile is updated before starting an appraisal exercise <br />
                             <a class="btn btn-link btn-sm" href="/users/edit-profile">
                                 <i class="fa fa-pencil-alt"></i> Update Profile
                             </a> <br />
@@ -124,6 +125,7 @@
                     else
                     {
                         <span style="display:none" id="appraiseeId">@Model.Appraisee.Id</span>
+                        <h5 class="text-center">@Model.NewAppraisal.AppraisalTitle</h5>
                         <div class="row">
                             <h6 class="col-12 text-header">Personal Data: Appraisee</h6>
                             <div class="col-md-6 details">
@@ -410,6 +412,8 @@
                                                                                     @if(templateSection.BreakdownValueBy == "appraisee")
                                                                                     {
                                                                                         <input type="number" data-breakdownId="@breakdown.Id" class="form-control ml-4 input-breakdown" style="width:200px;display:inline;" />
+                                                                                    }else{
+                                                                                        <input type="number" data-breakdownId="@breakdown.Id" class="form-control ml-4 input-breakdown" style="width:200px;display:none;" />
                                                                                     }
                                                                                 </li>
                                                                             }
@@ -510,6 +514,7 @@
 
     <script>
         $(function () {
+            
             var $texts = $(".capitalize-text");
             $.each($texts, function () {
                 $(this).text(capitalize($(this).text()));
@@ -546,7 +551,8 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/ongoing-appraisal';
+                                    location.reload();
+                                    //window.location.href = '/appraisal/ongoing-appraisal';
                                 }
                             });
                         }
@@ -568,7 +574,8 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/ongoing-appraisal';
+                                    location.reload();
+                                    //window.location.href = '/appraisal/ongoing-appraisal';
                                 }
                             });
                         }
@@ -584,7 +591,8 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/ongoing-appraisal';
+                                    location.reload();
+                                    //window.location.href = '/appraisal/ongoing-appraisal';
                                 }
                             });
                         }
@@ -709,10 +717,15 @@
                                     breakdownId: $breakdownId
                                 }
                                 $breakdownArray.push(obj);
+                                if ($breakdownValue == '') {
+                                    if ($quatitativeFilledBy == 'appraisee') {
+                                        $quatitativeValid = false;
+                                    }
+                                }
                             });
-                            if ($(this).find("input").val() == '') {
-                                $quatitativeValid = false;
-                            }
+                            //if ($(this).find("input").val() == '') {
+                            //    $quatitativeValid = false;
+                            //}
 
                             var $detailTitle = $(this).find(".detail-title").text();
                             var $detailId = parseInt($(this).find(".section-detail").attr("data-sectionDetailId"));
@@ -743,11 +756,9 @@
                     Swal.fire("Error!", "One or more empty fields detected.", "error");
                     return;
                 }
-                if ($quatitativeFilledBy == "appraisee") {
-                    if (!$quatitativeValid) {
-                        Swal.fire("Error!", "One or more empty fields detected in the quantitavie section.", "error");
-                        return;
-                    }
+                if (!$quatitativeValid) {
+                    Swal.fire("Error!", "One or more empty fields detected in the quantitavie section.", "error");
+                    return;
                 }
                 console.log($sectionResults);
                 Swal.fire({
@@ -780,7 +791,7 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/ongoing-appraisal';
+                                    window.location.href = '/appraisal/ongoing-appraisals-all';
                                 }
                             });
                         });

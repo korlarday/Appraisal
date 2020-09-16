@@ -143,6 +143,535 @@ namespace AprraisalApplication.Repositories
             }
         }
 
+        internal void RejectAppraisalToHod(SectionScoresParams model)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                using (var dbContextTransaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        // first get the appraisee
+                        Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.AppraiseeProgress)
+                                                            .SingleOrDefault();
+                        string userId = HttpContext.Current.User.Identity.GetUserId();
+                        Employee employee = context.Employees.Where(x => x.ApplicationUserId == userId).SingleOrDefault();
+
+                        AppraiseeRejection rejection = new AppraiseeRejection(model.AppraiseeId, model.RejectionReason, employee.Id, "hr");
+                        context.AppraiseeRejections.Add(rejection);
+
+                        // update the appraisee progress
+                        var progress = appraisee.AppraiseeProgress;
+                        progress.HRReject = true;
+                        progress.HODSubmit = false;
+
+                        context.SaveChanges();
+                        dbContextTransaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        dbContextTransaction.Rollback();
+                        throw new System.ArgumentException(e.Message);
+                    }
+                }
+            }
+
+        }
+
+        internal void SaveMdComment(SubmitAppraisalParams model)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                using (var dbContextTransaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        // get the MD userId
+                        string userId = HttpContext.Current.User.Identity.GetUserId();
+                        int employeeId = context.Employees.Where(x => x.ApplicationUserId == userId).SingleOrDefault().Id;
+
+                        // first get the appraisee
+                        Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.AppraiseeProgress)
+                                                            .Include(x => x.AppraiseeComments)
+                                                            .SingleOrDefault();
+
+                        // save the progress
+                        AppraiseeProgress progress = appraisee.AppraiseeProgress;
+                        progress.MDAcknowledgement = true;
+
+                        // save the progress
+                        AppraiseeComments comments = appraisee.AppraiseeComments;
+                        comments.MdComment = model.MdComment;
+                        comments.MdCommentDate = DateTime.Now;
+                        comments.MdEmployeeId = employeeId;
+
+                        
+                        context.SaveChanges();
+                        dbContextTransaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        dbContextTransaction.Rollback();
+                        throw new System.ArgumentException(e.Message);
+                    }
+                }
+            }
+        }
+
+        internal List<NewAppraisal> GetEmployeeCompletedAppraisals(int employeeId)
+        {
+            List<AppraisalStaff> appraisalStaffs = db.AppraisalStaffs.Where(x => x.EmployeeId == employeeId
+                                                                            && x.IsCompleted == true)
+                                                                    .ToList();
+            List<NewAppraisal> newAppraisals = new List<NewAppraisal>();
+            foreach (var item in appraisalStaffs)
+            {
+                NewAppraisal newAppraisal = db.NewAppraisals.Find(item.NewAppraisalId);
+                newAppraisals.Add(newAppraisal);
+            }
+            return newAppraisals;
+        }
+
+        internal void SaveHrComment(SubmitAppraisalParams model)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                using (var dbContextTransaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        // get the hod userId
+                        string userId = HttpContext.Current.User.Identity.GetUserId();
+                        int employeeId = context.Employees.Where(x => x.ApplicationUserId == userId).SingleOrDefault().Id;
+
+                        // first get the appraisee
+                        Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.AppraiseeProgress)
+                                                            .Include(x => x.AppraiseeComments)
+                                                            .SingleOrDefault();
+
+                        // save the progress
+                        AppraiseeProgress progress = appraisee.AppraiseeProgress;
+                        progress.HRSubmit = true;
+
+                        // save the progress
+                        AppraiseeComments comments = appraisee.AppraiseeComments;
+                        comments.HrComment = model.HrComment;
+                        comments.HrCommentDate = DateTime.Now;
+                        comments.HrEmployeeId = employeeId;
+
+                        // change employee appraisal status to completed
+                        // get the newappraisal
+                        NewAppraisal appraisal = db.NewAppraisals.Where(x => x.Id == appraisee.NewAppraisalId)
+                                                                .Include(x => x.AppraisalStaffs)
+                                                                .SingleOrDefault();
+                        var appraisalStaffs = appraisal.AppraisalStaffs;
+                        var appraisalStaff = appraisalStaffs.Where(x => x.EmployeeId == appraisee.EmployeeId).FirstOrDefault();
+                        appraisalStaffs.Where(x => x.Id == appraisalStaff.Id).SingleOrDefault().IsCompleted = true;
+                        var AppraisalStaffDb = context.AppraisalStaffs.Find(appraisalStaff.Id);
+                        AppraisalStaffDb.IsCompleted = true;
+                        context.SaveChanges();
+
+                        // check if it was the last appraisal, if yes change the main appraisal status to completed
+                        var isCompleted = true;
+                        foreach (var item in appraisalStaffs)
+                        {
+                            if(item.IsCompleted == false)
+                            {
+                                isCompleted = false;
+                                break;
+                            }
+                        }
+                        if (isCompleted)
+                        {
+                            NewAppraisal newAppraisal = context.NewAppraisals.Find(appraisal.Id);
+                            newAppraisal.IsCompleted = true;
+                        }
+
+                        context.SaveChanges();
+                        dbContextTransaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        dbContextTransaction.Rollback();
+                        throw new System.ArgumentException(e.Message);
+                    }
+                }
+            }
+        }
+
+        internal void ReScoreAppraisalSections(SectionScoresParams model)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                using (var dbContextTransaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        // first get the appraisee
+                        Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.SectionResults.Select(d => d.SectionDetailResults))
+                                                            .Include(x => x.AppraiseeProgress)
+                                                            .Include(x => x.AppraiseeComments)
+                                                            .Include(x => x.AppraiseeRejections)
+                                                            .SingleOrDefault();
+
+                        var sectionResults = appraisee.SectionResults.ToList();
+                        foreach (var sectionResult in sectionResults)
+                        {
+                            var sectionScore = model.SectionScoresResults.Where(x => x.SectionResultId == sectionResult.Id).SingleOrDefault();
+                            if (sectionScore != null)
+                            {
+                                sectionResult.TotalScore = sectionScore.SectionTotalScore;
+                                sectionResult.PercentageScore = sectionScore.SectionPercentageScore;
+                                foreach (var detail in sectionResult.SectionDetailResults)
+                                {
+                                    var detailScore = sectionScore.SectionDetailsScore.Where(x => x.SectionResultDetailId == detail.Id).SingleOrDefault();
+                                    if (detailScore != null)
+                                    {
+                                        detail.Score = detailScore.Score;
+                                    }
+                                }
+
+                            }
+                        }
+
+                        // update the appraisee progress
+                        var progress = appraisee.AppraiseeProgress;
+                        progress.SupervisorReject = false;
+                        progress.SupervisorSubmit = true;
+                        progress.HODReject = false;
+
+                        // update the appraiser comments
+                        var comments = appraisee.AppraiseeComments;
+                        comments.AppraiserComment = model.AppraiserComment;
+                        comments.AppraiserCommentDate = DateTime.Now;
+
+                        // update the rejection status
+                        var rejections = appraisee.AppraiseeRejections.Where(x => x.New == true).ToList();
+                        foreach (var item in rejections)
+                        {
+                            item.New = false;
+                        }
+                        context.SaveChanges();
+                        dbContextTransaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        dbContextTransaction.Rollback();
+                        throw new System.ArgumentException(e.Message);
+                    }
+                }
+            }
+
+        }
+
+        internal void RejectAppraisalToSupervisor(SectionScoresParams model)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                using (var dbContextTransaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        // first get the appraisee
+                        Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.AppraiseeProgress)
+                                                            .SingleOrDefault();
+                        string userId = HttpContext.Current.User.Identity.GetUserId();
+                        Employee employee = context.Employees.Where(x => x.ApplicationUserId == userId).SingleOrDefault();
+
+                        AppraiseeRejection rejection = new AppraiseeRejection(model.AppraiseeId, model.RejectionReason, employee.Id, "hod");
+                        context.AppraiseeRejections.Add(rejection);
+
+                        // update the appraisee progress
+                        var progress = appraisee.AppraiseeProgress;
+                        progress.HODReject = true;
+                        progress.HODSubmit = false;
+                        progress.SupervisorSubmit = false;
+
+                        context.SaveChanges();
+                        dbContextTransaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        dbContextTransaction.Rollback();
+                        throw new System.ArgumentException(e.Message);
+                    }
+                }
+            }
+
+        }
+
+        internal void RejectAppraisalCommentToAppraisee(SectionScoresParams model)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                using (var dbContextTransaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        // first get the appraisee
+                        Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.AppraiseeProgress)
+                                                            .SingleOrDefault();
+                        string userId = HttpContext.Current.User.Identity.GetUserId();
+                        Employee employee = context.Employees.Where(x => x.ApplicationUserId == userId).SingleOrDefault();
+
+                        AppraiseeRejection rejection = new AppraiseeRejection(model.AppraiseeId, model.RejectionReason, employee.Id, "supervisor");
+                        context.AppraiseeRejections.Add(rejection);
+
+                        // update the appraisee progress
+                        var progress = appraisee.AppraiseeProgress;
+                        progress.SupervisorReject = false;
+                        progress.SupervisorSubmit = false;
+                        progress.SupervisorAskForFeedback = true;
+
+                        context.SaveChanges();
+                        dbContextTransaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        dbContextTransaction.Rollback();
+                        throw new System.ArgumentException(e.Message);
+                    }
+                }
+            }
+
+        }
+        internal void SaveHodComment(SubmitAppraisalParams model)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                using (var dbContextTransaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        // get the hod userId
+                        string userId = HttpContext.Current.User.Identity.GetUserId();
+                        int employeeId = context.Employees.Where(x => x.ApplicationUserId == userId).SingleOrDefault().Id;
+
+                        // first get the appraisee
+                        Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.AppraiseeProgress)
+                                                            .Include(x => x.AppraiseeComments)
+                                                            .SingleOrDefault();
+
+                        // save the progress
+                        AppraiseeProgress progress = appraisee.AppraiseeProgress;
+                        progress.HODSubmit = true;
+                        progress.HRReject = false;
+
+                        // save the progress
+                        AppraiseeComments comments = appraisee.AppraiseeComments;
+                        comments.HodComment = model.HodComment;
+                        comments.HodCommentDate = DateTime.Now;
+                        comments.HodEmployeeId = employeeId;
+
+
+
+                        context.SaveChanges();
+                        dbContextTransaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        dbContextTransaction.Rollback();
+                        throw new System.ArgumentException(e.Message);
+                    }
+                }
+            }
+        }
+
+
+        internal List<DepartmentAndParticipants> GetAppraisalDeptAndParticipants(int newAppraisalId)
+        {
+            NewAppraisal newAppraisal = db.NewAppraisals.Where(x => x.Id == newAppraisalId)
+                                                                .Include(x => x.AppraisalStaffs
+                                                                .Select(e => e.Employee.Department))
+                                                                .SingleOrDefault();
+            List<Department> departments = db.Departments.ToList();
+            List<DepartmentAndParticipants> departmentAndParticipants = new List<DepartmentAndParticipants>();
+            
+            var participants = newAppraisal.AppraisalStaffs.ToList();
+            foreach (var department in departments)
+            {
+                int participantsCount = participants.Where(x => x.Employee.DepartmentId == department.Id).Count();
+                DepartmentAndParticipants deptAndParticipants = new DepartmentAndParticipants
+                {
+                    Department = department,
+                    NumberOfParticipants = participantsCount
+                };
+                departmentAndParticipants.Add(deptAndParticipants);
+            }
+            return departmentAndParticipants;
+        }
+
+        internal List<AppraiseeAndProgress> GetDepartmentAppraisees(Employee employee, NewAppraisal appraisal)
+        {
+            List<AppraiseeAndProgress> appraiseeAndProgresses = new List<AppraiseeAndProgress>();
+            var appraisalStaffs = appraisal.AppraisalStaffs;
+            foreach (var staff in appraisalStaffs)
+            {
+                Employee emp = db.Employees.Where(x => x.Id == staff.EmployeeId)
+                                            .Include(x => x.Department)
+                                            .Include(x => x.State)
+                                            .SingleOrDefault();
+                if(emp.DepartmentId == employee.DepartmentId)
+                {
+                    Appraisee appraisee = db.Appraisees.Where(x => x.NewAppraisalId == appraisal.Id
+                                                                && x.EmployeeId == emp.Id)
+                                                        .Include(x => x.AppraiseeProgress)
+                                                        .SingleOrDefault();
+                    AppraiseeAndProgress appraiseeAndProgress = new AppraiseeAndProgress
+                    {
+                        Employee = emp,
+                        AppraiseeProgress = appraisee == null ? null : appraisee.AppraiseeProgress,
+                        NewAppraisal = db.NewAppraisals.Find(staff.NewAppraisalId)
+                    };
+                    appraiseeAndProgresses.Add(appraiseeAndProgress);
+                }                         
+            }
+            return appraiseeAndProgresses;
+        }
+
+        internal List<AppraiseeAndProgress> GetAppraiseesAndProgressInDepartment(Department department, NewAppraisal appraisal)
+        {
+            List<AppraiseeAndProgress> appraiseeAndProgresses = new List<AppraiseeAndProgress>();
+            var appraisalStaffs = appraisal.AppraisalStaffs;
+            foreach (var staff in appraisalStaffs)
+            {
+                
+                if (staff.Employee.DepartmentId == department.Id)
+                {
+                    Appraisee appraisee = db.Appraisees.Where(x => x.NewAppraisalId == appraisal.Id
+                                                                && x.EmployeeId == staff.EmployeeId)
+                                                        .Include(x => x.AppraiseeProgress)
+                                                        .SingleOrDefault();
+                    AppraiseeAndProgress appraiseeAndProgress = new AppraiseeAndProgress
+                    {
+                        Employee = staff.Employee,
+                        AppraiseeProgress = appraisee == null ? null : appraisee.AppraiseeProgress
+                    };
+                    appraiseeAndProgresses.Add(appraiseeAndProgress);
+                }
+            }
+            return appraiseeAndProgresses;
+        }
+
+        internal List<NewAppriasalAndParticipants> GetDepartmentInitiatedAppraisals(int departmentId)
+        {
+            List<NewAppraisal> newAppraisals = db.NewAppraisals.Include(x => x.AppraisalStaffs
+                                                                            .Select(e => e.Employee))
+                                                                .OrderByDescending(x => x.DateInitiated)
+                                                                .ToList();
+            List<NewAppriasalAndParticipants> newAppriasalAndParticipants = new List<NewAppriasalAndParticipants>();
+            foreach (var newAppraisal in newAppraisals)
+            {
+                int count = 0;
+                var participants = newAppraisal.AppraisalStaffs.ToList();
+                foreach (var participant in participants)
+                {
+                    if(participant.Employee.DepartmentId == departmentId)
+                    {
+                        count += 1;
+                    }
+                }
+                NewAppriasalAndParticipants appAndparts = new NewAppriasalAndParticipants
+                {
+                    NewAppraisal = newAppraisal,
+                    NumberOfParticipants = count
+                };
+                newAppriasalAndParticipants.Add(appAndparts);
+            }
+            return newAppriasalAndParticipants;
+        }
+
+        internal void SaveAppraiserComment(SubmitAppraisalParams model)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                using (var dbContextTransaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        // first get the appraisee
+                        Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.AppraiseeProgress)
+                                                            .Include(x => x.AppraiseeComments)
+                                                            .SingleOrDefault();
+
+                        // save the progress
+                        AppraiseeProgress progress = appraisee.AppraiseeProgress;
+                        progress.SupervisorSubmit = true;
+
+                        // save the progress
+                        AppraiseeComments comments = appraisee.AppraiseeComments;
+                        comments.AppraiserComment = model.AppraiserComment;
+                        comments.AppraiserCommentDate = DateTime.Now;
+
+
+                        context.SaveChanges();
+                        dbContextTransaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        dbContextTransaction.Rollback();
+                        throw new System.ArgumentException(e.Message);
+                    }
+                }
+            }
+
+        }
+
+        internal void SaveAppraiseeComment(SubmitAppraisalParams model)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                using (var dbContextTransaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        // first get the appraisee
+                        Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.AppraiseeProgress)
+                                                            .Include(x => x.AppraiseeComments)
+                                                            .Include(x => x.AppraiseeRejections)
+                                                            .SingleOrDefault();
+                        
+                        // save the progress
+                        AppraiseeProgress progress = appraisee.AppraiseeProgress;
+                        progress.SupervisorAskForFeedback = false;
+                        progress.FeedbackFromAppraisee = true;
+
+                        // save the progress
+                        AppraiseeComments comments = appraisee.AppraiseeComments;
+                        comments.AppraiseeComment = model.AppraiseeComment;
+                        comments.AppraiseeCommentDate = DateTime.Now;
+
+                        // change the rejection status
+                        List<AppraiseeRejection> rejections = appraisee.AppraiseeRejections.Where(x => x.New == true).ToList();
+                        if(rejections != null && rejections.Count() > 0)
+                        {
+                            foreach (var item in rejections)
+                            {
+                                item.New = false;
+                            }
+                        }
+                        context.SaveChanges();
+                        dbContextTransaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        dbContextTransaction.Rollback();
+                        throw new System.ArgumentException(e.Message);
+                    }
+                }
+            }
+
+        }
+
         internal void ResubmitAppraisalToSupervisor(SubmitAppraisalParams model)
         {
             using (var context = new ApplicationDbContext())
@@ -158,6 +687,7 @@ namespace AprraisalApplication.Repositories
                                                                             .Select(b => b.InitiatedSectionDetailBreakdowns)))
                                                             .Include(x => x.AppraiseeProgress)
                                                             .Include(x => x.AppraiseeRejections)
+                                                            .Include(x => x.AppraiseeComments)
                                                             .SingleOrDefault();
                         // update the task performed and the duties assigned
                         foreach (var section in appraisee.InitiatedAppraisalTemplate.InitiatedTemplateSections)
@@ -222,7 +752,10 @@ namespace AprraisalApplication.Repositories
                                                     foreach (var breakdown in sectionDetail.Breakdowns)
                                                     {
                                                         ItemBreakdownResult itemBreakdown = context.ItemBreakdownResults.Find(breakdown.BreakdownId);
-                                                        itemBreakdown.Value = breakdown.BreakdownValue;
+                                                        if(itemBreakdown != null)
+                                                        {
+                                                            itemBreakdown.Value = breakdown.BreakdownValue;
+                                                        }
                                                     }
                                                 }
                                             }
@@ -236,6 +769,10 @@ namespace AprraisalApplication.Repositories
                         // save the progress
                         AppraiseeProgress progress = appraisee.AppraiseeProgress;
                         progress.SupervisorReject = false;
+
+                        // save the comment
+                        AppraiseeComments comments = appraisee.AppraiseeComments;
+                        comments.AppraiseeComment = model.AppraiseeComment;
 
                         // change the rejection status
                         List<AppraiseeRejection> rejections = appraisee.AppraiseeRejections.Where(x => x.New == true).ToList();
@@ -278,7 +815,7 @@ namespace AprraisalApplication.Repositories
                         string userId = HttpContext.Current.User.Identity.GetUserId();
                         Employee employee = context.Employees.Where(x => x.ApplicationUserId == userId).SingleOrDefault();
 
-                        AppraiseeRejection rejection = new AppraiseeRejection(model.AppraiseeId, model.RejectionReason, employee.Id);
+                        AppraiseeRejection rejection = new AppraiseeRejection(model.AppraiseeId, model.RejectionReason, employee.Id, "supervisor");
                         context.AppraiseeRejections.Add(rejection);
 
                         // update the appraisee progress
@@ -309,7 +846,7 @@ namespace AprraisalApplication.Repositories
                     {
                         // first get the appraisee
                         Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
-                                                            .Include(x => x.SectionResults)
+                                                            .Include(x => x.SectionResults.Select(d => d.SectionDetailResults))
                                                             .Include(x => x.AppraiseeProgress)
                                                             .SingleOrDefault();
 
@@ -327,6 +864,17 @@ namespace AprraisalApplication.Repositories
                                     if(detailScore != null)
                                     {
                                         detail.Score = detailScore.Score;
+                                        if(detailScore.Breakdowns != null && detailScore.Breakdowns.Count() > 0)
+                                        {
+                                            foreach (var breakdown in detailScore.Breakdowns)
+                                            {
+                                                ItemBreakdownResult result = context.ItemBreakdownResults.Find(breakdown.BreakdownId);
+                                                if (result != null)
+                                                {
+                                                    result.Value = breakdown.BreakdownValue;
+                                                }
+                                            }
+                                        }
                                     }
                                 }
 
@@ -434,11 +982,14 @@ namespace AprraisalApplication.Repositories
                                         context.SaveChanges();
                                         if (item.InitiatedSectionDetailBreakdowns != null && item.InitiatedSectionDetailBreakdowns.Count() > 0)
                                         {
-                                            foreach (var breakdown in item.InitiatedSectionDetailBreakdowns)
+                                            if(sectionDetail.Breakdowns != null)
                                             {
-                                                var result = sectionDetail.Breakdowns.Where(x => x.BreakdownId == breakdown.Id).SingleOrDefault();
-                                                ItemBreakdownResult itemBreakdown = new ItemBreakdownResult(breakdown, result, detail.Id);
-                                                context.ItemBreakdownResults.Add(itemBreakdown);
+                                                foreach (var breakdown in item.InitiatedSectionDetailBreakdowns)
+                                                {
+                                                    var result = sectionDetail.Breakdowns.Where(x => x.BreakdownId == breakdown.Id).SingleOrDefault();
+                                                    ItemBreakdownResult itemBreakdown = new ItemBreakdownResult(breakdown, result, detail.Id);
+                                                    context.ItemBreakdownResults.Add(itemBreakdown);
+                                                }
                                             }
                                         }
                                     }
@@ -620,7 +1171,8 @@ namespace AprraisalApplication.Repositories
                             AppraiseeAndProgress appraiseeAndProgress = new AppraiseeAndProgress()
                             {
                                 Employee = employee,
-                                AppraiseeProgress = appraisee.AppraiseeProgress
+                                AppraiseeProgress = appraisee.AppraiseeProgress,
+                                NewAppraisal = db.NewAppraisals.Find(appraisee.NewAppraisalId)
                             };
                             progresses.Add(appraiseeAndProgress);
                         }
@@ -630,6 +1182,36 @@ namespace AprraisalApplication.Repositories
             return progresses;
         }
 
+        internal List<AppraiseeAndProgress> GetMyOngoingAppraisalsAndProgress(Employee employee)
+        {
+            List<AppraiseeAndProgress> progresses = new List<AppraiseeAndProgress>();
+
+            // get my ongoing appraisals; you can identity that by the appraisalStaffs where the iscompleted is false
+            List<AppraisalStaff> appraisalStaffs = db.AppraisalStaffs.Where(x => x.EmployeeId == employee.Id
+                                                                && x.IsCompleted != true)
+                                                                    .ToList();
+
+            if (appraisalStaffs != null && appraisalStaffs.Count() > 0)
+            {
+                foreach (var staff in appraisalStaffs)
+                {
+                    Appraisee appraisee = db.Appraisees
+                                            .Where(x => x.NewAppraisalId == staff.NewAppraisalId
+                                                && x.EmployeeId == staff.EmployeeId)
+                                            .Include(x => x.AppraiseeProgress)
+                                            .SingleOrDefault();
+                    AppraiseeAndProgress appraiseeAndProgress = new AppraiseeAndProgress()
+                    {
+                        Employee = employee,
+                        AppraiseeProgress = appraisee == null ? null : appraisee.AppraiseeProgress,
+                        NewAppraisal = db.NewAppraisals.Find(staff.NewAppraisalId)
+                    };
+                    progresses.Add(appraiseeAndProgress);
+                }
+            }
+
+            return progresses;
+        }
         internal List<Employee> GetMyAppraisees(string applicationUserId)
         {
             List<Employee> Appraisees = new List<Employee>();
@@ -704,11 +1286,17 @@ namespace AprraisalApplication.Repositories
             db.SaveChanges();
         }
 
-        internal AppraisalStaff GetEmployeeOngoingAppraisal(int employeeId)
+        internal AppraisalStaff GetEmployeeOngoingAppraisal(int employeeId, int newAppraisalId)
         {
-            return db.AppraisalStaffs.Where(x => x.EmployeeId == employeeId
-                                            && x.IsCompleted == false)
-                                    .FirstOrDefault();
+            return  db.AppraisalStaffs.Where(x => x.EmployeeId == employeeId
+                                                    && x.NewAppraisalId == newAppraisalId
+                                                    && x.IsCompleted == false)
+                                                        .SingleOrDefault();
+           
+        }
+        internal List<AppraisalStaff> GetEmployeeOngoingAppraisals(int employeeId)
+        {
+            return db.AppraisalStaffs.Where(x => x.EmployeeId == employeeId && x.IsCompleted == false).ToList();
         }
 
         internal Appraisee GetAppraisee(int employeeId, int newAppraisalId)
@@ -720,6 +1308,7 @@ namespace AprraisalApplication.Repositories
                                 .Include(x => x.AppraiseeCareerHistoryWithCompanies.Select(d => d.Department))
                                 .Include(x => x.AppraiseeProgress)
                                 .Include(x => x.AppraiseeRejections)
+                                .Include(x => x.AppraiseeComments)
                                 .Include(x => x.SectionResults
                                     .Select(d => d.SectionDetailResults.Select(b => b.ItemBreakdownResults)))
                                 .SingleOrDefault();
@@ -745,7 +1334,7 @@ namespace AprraisalApplication.Repositories
                                     .Include(x => x.AppraisalDepartments.Select(d => d.Department))
                                     .Include(x => x.AppraisalLocations.Select(l => l.State))
                                     .Include(x => x.AppraisalType)
-                                    .Include(x => x.AppraisalStaffs)
+                                    .Include(x => x.AppraisalStaffs.Select(e => e.Employee.Department))
                                     .SingleOrDefault();
         }
 

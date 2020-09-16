@@ -3,6 +3,8 @@ using AprraisalApplication.Models.ApiParameters;
 using AprraisalApplication.Models.MigrationModels;
 using AprraisalApplication.Models.ViewModels;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -150,6 +152,18 @@ namespace AprraisalApplication.Repositories
         internal List<ApplicationUser> GetAllUsers()
         {
             return db.Users.Where(x => x.EmailConfirmed == true && x.EmployeeId != null).ToList();
+        }
+
+        internal Employee GetEmployeeById(int employeeId)
+        {
+            return db.Employees.Find(employeeId);
+        }
+
+        internal ApplicationUser GetEmployeeRoles(string employeeUserId)
+        {
+            return db.Users.Where(x => x.Id == employeeUserId)
+                                    .Include(x => x.Roles)
+                                    .SingleOrDefault();      
         }
     }
 }

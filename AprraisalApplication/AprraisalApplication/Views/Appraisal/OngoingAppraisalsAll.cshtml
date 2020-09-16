@@ -1,0 +1,124 @@
+﻿@model AprraisalApplication.Models.ViewModels.AppraiseMembersVM
+
+@{
+    ViewBag.Title = "Ongoing Appraisals";
+}
+
+<!-- Hero -->
+<div class="bg-body-light">
+    <div class="content content-full">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Ongoing Appraisals</h1>
+            <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Home</li>
+                    <li class="breadcrumb-item">Appraisal</li>
+                    <li class="breadcrumb-item active" aria-current="page">Ongoing Appraisals</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
+<!-- Page Content -->
+<div class="content">
+    <!-- Elements -->
+    <div class="block block-rounded block-bordered">
+        <div class="block-header block-header-default">
+            <h3 class="block-title">Appraisals</h3>
+        </div>
+        <div class="block-content">
+            <div class="block block-rounded">
+                <div class="block-content block-content-full">
+                    <div class="row">
+                        @if (Model.AppraiseeAndProgresses.Count() < 1)
+                        {
+                            <p>You have no ongoing appraisals</p>
+                        }
+                        @foreach (var item in Model.AppraiseeAndProgresses)
+                        {
+                            var imgsrc = String.Empty;
+                            if (item.Employee.PassportImage != null)
+                            {
+                                var imgbase64 = Convert.ToBase64String(item.Employee.PassportImage);
+                                imgsrc = string.Format("data:image/jpg;base64,{0}", imgbase64);
+                            }
+
+                            <div class="block block-rounded block-bordered block-link-shadow col-md-6 p-0" href="javascript:void(0)">
+                                <div class="block-content block-content-full text-center bg-body-light">
+                                    <img class="img-avatar img-avatar-thumb" src="@imgsrc" alt="Employee passport">
+                                    <div class="mt-2">
+                                        <p class="font-w600 mb-0">
+                                            @item.Employee.Firstname @item.Employee.Lastname
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="block-content block-content-full text-center">
+                                    <div class="row gutters-tiny">
+                                        @if (item.NewAppraisal != null)
+                                        {
+                                            <div class="col-12 text-center font-w600">
+                                                <div>@item.NewAppraisal.AppraisalTitle</div>
+                                            </div>
+                                        }
+                                        <div class="col-6">
+                                            <div class="item item-circle mx-auto">
+                                                Location
+                                            </div>
+                                            <p class="text-muted mb-0" style="font-size:15px">
+                                                @item.Employee.State.Description
+                                            </p>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="item item-circle mx-auto">
+                                                Department
+                                            </div>
+                                            <p class="text-muted mb-0" style="font-size:15px">
+                                                @item.Employee.Department.Name
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row text-center">
+                                        @if (item.AppraiseeProgress == null)
+                                        {
+                                            <a href="/appraisal/ongoing-appraisal/@item.NewAppraisal.Slug" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Start Exercise</a>
+                                        }
+                                        else if (!item.AppraiseeProgress.AppraiseeSubmit)
+                                        {
+                                            <a href="/appraisal/ongoing-appraisal/@item.NewAppraisal.Slug" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Start Exercise</a>
+                                        }
+                                        else if (item.AppraiseeProgress.AppraiseeSubmit &&
+                                                !item.AppraiseeProgress.SupervisorAskForFeedback &&
+                                                !item.AppraiseeProgress.SupervisorReject &&
+                                                !item.AppraiseeProgress.SupervisorSubmit)
+                                        {
+                                            <div class="text-success" style="margin:auto">Submitted to Supervisor</div>
+                                        }
+                                        else if (!item.AppraiseeProgress.SupervisorSubmit && item.AppraiseeProgress.SupervisorReject)
+                                        {
+                                            <a href="/appraisal/ongoing-appraisal/@item.NewAppraisal.Slug" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Make Corrections</a>
+                                        }
+                                        else if (item.AppraiseeProgress.SupervisorAskForFeedback)
+                                        {
+                                            <a href="/appraisal/ongoing-appraisal/@item.NewAppraisal.Slug" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Enter Comments</a>
+                                        }
+                                        else if (item.AppraiseeProgress.AppraiseeSubmit &&
+                                                item.AppraiseeProgress.FeedbackFromAppraisee &&
+                                                !item.AppraiseeProgress.SupervisorReject)
+                                        {
+                                            <div class="text-success" style="margin:auto">Submitted</div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Elements -->
+</div>
+

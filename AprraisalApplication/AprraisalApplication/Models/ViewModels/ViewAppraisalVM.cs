@@ -15,6 +15,7 @@ namespace AprraisalApplication.Models.ViewModels
         public List<Employee> OtherEmployees { get; set; }
         // for loading Appraisal Types
         public IEnumerable<SelectListItem> AppraisalTypes { get; set; }
+        public List<DepartmentAndParticipants> DepartmentAndParticipants { get; set; }
     }
     public class AppraisalParticipants
     {
@@ -23,5 +24,11 @@ namespace AprraisalApplication.Models.ViewModels
         public string Department { get; set; }
         public string Location { get; set; }
         public AppraisalTemplate AppraisalTemplate { get; set; }
+    }
+
+    public class DepartmentAndParticipants
+    {
+        public Department Department { get; set; }
+        public int NumberOfParticipants { get; set; }
     }
 }

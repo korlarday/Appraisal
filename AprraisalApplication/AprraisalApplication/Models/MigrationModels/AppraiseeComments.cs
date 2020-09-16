@@ -16,6 +16,8 @@ namespace AprraisalApplication.Models.MigrationModels
             AppraiserCommentDate = DateTime.Now;
             HodComment = "";
             HodCommentDate = DateTime.Now;
+            HrComment = "";
+            HrCommentDate = DateTime.Now;
             MdComment = "";
             MdCommentDate = DateTime.Now;
         }
@@ -27,7 +29,12 @@ namespace AprraisalApplication.Models.MigrationModels
         public DateTime AppraiserCommentDate { get; set; }
         public string HodComment { get; set; }
         public DateTime HodCommentDate { get; set; }
+        public int? HodEmployeeId { get; set; }
+        public string HrComment { get; set; }
+        public DateTime HrCommentDate { get; set; }
+        public int? HrEmployeeId { get; set; }
         public string MdComment { get; set; }
         public DateTime MdCommentDate { get; set; }
+        public int? MdEmployeeId { get; set; }
     }
 }

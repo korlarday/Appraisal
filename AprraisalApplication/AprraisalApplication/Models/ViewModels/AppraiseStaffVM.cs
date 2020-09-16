@@ -14,5 +14,9 @@ namespace AprraisalApplication.Models.ViewModels
         public NewAppraisal NewAppraisal { get; set; }
         public Employee Employee { get; set; }
         public List<DefaultRating> DefaultRatings { get; set; }
+        public List<TemplateSummaryRating> SummaryRatings { get; set; }
+        public Employee HodEmployee { get; set; }
+        public Employee HrEmployee { get; set; }
+        public Employee MdEmployee { get; set; }
     }
 }

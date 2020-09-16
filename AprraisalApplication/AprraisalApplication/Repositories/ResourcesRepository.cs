@@ -152,5 +152,11 @@ namespace AprraisalApplication.Repositories
         {
             return db.Grades.Where(x => x.IsDeleted == false).ToList();
         }
+
+        internal List<TemplateSummaryRating> GetTemplateSummaryRatings(int appraisalTemplateId)
+        {
+            return db.TemplateSummaryRatings.Where(x => x.AppraisalTemplateId == appraisalTemplateId)
+                                            .OrderBy(x => x.Score).ToList();
+        }
     }
 }

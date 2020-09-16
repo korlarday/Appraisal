@@ -30,6 +30,16 @@ namespace AprraisalApplication.Repositories
                                 .ToList();
         }
 
+        internal int GetAllCompletedAppraisals()
+        {
+            return db.NewAppraisals.Where(x => x.IsCompleted == true).Count();
+        }
+
+        internal int GetAllOngoingAppraisals()
+        {
+            return db.NewAppraisals.Where(x => x.IsCompleted == false).Count();
+        }
+
         internal void SetEmployeesAppraiser(UserAppraiserParams model)
         {
             foreach (var item in model.Items)

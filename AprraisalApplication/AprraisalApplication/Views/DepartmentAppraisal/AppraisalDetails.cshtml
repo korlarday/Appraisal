@@ -1,0 +1,90 @@
+﻿@model AprraisalApplication.Models.ViewModels.ViewAppraisalVM
+
+@{
+    ViewBag.Title = "Appraisal Details";
+}
+
+
+
+<!-- Hero -->
+<div class="bg-body-light">
+    <div class="content content-full">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">View Appraisal</h1>
+            <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Home</li>
+                    <li class="breadcrumb-item">Appraisal</li>
+                    <li class="breadcrumb-item active" aria-current="page">View Appraisal</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
+<!-- Page Content -->
+<div class="content">
+    <!-- Elements -->
+    <a href="/departmentappraisal/department-initiated-appraisals" class="btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
+    <div class="block block-rounded block-bordered">
+        <div class="block-header block-header-default">
+            <h3 class="block-title">Appraisal</h3>
+        </div>
+        <div class="block-content">
+            <div class="block block-rounded block-bordered">
+                <div class="block-content block-content-full">
+                    <!-- DataTables init on table by adding .js-dataTable-buttons class, functionality is initialized in js/pages/be_tables_datatables.min.js which was auto compiled from _es6/pages/be_tables_datatables.js -->
+                    <div class="mb-4">
+                        <table class="table table-borderless table-vcenter">
+                            <tbody>
+                                <tr>
+                                    <th>Appraisal Title</th>
+                                    <td class="font-w600">
+                                        @Model.Appraisal.AppraisalTitle
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Appraisal Type</th>
+                                    <td class="font-w600">
+                                        @Model.Appraisal.AppraisalType.Name
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Initiated Date</th>
+                                    <td class="font-w600">
+                                        @Model.Appraisal.DateInitiated.ToString("dd MMMM yyyy")
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Due Date</th>
+                                    <td class="font-w600">
+                                        @(Model.Appraisal.DueDate != null? Model.Appraisal.DueDate.Value.ToString("dd MMMM yyyy") : "")
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Appraisal Period</th>
+                                    <td class="font-w600">
+                                        @Model.Appraisal.AppraisalPeriodStartDate.ToString("MMM-yyyy") - @Model.Appraisal.AppraisalPeriodEndDate.ToString("MMM-yyyy")
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Elements -->
+</div>
+
+
+@section Scripts {
+
+    <script>
+        $(function () {
+            
+        })
+        ////////////////////////////////////////////////////////////////////
+    </script>
+}

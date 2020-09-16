@@ -9,6 +9,11 @@ namespace AprraisalApplication.Models.ApiParameters
     {
         public int AppraiseeId { get; set; }
         public List<SectionResult> SectionResults { get; set; }
+        public string AppraiseeComment { get; set; }
+        public string AppraiserComment { get; set; }
+        public string HodComment { get; set; }
+        public string HrComment { get; set; }
+        public string MdComment { get; set; }
     }
     public class SectionResult
     {

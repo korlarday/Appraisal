@@ -1,0 +1,67 @@
+﻿@model AprraisalApplication.Models.ViewModels.EditEmployeeRolesVM
+
+@{
+    ViewBag.Title = "Edit Employee Roles";
+}
+
+<!-- Hero -->
+<div class="bg-body-light">
+    <div class="content content-full">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Edit Employee Roles</h1>
+            <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Home</li>
+                    <li class="breadcrumb-item">Configurations</li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit Employee Roles</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
+<!-- Page Content -->
+<div class="content">
+    <a href="/configurations/manage-roles" class="btn btn-link mb-2"><i class="fa fa-arrow-left"></i> Back</a>
+    <div class="block block-rounded block-bordered">
+        <div class="block-header block-header-default">
+            <h3 class="block-title">Edit @Model.Employee.Firstname @Model.Employee.Lastname's Roles</h3>
+        </div>
+        <div class="block-content">
+            
+            @using (Html.BeginForm("edit-employee-roles", "configurations", FormMethod.Post))
+            {
+
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(x => x.EmployeeUserId)
+
+                <div class="row">
+                    <div class="py-2 px-5">
+                        <label class="mb-3">Select Roles</label>
+                        @foreach (var role in Model.Roles)
+                        {
+                            <div class="mb-3">
+                                <div class="custom-control custom-checkbox custom-control-primary mb-1">
+                                    <input type="checkbox" class="custom-control-input"
+                                            value="@role.Id" id="@role.Id"
+                                            name="NewRoles[]"
+                                            @(Model.SelectedRoles.Contains(role.Name) ? "checked" : "")>
+                                    <label class="custom-control-label" for="@role.Id">@role.Name</label>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="row mb-4 ml-5">
+                    <div>
+                        <button type="submit" class="btn btn-primary">
+                            Update Roles
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <!-- END Elements -->
+</div>
+<!-- END Page Content -->

@@ -76,7 +76,7 @@
                             <div style="text-decoration:underline">Rejection reasons</div>
                             <div>
                                 <ul>
-                                    @foreach (var reason in Model.Appraisee.AppraiseeRejections.OrderByDescending(x => x.DateRejected))
+                                    @foreach (var reason in Model.Appraisee.AppraiseeRejections.Where(x => x.RejectedByPosition == "supervisor").OrderByDescending(x => x.DateRejected))
                                     {
                                         <li>
                                             @reason.RejectionReason 
@@ -799,7 +799,7 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/ongoing-appraisal';
+                                    window.location.href = '/appraisal/ongoing-appraisals-all';
                                 }
                             });
                         });

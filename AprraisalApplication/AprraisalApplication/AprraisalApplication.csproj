@@ -48,6 +48,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Rotativa, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Rotativa.1.7.3\lib\net461\Rotativa.dll</HintPath>
+    </Reference>
     <Reference Include="SendGrid, Version=9.20.0.0, Culture=neutral, PublicKeyToken=4f047e93159395ca, processorArchitecture=MSIL">
       <HintPath>..\packages\SendGrid.9.20.0\lib\net452\SendGrid.dll</HintPath>
     </Reference>
@@ -193,8 +196,10 @@
     <Compile Include="Controllers\api\ResourcesController.cs" />
     <Compile Include="Controllers\AppraisalController.cs" />
     <Compile Include="Controllers\ConfigurationsController.cs" />
+    <Compile Include="Controllers\DepartmentAppraisalController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MdAppraisalController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -383,6 +388,22 @@
     <Compile Include="Migrations\202009082105055_AddSupervisorAskforfeedback.Designer.cs">
       <DependentUpon>202009082105055_AddSupervisorAskforfeedback.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009131653549_AddingHodEmployeeIdToComments.cs" />
+    <Compile Include="Migrations\202009131653549_AddingHodEmployeeIdToComments.Designer.cs">
+      <DependentUpon>202009131653549_AddingHodEmployeeIdToComments.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009131713116_AddingHrCommentToComments.cs" />
+    <Compile Include="Migrations\202009131713116_AddingHrCommentToComments.Designer.cs">
+      <DependentUpon>202009131713116_AddingHrCommentToComments.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009131817563_AddingisCompletedToNewApprisal.cs" />
+    <Compile Include="Migrations\202009131817563_AddingisCompletedToNewApprisal.Designer.cs">
+      <DependentUpon>202009131817563_AddingisCompletedToNewApprisal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009150912489_AddingDateCreatedToAppraisalStaff.cs" />
+    <Compile Include="Migrations\202009150912489_AddingDateCreatedToAppraisalStaff.Designer.cs">
+      <DependentUpon>202009150912489_AddingDateCreatedToAppraisalStaff.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApiModels\NewBranchVM.cs" />
@@ -405,6 +426,7 @@
     <Compile Include="Models\Attributes\Appraisee.cs" />
     <Compile Include="Models\Attributes\CompleteYourProfile.cs" />
     <Compile Include="Models\Attributes\EmailConfirmation.cs" />
+    <Compile Include="Models\Constants\RoleModel.cs" />
     <Compile Include="Models\Constants\SectionTypeCS.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\MigrationModels\AppraisalDepartment.cs" />
@@ -456,7 +478,10 @@
     <Compile Include="Models\ViewModels\AppraiseStaffVM.cs" />
     <Compile Include="Models\ViewModels\CreateEmployeeProfileVM.cs" />
     <Compile Include="Models\MigrationModels\DefaultUserAppraiser.cs" />
+    <Compile Include="Models\ViewModels\DashboardVM.cs" />
+    <Compile Include="Models\ViewModels\DepartmentInitiatedAppraisalsVM.cs" />
     <Compile Include="Models\ViewModels\EditCareerHistoryVM.cs" />
+    <Compile Include="Models\ViewModels\EditEmployeeRolesVM.cs" />
     <Compile Include="Models\ViewModels\InitiatedAppraisalsVM.cs" />
     <Compile Include="Models\ViewModels\NewAccountVM.cs" />
     <Compile Include="Models\ViewModels\NewAppraisalVM.cs" />
@@ -468,6 +493,7 @@
     <Compile Include="Models\ViewModels\SetupEmployeeTemplateVM.cs" />
     <Compile Include="Models\ViewModels\UserPartialVM.cs" />
     <Compile Include="Models\ViewModels\ViewAppraisalVM.cs" />
+    <Compile Include="Models\ViewModels\ViewEmployeesRoles.cs" />
     <Compile Include="Persistence\UnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AccountRepository.cs" />
@@ -4385,6 +4411,10 @@
     <Content Include="Content\Site.css" />
     <Content Include="Images\checkmark.png" />
     <Content Include="Images\ieilogo.png" />
+    <Content Include="Rotativa\help-wkhtmltoimage.txt" />
+    <Content Include="Rotativa\help-wkhtmltopdf.txt" />
+    <Content Include="Rotativa\wkhtmltoimage.exe" />
+    <Content Include="Rotativa\wkhtmltopdf.exe" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\Template\fonts\fontawesome\fa-brands-400.eot" />
@@ -4470,6 +4500,7 @@
     <Content Include="Content\Template\js\plugins\summernote\summernote-lite.min.js.map" />
     <Content Include="Content\Template\js\plugins\summernote\summernote.js.map" />
     <Content Include="Content\Template\js\plugins\summernote\summernote.min.js.map" />
+    <Content Include="App_Browsers\qt.browser" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -4545,6 +4576,30 @@
     <Content Include="Views\Appraisal\AppraiseMembers.cshtml" />
     <Content Include="Views\Appraisal\AppraiseStaff.cshtml" />
     <Content Include="Views\Appraisal\SupervisorReject.cshtml" />
+    <Content Include="Views\Appraisal\AppraiseeComment.cshtml" />
+    <Content Include="Views\Appraisal\AppraiserComments.cshtml" />
+    <Content Include="Views\DepartmentAppraisal\DepartmentInitiatedAppraisals.cshtml" />
+    <Content Include="Views\DepartmentAppraisal\AppraisalDetails.cshtml" />
+    <Content Include="Views\DepartmentAppraisal\ViewParticipants.cshtml" />
+    <Content Include="Views\DepartmentAppraisal\HodEnterComments.cshtml" />
+    <Content Include="Views\Appraisal\SupervisorMakesCorrections.cshtml" />
+    <Content Include="Views\Appraisal\HodAndSupervisorReject.cshtml" />
+    <Content Include="Views\Appraisal\GroupParticipants.cshtml" />
+    <Content Include="Views\Appraisal\ViewParticipants.cshtml" />
+    <Content Include="Views\Appraisal\HRComments.cshtml" />
+    <Content Include="Views\MdAppraisal\InitiatedAppraisalsMd.cshtml" />
+    <Content Include="Views\MdAppraisal\ViewAppraisalMd.cshtml" />
+    <Content Include="Views\MdAppraisal\GroupParticipantsMd.cshtml" />
+    <Content Include="Views\MdAppraisal\ViewParticipantsMd.cshtml" />
+    <Content Include="Views\MdAppraisal\MdComments.cshtml" />
+    <Content Include="Views\Appraisal\PreviousAppraisals.cshtml" />
+    <Content Include="Views\Appraisal\ViewPreviousAppraisal.cshtml" />
+    <Content Include="Views\DepartmentAppraisal\ViewAppraisalPDF.cshtml" />
+    <Content Include="Views\Appraisal\ViewAppraisalPDF.cshtml" />
+    <Content Include="Views\MdAppraisal\ViewAppraisalMdPDF.cshtml" />
+    <Content Include="Views\Configurations\ManageRoles.cshtml" />
+    <Content Include="Views\Configurations\EditEmployeeRoles.cshtml" />
+    <Content Include="Views\Appraisal\OngoingAppraisalsAll.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -4781,6 +4836,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009082105055_AddSupervisorAskforfeedback.resx">
       <DependentUpon>202009082105055_AddSupervisorAskforfeedback.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009131653549_AddingHodEmployeeIdToComments.resx">
+      <DependentUpon>202009131653549_AddingHodEmployeeIdToComments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009131713116_AddingHrCommentToComments.resx">
+      <DependentUpon>202009131713116_AddingHrCommentToComments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009131817563_AddingisCompletedToNewApprisal.resx">
+      <DependentUpon>202009131817563_AddingisCompletedToNewApprisal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009150912489_AddingDateCreatedToAppraisalStaff.resx">
+      <DependentUpon>202009150912489_AddingDateCreatedToAppraisalStaff.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

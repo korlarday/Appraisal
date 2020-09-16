@@ -4,6 +4,7 @@ using AprraisalApplication.Models.MigrationModels;
 using AprraisalApplication.Models.ViewModels;
 using AprraisalApplication.Persistence;
 using Microsoft.AspNet.Identity;
+using Rotativa;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -130,8 +131,14 @@ namespace AprraisalApplication.Controllers
         }
     
         [ActionName("ongoing-appraisal")]
-        public ActionResult OngoingAppraisal()
+        public ActionResult OngoingAppraisal(string slug)
         {
+            string newAppraisalSlug = slug;
+            NewAppraisal newAppraisal = _unitOfWork.Appraisal.GetAppraisalBySlug(newAppraisalSlug);
+            if(newAppraisal == null)
+            {
+                return HttpNotFound();
+            }
             string userId = User.Identity.GetUserId();
             Employee employee = _unitOfWork.Account.GetEmployeeByUserId(userId);
 
@@ -142,7 +149,7 @@ namespace AprraisalApplication.Controllers
             model.DefaultRatings = _unitOfWork.Resources.GetDefaultRatings();
 
             // is there an ongoing appraisal?
-            AppraisalStaff appraisal = _unitOfWork.Appraisal.GetEmployeeOngoingAppraisal(employee.Id);
+            AppraisalStaff appraisal = _unitOfWork.Appraisal.GetEmployeeOngoingAppraisal(employee.Id, newAppraisal.Id);
             if (appraisal == null)
                 model.IsThereAnOngoingAppraisal = false;
             else 
@@ -152,7 +159,7 @@ namespace AprraisalApplication.Controllers
             Appraisee appraisee = new Appraisee();
             if (model.IsThereAnOngoingAppraisal)
             {
-                model.NewAppraisal = _unitOfWork.Appraisal.GetNewAppraisalById(appraisal.NewAppraisalId);
+                model.NewAppraisal = newAppraisal;
                 appraisee = _unitOfWork.Appraisal.GetAppraisee(employee.Id, appraisal.NewAppraisalId);
                 if (appraisee == null)
                     model.IsAppraisalInitialized = false;
@@ -169,15 +176,31 @@ namespace AprraisalApplication.Controllers
             
             if(model.IsThereAnOngoingAppraisal && model.IsAppraisalInitialized && model.Appraisee.AppraiseeProgress.AppraiseeSubmit)
             {
+                if(model.Appraisee.AppraiseeProgress.SupervisorReject && model.Appraisee.AppraiseeProgress.HODReject)
+                {
+                    return View("HodAndSupervisorReject", model);
+                }
                 if (model.Appraisee.AppraiseeProgress.SupervisorReject)
                 {
                     return View("SupervisorReject", model); 
+                }
+                if (model.Appraisee.AppraiseeProgress.SupervisorAskForFeedback)
+                {
+                    return View("AppraiseeComment", model);
                 }
                 return View("AppraisalSubmitted", model);
             }
             return View("OngoingAppraisal", model);
         }
-    
+        
+        [ActionName("previous-appraisals")]
+        public ActionResult PreviousAppraisals()
+        {
+            string userId = User.Identity.GetUserId();
+            Employee employee = _unitOfWork.Account.GetEmployeeByUserId(userId);
+            List<NewAppraisal> newAppraisals = _unitOfWork.Appraisal.GetEmployeeCompletedAppraisals(employee.Id);
+            return View("PreviousAppraisals", newAppraisals);
+        }
         public ActionResult Appraisees()
         {
             string applicationUserId = User.Identity.GetUserId();
@@ -200,11 +223,17 @@ namespace AprraisalApplication.Controllers
         }
 
         [ActionName("appraise-staff")]
-        public ActionResult AppraiseStaff(string slug)
+        public ActionResult AppraiseStaff(string u, string s)
         {
-            string appraiseeUserId = slug;
+            string appraiseeUserId = u;
+            string newAppraisalSlug = s;
+            NewAppraisal newAppraisal = _unitOfWork.Appraisal.GetAppraisalBySlug(newAppraisalSlug);
             Employee employee = _unitOfWork.Account.GetEmployeeByUserId(appraiseeUserId);
-            AppraisalStaff appraisal = _unitOfWork.Appraisal.GetEmployeeOngoingAppraisal(employee.Id);
+            if (employee == null || newAppraisal == null)
+            {
+                return HttpNotFound();
+            }
+            AppraisalStaff appraisal = _unitOfWork.Appraisal.GetEmployeeOngoingAppraisal(employee.Id, newAppraisal.Id);
             Appraisee appraisee = _unitOfWork.Appraisal.GetAppraisee(employee.Id, appraisal.NewAppraisalId);
             InitiatedAppraisalTemplate InitiatedAppraisalTemplate = _unitOfWork.AppraisalTemplate
                                                     .GetInitiatedAppraisalTemplateById(appraisee.InitiatedAppraisalTemplateId);
@@ -217,6 +246,216 @@ namespace AprraisalApplication.Controllers
                 InitiatedAppraisalTemplate = InitiatedAppraisalTemplate
             };
             return View("AppraiseStaff", model);
+        }
+    
+        [ActionName("appraiser-comments")]
+        public ActionResult AppraiserComments(string u, string s)
+        {
+            string appraiseeUserId = u;
+            string newAppraisalSlug = s;
+            Employee employee = _unitOfWork.Account.GetEmployeeByUserId(appraiseeUserId);
+            NewAppraisal newAppraisal = _unitOfWork.Appraisal.GetAppraisalBySlug(newAppraisalSlug);
+            if(employee == null || newAppraisal == null)
+            {
+                return HttpNotFound();
+            }
+            AppraisalStaff appraisal = _unitOfWork.Appraisal.GetEmployeeOngoingAppraisal(employee.Id, newAppraisal.Id);
+            Appraisee appraisee = _unitOfWork.Appraisal.GetAppraisee(employee.Id, appraisal.NewAppraisalId);
+            InitiatedAppraisalTemplate InitiatedAppraisalTemplate = _unitOfWork.AppraisalTemplate
+                                                    .GetInitiatedAppraisalTemplateById(appraisee.InitiatedAppraisalTemplateId);
+            AppraiseStaffVM model = new AppraiseStaffVM
+            {
+                DefaultRatings = _unitOfWork.Resources.GetDefaultRatings(),
+                NewAppraisal = newAppraisal,
+                Employee = employee,
+                Appraisee = appraisee,
+                InitiatedAppraisalTemplate = InitiatedAppraisalTemplate
+            };
+            return View("AppraiserComments", model);
+        }
+    
+        [ActionName("supervisor-makes-corrections")]
+        public ActionResult SupervisorMakesCorrections(string u, string s)
+        {
+            string appraiseeUserId = u;
+            string newAppraisalSlug = s;
+            Employee employee = _unitOfWork.Account.GetEmployeeByUserId(appraiseeUserId);
+            NewAppraisal newAppraisal = _unitOfWork.Appraisal.GetAppraisalBySlug(newAppraisalSlug);
+            if(employee == null || newAppraisal == null)
+            {
+                return HttpNotFound();
+            }
+
+            AppraisalStaff appraisal = _unitOfWork.Appraisal.GetEmployeeOngoingAppraisal(employee.Id, newAppraisal.Id);
+            Appraisee appraisee = _unitOfWork.Appraisal.GetAppraisee(employee.Id, appraisal.NewAppraisalId);
+            InitiatedAppraisalTemplate InitiatedAppraisalTemplate = _unitOfWork.AppraisalTemplate
+                                                    .GetInitiatedAppraisalTemplateById(appraisee.InitiatedAppraisalTemplateId);
+            AppraiseStaffVM model = new AppraiseStaffVM
+            {
+                DefaultRatings = _unitOfWork.Resources.GetDefaultRatings(),
+                NewAppraisal = newAppraisal,
+                Employee = employee,
+                Appraisee = appraisee,
+                InitiatedAppraisalTemplate = InitiatedAppraisalTemplate
+            };
+            return View("SupervisorMakesCorrections", model);
+        }
+        
+        [ActionName("group-participants")]
+        public ActionResult GroupParticipants(string slug)
+        {
+            NewAppraisal appraisal = _unitOfWork.Appraisal.GetAppraisalBySlug(slug);
+            if (appraisal == null)
+            {
+                return HttpNotFound();
+            }
+
+            ViewAppraisalVM model = new ViewAppraisalVM
+            {
+                Appraisal = appraisal,
+                DepartmentAndParticipants = _unitOfWork.Appraisal.GetAppraisalDeptAndParticipants(appraisal.Id)
+            };
+            return View("GroupParticipants", model);
+        }
+        
+        [ActionName("view-participants-hr")]
+        public ActionResult ViewParticipants(int d, string s)
+        {
+            Department department = _unitOfWork.Resources.GetDepartmentById(d);
+            NewAppraisal appraisal = _unitOfWork.Appraisal.GetAppraisalBySlug(s);
+            if(department == null || appraisal == null)
+            {
+                return HttpNotFound();
+            }
+
+            AppraiseMembersVM model = new AppraiseMembersVM()
+            {
+                AppraiseeAndProgresses = _unitOfWork.Appraisal.GetAppraiseesAndProgressInDepartment(department, appraisal),
+                NewAppraisal = appraisal
+            };
+            return View("ViewParticipants", model);
+        }
+        
+        [ActionName("hr-comments")]
+        public ActionResult HRComments(string slug, string n)
+        {
+            string appraiseeUserId = slug;
+            string newAppraisalSlug = n;
+            NewAppraisal newAppraisal = _unitOfWork.Appraisal.GetAppraisalBySlug(newAppraisalSlug);
+            Employee employee = _unitOfWork.Account.GetEmployeeByUserId(appraiseeUserId);
+            if (employee == null || newAppraisal == null)
+            {
+                return HttpNotFound();
+            }
+            Appraisee appraisee = _unitOfWork.Appraisal.GetAppraisee(employee.Id, newAppraisal.Id);
+            InitiatedAppraisalTemplate InitiatedAppraisalTemplate = _unitOfWork.AppraisalTemplate
+                                                    .GetInitiatedAppraisalTemplateById(appraisee.InitiatedAppraisalTemplateId);
+            int hodEmployeeId = (int)appraisee.AppraiseeComments.HodEmployeeId;
+            AppraiseStaffVM model = new AppraiseStaffVM
+            {
+                DefaultRatings = _unitOfWork.Resources.GetDefaultRatings(),
+                NewAppraisal = newAppraisal,
+                Employee = employee,
+                Appraisee = appraisee,
+                InitiatedAppraisalTemplate = InitiatedAppraisalTemplate,
+                HodEmployee = _unitOfWork.Account.GetEmployeeById(hodEmployeeId)
+            };
+            return View("HRComments", model);
+        }
+    
+        [ActionName("view-previous-appraisal")]
+        public ActionResult ViewPreviousAppraisal(string slug)
+        {
+            string appraiseeUserId = User.Identity.GetUserId();
+            Employee employee = _unitOfWork.Account.GetEmployeeByUserId(appraiseeUserId);
+            if (employee == null)
+            {
+                return HttpNotFound();
+            }
+            NewAppraisal newAppraisal = _unitOfWork.Appraisal.GetAppraisalBySlug(slug);
+            Appraisee appraisee = _unitOfWork.Appraisal.GetAppraisee(employee.Id, newAppraisal.Id);
+            
+            InitiatedAppraisalTemplate InitiatedAppraisalTemplate = _unitOfWork.AppraisalTemplate
+                                                    .GetInitiatedAppraisalTemplateById(appraisee.InitiatedAppraisalTemplateId);
+            AppraiseStaffVM model = new AppraiseStaffVM
+            {
+                DefaultRatings = _unitOfWork.Resources.GetDefaultRatings(),
+                NewAppraisal = newAppraisal,
+                Employee = employee,
+                Appraisee = appraisee,
+                InitiatedAppraisalTemplate = InitiatedAppraisalTemplate,
+                SummaryRatings = _unitOfWork.Resources.GetTemplateSummaryRatings(InitiatedAppraisalTemplate.AppraisalTemplateId)
+            };
+            //return View("ViewPreviousAppraisal", model);
+            return new ViewAsPdf("ViewPreviousAppraisal", model)
+            {
+                PageOrientation = Rotativa.Options.Orientation.Portrait,
+                PageSize = Rotativa.Options.Size.A4
+
+            };
+        }
+
+        [ActionName("view-appraisal-pdf")]
+        public ActionResult ViewAppraisalPDF(string u, string s)
+        {
+            string userId = u;
+            string newAppraisalSlug = s;
+            Employee employee = _unitOfWork.Account.GetEmployeeByUserId(userId);
+            NewAppraisal newAppraisal = _unitOfWork.Appraisal.GetAppraisalBySlug(newAppraisalSlug);
+            if (employee == null || newAppraisal == null)
+            {
+                return HttpNotFound();
+            }
+
+            Appraisee appraisee = _unitOfWork.Appraisal.GetAppraisee(employee.Id, newAppraisal.Id);
+            InitiatedAppraisalTemplate InitiatedAppraisalTemplate = _unitOfWork.AppraisalTemplate
+                                                    .GetInitiatedAppraisalTemplateById(appraisee.InitiatedAppraisalTemplateId);
+            int hodEmployeeId = 0;
+            int hrEmployeeId = 0;
+            int mdEmployeeId = 0;
+
+            if (appraisee.AppraiseeComments.HodEmployeeId != null)
+            {
+                hodEmployeeId = (int)appraisee.AppraiseeComments.HodEmployeeId;
+            }
+            if (appraisee.AppraiseeComments.HrEmployeeId != null)
+            {
+                hrEmployeeId = (int)appraisee.AppraiseeComments.HrEmployeeId;
+            }
+            if (appraisee.AppraiseeComments.MdEmployeeId != null)
+            {
+                mdEmployeeId = (int)appraisee.AppraiseeComments.MdEmployeeId;
+            }
+            AppraiseStaffVM model = new AppraiseStaffVM
+            {
+                DefaultRatings = _unitOfWork.Resources.GetDefaultRatings(),
+                NewAppraisal = newAppraisal,
+                Employee = employee,
+                Appraisee = appraisee,
+                InitiatedAppraisalTemplate = InitiatedAppraisalTemplate,
+                HodEmployee = hodEmployeeId != 0 ? _unitOfWork.Account.GetEmployeeById(hodEmployeeId) : null,
+                HrEmployee = hrEmployeeId != 0 ? _unitOfWork.Account.GetEmployeeById(hrEmployeeId) : null,
+                MdEmployee = mdEmployeeId != 0 ? _unitOfWork.Account.GetEmployeeById(mdEmployeeId) : null,
+                SummaryRatings = _unitOfWork.Resources.GetTemplateSummaryRatings(InitiatedAppraisalTemplate.AppraisalTemplateId)
+            };
+            return new ViewAsPdf("ViewAppraisalPDF", model)
+            {
+                PageOrientation = Rotativa.Options.Orientation.Portrait,
+                PageSize = Rotativa.Options.Size.A4
+
+            };
+        }
+    
+        [ActionName("ongoing-appraisals-all")]
+        public ActionResult OngoingAppraisalsAll()
+        {
+            string userId = User.Identity.GetUserId();
+            Employee employee = _unitOfWork.Account.GetEmployeeByUserId(userId);
+            AppraiseMembersVM model = new AppraiseMembersVM()
+            {
+                AppraiseeAndProgresses = _unitOfWork.Appraisal.GetMyOngoingAppraisalsAndProgress(employee)
+            };
+            return View("OngoingAppraisalsAll", model);
         }
     }
 }

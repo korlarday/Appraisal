@@ -1,5 +1,7 @@
 namespace AprraisalApplication.Migrations
 {
+    using AprraisalApplication.Models.Constants;
+    using Microsoft.AspNet.Identity.EntityFramework;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
@@ -14,10 +16,13 @@ namespace AprraisalApplication.Migrations
 
         protected override void Seed(AprraisalApplication.Models.ApplicationDbContext context)
         {
-            //  This method will be called after migrating to the latest version.
-
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data.
+            foreach (var role in RoleModel.roles)
+            {
+                context.Roles.AddOrUpdate(x => x.Name, new IdentityRole
+                {
+                    Name = role
+                });
+            }
         }
     }
 }

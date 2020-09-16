@@ -23,7 +23,13 @@ namespace AprraisalApplication.Controllers
         }
         public ActionResult Index()
         {
-            return View();
+            DashboardVM model = new DashboardVM
+            {
+                NumberOfEmployees = _unitOfWork.Office.GetAllEmployees().Count(),
+                CompletedAppraisals = _unitOfWork.Office.GetAllCompletedAppraisals(),
+                OngoingAppraisals = _unitOfWork.Office.GetAllOngoingAppraisals()
+            };
+            return View(model);
         }
 
         [AllowAnonymous]

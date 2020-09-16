@@ -4,11 +4,14 @@ using AprraisalApplication.Models.MigrationModels;
 using AprraisalApplication.Models.ViewModels;
 using AprraisalApplication.Persistence;
 using Microsoft.AspNet.Identity;
+using System.Web.Mvc;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
+using System.Data.Entity;
 
 namespace AprraisalApplication.Controllers
 {
@@ -17,12 +20,44 @@ namespace AprraisalApplication.Controllers
     [CompleteYourProfile]
     public class ConfigurationsController : Controller
     {
+        private ApplicationSignInManager _signInManager;
+        private ApplicationUserManager _userManager;
         public readonly ApplicationDbContext db;
         public readonly UnitOfWork _unitOfWork;
         public ConfigurationsController()
         {
             db = new ApplicationDbContext();
             _unitOfWork = new UnitOfWork(db);
+        }
+
+
+        public ConfigurationsController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        {
+            UserManager = userManager;
+            SignInManager = signInManager;
+        }
+        public ApplicationSignInManager SignInManager
+        {
+            get
+            {
+                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+            }
+            private set
+            {
+                _signInManager = value;
+            }
+        }
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
         }
 
         // GET: Configurations
@@ -177,6 +212,72 @@ namespace AprraisalApplication.Controllers
                 Employees = employees
             };
             return View("DepartmentSetup", model);
+        }
+        
+        [ActionName("manage-roles")]
+        public ActionResult ManageRoles()
+        {
+            List<Employee> employees = _unitOfWork.Office.GetAllEmployees();
+
+            List<ViewEmployeesRoles> employeesRoles = new List<ViewEmployeesRoles>();
+            foreach (var employee in employees)
+            {
+                var roles = UserManager.GetRoles(employee.ApplicationUserId);
+                ViewEmployeesRoles empRoles = new ViewEmployeesRoles
+                {
+                    Employee = employee,
+                    Roles = roles == null ? null : roles.ToList()
+                };
+                employeesRoles.Add(empRoles);
+            }
+            return View("ManageRoles", employeesRoles);
+        }
+    
+        [ActionName("edit-employee-roles")]
+        public ActionResult EditEmployeeRoles(string slug)
+        {
+            string userId = slug;
+            var roles = UserManager.GetRoles(userId);
+            EditEmployeeRolesVM model = new EditEmployeeRolesVM
+            {
+                Employee = _unitOfWork.Account.GetEmployeeByUserId(userId),
+                SelectedRoles = roles != null ? roles.ToList() : null,
+                EmployeeUserId = userId,
+                Roles = db.Roles.ToList()
+            };
+            return View("EditEmployeeRoles", model);
+        }
+
+        [ActionName("edit-employee-roles")]
+        [ValidateAntiForgeryToken, HttpPost]
+        public ActionResult EditEmployeeRoles(EditEmployeeRolesVM model)
+        {
+            var user = _unitOfWork.Account.GetEmployeeRoles(model.EmployeeUserId);
+            var userRoles = user.Roles.ToList();
+            var dbRoles = db.Roles.ToList();
+
+            foreach (var role in dbRoles)
+            {
+                if(model.NewRoles != null && model.NewRoles.Contains(role.Id))
+                {
+                    // check if role exists
+                    if(!UserManager.IsInRole(user.Id, role.Name))
+                    {
+                        UserManager.AddToRole(user.Id, role.Name);
+                    }
+                }
+                else
+                {
+                    // check if role exists
+                    if (UserManager.IsInRole(user.Id, role.Name))
+                    {
+                        UserManager.RemoveFromRole(user.Id, role.Name);
+                    }
+                }
+            }
+
+            TempData["SM"] = "The employee role has been updated successfully.";
+            return RedirectToAction("manage-roles");
         }
     }
 }

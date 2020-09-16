@@ -484,7 +484,7 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/ongoing-appraisal';
+                                    window.location.href = '/appraisal/ongoing-appraisals-all';
                                 }
                             });
                         }
@@ -506,7 +506,7 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/ongoing-appraisal';
+                                    window.location.href = '/appraisal/ongoing-appraisals-all';
                                 }
                             });
                         }
@@ -522,7 +522,7 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/ongoing-appraisal';
+                                    window.location.href = '/appraisal/ongoing-appraisals-all';
                                 }
                             });
                         }
@@ -530,108 +530,7 @@
                     });
             });
 
-            // when you click on add row (for task performed)
-            $(".addTaskRow").on("click", function () {
-                var $this = $(this);
-                var $tr = $this.closest("div").find("table tbody tr.task-row:first").clone();
-                var $rows = $this.closest("div").find("table tbody tr.task-row");
-
-                var $numbersTaken = [];
-                var $length = $rows.length + 2;
-
-                $.each($rows, function () {
-                    var $num = parseInt($(this).find(".count").text().replace('.',''));
-                    $numbersTaken.push($num);
-                });
-                var $rowCount = 0;
-                for (var i = 1; i < $length; i++) {
-                    if (!$numbersTaken.includes(i)) {
-                        $rowCount = i;
-                        break;
-                    }
-                }
-
-                var $count = $tr.find(".count").text();
-                $count = parseInt($count.replace('.', '')) + 1;
-                $tr.find("input").val("");
-                $tr.find(".count").text($rowCount + ".");
-                $tr.find(".delete-row").show();
-                $this.closest("div").find("table tbody").append($tr);
-            });
-
-            // when you click on remove row for task performed
-            $("tbody").on("click", ".delete-row", function () {
-                $(this).closest("tr").remove();
-            })
-
-            // when you click on submit appraisal
-            $("#submitAppraisal").on("click", function () {
-                var $sections = $(".section-item");
-                var $valid = true;
-                var $sectionResults = [];
-                $.each($sections, function () {
-                    var $sectionTypeId = $(this).attr("data-sectionTypeId");
-                    var $sectionId = $(this).attr("data-sectionId");
-                    if ($sectionTypeId == 1) {
-                        var $taskAssignedArray = []
-
-                        var $rows = $(this).find("table tbody tr.task-row");
-                        $.each($rows, function () {
-                            var $task = $(this).find("td input").val();
-                            var $count = parseInt($(this).find(".count").text().replace('.', ''));
-                            if ($task == '') {
-                                $valid = false;
-                            }
-                            var obj = {
-                                task: $task,
-                                number: $count
-                            }
-                            $taskAssignedArray.push(obj);
-                        });
-
-                        var $taskPerfomed = {
-                            sectionId: $sectionId,
-                            taskPerformed: $taskAssignedArray
-                        }
-                        $sectionResults.push($taskPerfomed);
-                    }
-                });
-
-                if (!$valid) {
-                    Swal.fire("Error!", "One or more empty fields detected.", "error");
-                    return;
-                }
-
-                Swal.fire({
-                    title: "Are you sure?",
-                    text: "Are you sure you want to submit the appraisal to your supervisor?",
-                    type: "warning",
-                    showCancelButton: !0,
-                    customClass: { confirmButton: "btn btn-danger m-1", cancelButton: "btn btn-secondary m-1" },
-                    confirmButtonText: "Yes, Submit it!",
-                    html: !1,
-                    preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
-
-                }).then(function (n) {
-                    if (n.value) {
-                        var $appraiseeId = parseInt($("#appraiseeId").text());
-                        var url = "/api/Appraisal/PostSubmitAppraisalToSupervisor";
-
-                        $.post(url, {
-                            appraiseeId: $appraiseeId,
-                            sectionResults: $sectionResults
-                        }, function (data) {
-                            Swal.fire("Deleted!", "Branch has been deleted.", "success");
-                            $this.closest('tr').fadeOut("slow", function () {
-                                $(this).remove();
-                            });
-                        });
-                    }
-                    else {
-                        "cancel" === n.dismiss && Swal.fire("Cancelled", "Submission cancelled", "error")
-                    }
-                });
-            });
+            
         })
                     ////////////////////////////////////////////////////////////////////
     </script>

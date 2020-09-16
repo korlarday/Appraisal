@@ -12,6 +12,7 @@ namespace AprraisalApplication.Models.MigrationModels
         public Employee Employee { get; set; }
         public int EmployeeId { get; set; }
         public bool IsCompleted { get; set; }
+        public DateTime DateCreated { get; set; }
         public AppraisalStaff()
         {
 
@@ -21,6 +22,7 @@ namespace AprraisalApplication.Models.MigrationModels
             NewAppraisalId = newAppraisalId;
             EmployeeId = employeeId;
             IsCompleted = false;
+            DateCreated = DateTime.Now;
         }
     }
 }
