@@ -46,8 +46,49 @@
                         <label for="description">Descriptions (optional)</label>
                         <textarea class="form-control" id="description" name="description" rows="4" placeholder="Descriptions..."></textarea>
                     </div>
+                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-10 offset-1 mt-5 mb-5">
+                    <div class="custom-control custom-checkbox custom-control-lg mb-1">
+                        <input type="checkbox" class="custom-control-input" id="includeTracker" name="includeTracker" checked>
+                        <label class="custom-control-label" for="includeTracker">Include BDS Performance Tracker</label>
+                    </div>
+                    <div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-vcenter">
+                                <thead>
+                                    <tr>
+                                        <th>Annual Target</th>
+                                        <th>Expected RSA</th>
+                                        <th>RSA Achieved</th>
+                                        <th>Funded Pin</th>
+                                        <th>Pre Funded Pins</th>
+                                        <th>Cash Volume</th>
+                                        <th>% RSA Achieved</th>
+                                        <th>% Funding Achieved</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="height:70px"></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-8 offset-2">
                     <div class="form-group">
-                        <button class="btn btn-primary bg-primary" id="dropdown-default-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-plus"></i> Add Section</button>
+                        <button class="btn btn-outline-primary" id="dropdown-default-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-plus"></i> Add Section</button>
                         <div class="dropdown-menu" id="sectionTypeOptions" aria-labelledby="dropdown-default-primary">
                             @foreach (var item in Model.SectionTypes)
                             {
@@ -92,7 +133,7 @@
                                     <input type="number" class="form-control sectionPercentageScore" style="max-width:350px" placeholder="">
                                 </div>
                                 <div class="form-group">
-                                    <label>Total Points in this section (optional)</label>
+                                    <label>Total Points in this section</label>
                                     <input type="number" class="form-control sectionTotalPoints" style="max-width:350px" placeholder="">
                                 </div>
                                 <div class="form-group">
@@ -146,7 +187,7 @@
                                     <input type="number" class="form-control sectionPercentageScore" style="max-width:350px" placeholder="">
                                 </div>
                                 <div class="form-group">
-                                    <label>Total Points in this section (optional)</label>
+                                    <label>Total Points in this section</label>
                                     <input type="number" class="form-control sectionTotalPoints" style="max-width:350px" placeholder="">
                                 </div>
                                 <div class="form-group">
@@ -203,7 +244,7 @@
                                         <option value="appraisee">Appraisee</option>
                                     </select>
                                 </div>
-                                <div class="form-group" style="display:none">
+                                <div class="form-group">
                                     <label>Section Type</label>
                                     <select class="form-control sectionType" style="max-width:350px">
                                         <option value="mandatory">Mandatory</option>
@@ -333,7 +374,7 @@
                                     <label>Total Points in this section</label>
                                     <input type="number" class="form-control sectionTotalPoints" style="max-width:350px" placeholder="">
                                 </div>
-                                <div class="form-group" style="display:none">
+                                <div class="form-group">
                                     <label>Section Type</label>
                                     <select class="form-control sectionType" style="max-width:350px">
                                         <option value="mandatory">Mandatory</option>
@@ -500,6 +541,7 @@
                 var $description = $("#description").val();
                 var $sectionCount = parseInt($(".appraisalSection").length);
                 var $sections = $(".appraisalSection");
+                var $includeTracker = $("#includeTracker").prop("checked");
 
                 if ($templateName == '') {
                     Swal.fire("Oops...", "Template Name cannot be empty!", "error");
@@ -516,6 +558,7 @@
                 var $qualitativeDetailsScoreValid = true;
                 var $breakdownIsValid = true;
                 var $percentageTotal = 0;
+                var $deriveSectionValid = true;
 
                 $.each($sections, function () {
                     var $this = $(this);
@@ -575,17 +618,26 @@
                         });
                     }
                     if ($sectionTypeId == 4 || $sectionTypeId == 3) {
-                        console.log($sectionTotalPoints, $TotalWeightScore)
                         if (parseInt($sectionTotalPoints) !== $TotalWeightScore) {
                             $qualitativeDetailsScoreValid = false;
                         }
                     }
                     
-                    if ($sectionTitle == '' || $sectionInstructions == '' || $sectionPercentageScore == '') {
+                    if ($sectionTitle == '' || $sectionInstructions == '' || $sectionPercentageScore == '' || $sectionTotalPoints == '') {
                         $isValid = false;
                     }
                     if ($sectionType == 'mandatory') {
                         $percentageTotal += parseInt($sectionPercentageScore);
+                    }
+                    if ($sectionType == 'optional') {
+                        if ($derivedSection == '' || $derivedSection == null) {
+                            $deriveSectionValid = false;
+                        }
+                        var $derivedSectionDiv = $("#sectionContainer").find("[data-sectionNum='" + $derivedSection + "']");
+                        var $derivedSectionScore = $derivedSectionDiv.find(".sectionPercentageScore").val();
+                        if ($sectionPercentageScore >= $derivedSectionScore) {
+                            $deriveSectionValid = false;
+                        }
                     }
                     var obj = {
                         sectionSetupId: $sectionSetupId,
@@ -602,7 +654,6 @@
                         breakdownValueBy: $sectionBreakdownValueBy
                     };
                     $appraisalTemplate.push(obj);
-
                 });
 
 
@@ -628,28 +679,42 @@
                     return false;
                 }
 
+                if (!$deriveSectionValid) {
+                    Swal.fire("Error...", "For optional sections, ensure that the section is linked to a mandatory section. Also, the total percentage score of optional sections must not be greater than the parent sections");
+                    return false;
+                }
+                console.log($appraisalTemplate);
+                console.log("include tracker", $includeTracker);
                 var url = "/api/Configurations/PostSaveAppraisalTemplate";
+                
                 $.post(url,
                     {
                         templateName: $templateName,
                         templateDescription: $description,
+                        includeBdsTracker: $includeTracker,
                         appraisalSectionParams: $appraisalTemplate
                     },
                     function (data) {
-                        Swal.fire({
-                            title: "Success",
-                            text: "Appraisal template was created successfully",
-                            type: "success",
-                            showCancelButton: 0,
-                            customClass: { okButton: "btn btn-danger m-1" },
-                            html: !1,
-                            preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
+                        if (data == "success") {
+                            Swal.fire({
+                                title: "Success",
+                                text: "Appraisal template was created successfully",
+                                type: "success",
+                                showCancelButton: 0,
+                                customClass: { okButton: "btn btn-danger m-1" },
+                                html: !1,
+                                preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
 
-                        }).then(function (n) {
-                            if (n.value) {
-                                window.location.href = '/configurations/appraisal-templates';
-                            }
-                        });
+                            }).then(function (n) {
+                                if (n.value) {
+                                    window.location.href = '/configurations/appraisal-templates';
+                                }
+                            });
+                        } else if (data == "title exists") {
+                            Swal.fire("Oops...", "The Appraisal template title already exists", "error");
+                        } else if (data == "failed") {
+                            Swal.fire("Oops...", "Something went wrong. Unable to save the template at this time.", "error");
+                        }
                     });
 
             });
@@ -657,6 +722,7 @@
             // when you select section type to be optional
             $("#sectionContainer").on("change", ".sectionType", function () {
                 var $this = $(this);
+                var $thisSectionNum = $this.closest(".appraisalSection").attr("data-sectionNum");
                 var $value = $this.val();
                 var $sections = $(".appraisalSection");
                 var $select = $this.closest(".appraisalSection").find(".derivedSectionContainer .derivedSection");
@@ -665,8 +731,10 @@
                     $.each($sections, function () {
                         var $this = $(this);
                         var $sectionNum = $this.attr("data-sectionNum");
-                        var $option = '<option value="' + $sectionNum + '">Section ' + $sectionNum + '</option>';
-                        $select.append($option);
+                        if ($sectionNum != $thisSectionNum) {
+                            var $option = '<option value="' + $sectionNum + '">Section ' + $sectionNum + '</option>';
+                            $select.append($option);
+                        }
                     });
                     $this.closest(".appraisalSection").find(".derivedSectionContainer").show();
                 } else {

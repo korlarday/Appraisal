@@ -25,6 +25,7 @@ namespace AprraisalApplication.Models.Attributes
         public int AppraiseeProgressId { get; set; }
         public AppraiseeComments AppraiseeComments { get; set; }
         public int AppraiseeCommentsId { get; set; }
+        public int? BdsPerformanceTrackerId { get; set; }
         public ICollection<SectionResult> SectionResults { get; set; }
         public ICollection<AppraiseeCareerHistoryWithCompany> AppraiseeCareerHistoryWithCompanies { get; set; }
         public ICollection<AppraiseeRejection> AppraiseeRejections { get; set; }
@@ -35,7 +36,7 @@ namespace AprraisalApplication.Models.Attributes
             AppraiseeRejections = new Collection<AppraiseeRejection>();
         }
 
-        public Appraisee(int newAppraisalId, int employeeId, int appraiseeId, int appraiserId, int initiatedTemplateId, int progressId, int commentsId)
+        public Appraisee(int newAppraisalId, int employeeId, int appraiseeId, int appraiserId, int initiatedTemplateId, int progressId, int commentsId, int? trackerId)
         {
             NewAppraisalId = newAppraisalId;
             EmployeeId = employeeId;
@@ -46,6 +47,7 @@ namespace AprraisalApplication.Models.Attributes
             IsNew = true;
             IsCompleted = false;
             AppraiseeCommentsId = commentsId;
+            BdsPerformanceTrackerId = trackerId;
         }
 
     }

@@ -24,14 +24,14 @@ namespace AprraisalApplication.Controllers.api
 
         public IHttpActionResult PostSaveAppraisalTemplate([FromBody] AppraisalTemplateParams model)
         {
-            _unitOfWork.AppraisalTemplate.SaveNewAppraisalTemplate(model);
-            return Ok();
+            string result = _unitOfWork.AppraisalTemplate.SaveNewAppraisalTemplate(model);
+            return Ok(result);
         }
 
         public IHttpActionResult PostEditAppraisalTemplate([FromBody] AppraisalTemplateParams model)
         {
-            _unitOfWork.AppraisalTemplate.EditAppraisalTemplate(model);
-            return Ok();
+            string response = _unitOfWork.AppraisalTemplate.EditAppraisalTemplate(model);
+            return Ok(response);
         }
 
         public IHttpActionResult PostDeleteAppraisalSection([FromBody] AppraisalSectionParam model)

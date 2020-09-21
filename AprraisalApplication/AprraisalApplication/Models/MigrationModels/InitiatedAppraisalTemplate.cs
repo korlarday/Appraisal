@@ -18,6 +18,7 @@ namespace AprraisalApplication.Models.MigrationModels
         public bool IsDeleted { get; set; }
         public string Slug { get; set; }
         public string Description { get; set; }
+        public bool IncludeBdsTracker { get; set; }
 
         public ICollection<InitiatedTemplateSection> InitiatedTemplateSections { get; set; }
         public ICollection<TemplateRating> TemplateRatings { get; set; }
@@ -39,6 +40,7 @@ namespace AprraisalApplication.Models.MigrationModels
             Description = template.Description;
             DateCreated = DateTime.Now;
             IsDeleted = template.IsDeleted;
+            IncludeBdsTracker = template.IncludeBdsTracker;
         }
 
         internal void UpdateTemplate(AppraisalTemplateParams model)
@@ -47,6 +49,7 @@ namespace AprraisalApplication.Models.MigrationModels
             TemplateName = model.TemplateName;
             Slug = model.TemplateName.ToLower().Replace(" ", "-").Replace(".", "-").Replace(",", "-");
             Description = model.TemplateDescription;
+            IncludeBdsTracker = model.IncludeBdsTracker;
         }
     }
 }

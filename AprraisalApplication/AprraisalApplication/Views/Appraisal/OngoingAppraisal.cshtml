@@ -63,7 +63,7 @@
         <div class="block-content">
             <div class="block block-rounded">
                 <div class="block-content block-content-full">
-                    
+
                     @if (!Model.IsThereAnOngoingAppraisal)
                     {
                         <p>Sorry, there are no ongoing appraisal exersice!</p>
@@ -125,6 +125,7 @@
                     else
                     {
                         <span style="display:none" id="appraiseeId">@Model.Appraisee.Id</span>
+                        <span style="display:none" id="includeTracker">@Model.InitiatedAppraisalTemplate.IncludeBdsTracker</span>
                         <h5 class="text-center">@Model.NewAppraisal.AppraisalTitle</h5>
                         <div class="row">
                             <h6 class="col-12 text-header">Personal Data: Appraisee</h6>
@@ -245,7 +246,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @{ 
+                                        @{
                                             int num = 1;
                                             foreach (var training in Model.Appraisee.AppraiseeCareerHistoryWithCompanies.OrderByDescending(x => x.Date))
                                             {
@@ -270,8 +271,26 @@
                             {
                                 if (templateSection.SectionTypeId == 1)
                                 {
-                                    <div class="section-item" data-sectionTypeId="1" data-sectionId="@templateSection.Id">
+                                    <div class="section-item"
+                                         data-sectionTypeId="1"
+                                         data-sectionId="@templateSection.Id"
+                                         data-sectionOptional="@templateSection.Optional">
                                         <h5 class="mt-4">Section @templateSection.SetupId</h5>
+                                        @if (templateSection.Optional)
+                                        {
+                                            <div style="overflow:hidden">
+                                                <div class="form-group float-right" style="width:250px">
+                                                    <label>Include this section?</label>
+                                                    <div class="custom-control custom-switch custom-control-lg mb-2">
+                                                        <input type="checkbox"
+                                                               class="custom-control-input enableSection"
+                                                               id="section@(templateSection.Id)"
+                                                               name="section@(templateSection.Id)">
+                                                        <label class="custom-control-label" for="section@(templateSection.Id)">Enable section</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
                                         <div class="table-responsive mb-4 details">
                                             <table class="table table-bordered table-vcenter">
                                                 <thead>
@@ -300,8 +319,8 @@
                                                         <td class="pr-5">
                                                             <div class="row">
                                                                 <span class="col-1 count" style="position:relative;top:8px">1.</span>
-                                                                <input type="text" class="form-control col-10" style="display:inline !important" />
-                                                                <button style="display:none" class="btn btn-link text-danger col-1 delete-row"  data-toggle="tooltip" title="Delete Row"><i class="fa fa-times"></i></button>
+                                                                <input type="text" class="form-control col-10" style="display:inline !important" @(templateSection.Optional ? "disabled" : "") />
+                                                                <button style="display:none" class="btn btn-link text-danger col-1 delete-row" data-toggle="tooltip" title="Delete Row"><i class="fa fa-times"></i></button>
                                                             </div>
                                                         </td>
                                                         @foreach (var item in Model.DefaultRatings)
@@ -317,8 +336,26 @@
                                 }
                                 else if (templateSection.SectionTypeId == 2)
                                 {
-                                    <div class="section-item" data-sectionTypeId="2" data-sectionId="@templateSection.Id">
+                                    <div class="section-item"
+                                         data-sectionTypeId="2"
+                                         data-sectionId="@templateSection.Id"
+                                         data-sectionOptional="@templateSection.Optional">
                                         <h5 class="mt-4">Section @templateSection.SetupId</h5>
+                                        @if (templateSection.Optional)
+                                        {
+                                            <div style="overflow:hidden">
+                                                <div class="form-group float-right" style="width:250px">
+                                                    <label>Optional section</label>
+                                                    <div class="custom-control custom-switch custom-control-lg mb-2">
+                                                        <input type="checkbox"
+                                                               class="custom-control-input enableSection"
+                                                               id="section@(templateSection.Id)"
+                                                               name="section@(templateSection.Id)">
+                                                        <label class="custom-control-label" for="section@(templateSection.Id)">Enable section</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
                                         <div class="table-responsive mb-4">
                                             <table class="table table-bordered table-vcenter">
                                                 <thead>
@@ -351,12 +388,12 @@
                                                         <td>
                                                             <div class="row">
                                                                 <span class="col-1 count" style="position:relative;top:8px">1.</span>
-                                                                <input type="text" class="form-control col-10 duties" style="display:inline !important" />
+                                                                <input type="text" class="form-control col-10 duties" style="display:inline !important" @(templateSection.Optional ? "disabled" : "") />
                                                             </div>
                                                         </td>
                                                         <td class="pl-4">
                                                             <div class="row">
-                                                                <input type="text" class="form-control col-10 resultAchieved" style="display:inline !important" />
+                                                                <input type="text" class="form-control col-10 resultAchieved" style="display:inline !important" @(templateSection.Optional ? "disabled" : "") />
                                                                 <button class="btn btn-link text-danger col-1 delete-row" data-toggle="tooltip" title="Delete Row"><i class="fa fa-times"></i></button>
                                                             </div>
                                                         </td>
@@ -373,8 +410,26 @@
                                 }
                                 else if (templateSection.SectionTypeId == 3)
                                 {
-                                    <div class="section-item" data-sectionTypeId="3" data-sectionId="@templateSection.Id">
+                                    <div class="section-item"
+                                         data-sectionTypeId="3"
+                                         data-sectionId="@templateSection.Id"
+                                         data-sectionOptional="@templateSection.Optional">
                                         <h5 class="mt-4">Section @templateSection.SetupId</h5>
+                                        @if (templateSection.Optional)
+                                        {
+                                            <div style="overflow:hidden">
+                                                <div class="form-group float-right" style="width:250px">
+                                                    <label>Optional section</label>
+                                                    <div class="custom-control custom-switch custom-control-lg mb-2">
+                                                        <input type="checkbox"
+                                                               class="custom-control-input enableSection"
+                                                               id="section@(templateSection.Id)"
+                                                               name="section@(templateSection.Id)">
+                                                        <label class="custom-control-label" for="section@(templateSection.Id)">Enable section</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
                                         <div class="table-responsive mb-4">
                                             <span class="breakdown-value" style="display:none">@templateSection.BreakdownValueBy</span>
                                             <table class="table table-bordered table-vcenter">
@@ -409,11 +464,13 @@
                                                                             {
                                                                                 <li class="mt-1">
                                                                                     <span class="breakdown-title">@breakdown.Title</span>
-                                                                                    @if(templateSection.BreakdownValueBy == "appraisee")
+                                                                                    @if (templateSection.BreakdownValueBy == "appraisee")
                                                                                     {
-                                                                                        <input type="number" data-breakdownId="@breakdown.Id" class="form-control ml-4 input-breakdown" style="width:200px;display:inline;" />
-                                                                                    }else{
-                                                                                        <input type="number" data-breakdownId="@breakdown.Id" class="form-control ml-4 input-breakdown" style="width:200px;display:none;" />
+                                                                                        <input type="number" data-breakdownId="@breakdown.Id" class="form-control ml-4 input-breakdown" style="width:200px;display:inline;" @(templateSection.Optional ? "disabled" : "") />
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="number" data-breakdownId="@breakdown.Id" class="form-control ml-4 input-breakdown" style="width:200px;display:none;" @(templateSection.Optional ? "disabled" : "") />
                                                                                     }
                                                                                 </li>
                                                                             }
@@ -440,8 +497,26 @@
                                 }
                                 else if (templateSection.SectionTypeId == 4)
                                 {
-                                    <div class="section-item" data-sectionTypeId="4" data-sectionId="@templateSection.Id">
+                                    <div class="section-item"
+                                         data-sectionTypeId="4"
+                                         data-sectionId="@templateSection.Id"
+                                         data-sectionOptional="@templateSection.Optional">
                                         <h5 class="mt-4">Section @templateSection.SetupId</h5>
+                                        @if (templateSection.Optional)
+                                        {
+                                            <div style="overflow:hidden">
+                                                <div class="form-group float-right" style="width:250px">
+                                                    <label>Optional section</label>
+                                                    <div class="custom-control custom-switch custom-control-lg mb-2">
+                                                        <input type="checkbox"
+                                                               class="custom-control-input enableSection"
+                                                               id="section@(templateSection.Id)"
+                                                               name="section@(templateSection.Id)">
+                                                        <label class="custom-control-label" for="section@(templateSection.Id)">Enable section</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
                                         <div class="table-responsive mb-4">
                                             <table class="table table-bordered table-vcenter">
                                                 <thead>
@@ -493,7 +568,41 @@
                                 }
                             }
                         }
-                        
+
+                        if (Model.InitiatedAppraisalTemplate.IncludeBdsTracker)
+                        {
+                            <div class="row" id="trackerSection">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-vcenter">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">Annual Target</th>
+                                                <th class="text-center"><div>Expected RSA</div><span style="font-size:14px">(@Model.NewAppraisal.AppraisalPeriodStartDate.ToString("MMM") - @Model.NewAppraisal.AppraisalPeriodEndDate.ToString("MMM"))</span></th>
+                                                <th class="text-center">RSA Achieved</th>
+                                                <th class="text-center">Funded Pin <span style="font-size:14px">(@Model.NewAppraisal.AppraisalPeriodEndDate.ToString("yyyy") REG)</span></th>
+                                                <th class="text-center">Pre-@Model.NewAppraisal.AppraisalPeriodStartDate.ToString("yyyy") Funded Pins</th>
+                                                <th class="text-center">Cash Volume</th>
+                                                <th class="text-center">% RSA Achieved</th>
+                                                <th class="text-center">% Funding Achieved</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style="height:70px"><input type="text" class="form-control annual-target" /></td>
+                                                <td><input type="text" class="form-control expected-rsa" /></td>
+                                                <td><input type="text" class="form-control rsa-achieved" /></td>
+                                                <td><input type="text" class="form-control funded-pins" /></td>
+                                                <td><input type="text" class="form-control pre-funded-pins" /></td>
+                                                <td><input type="text" class="form-control cash-volume" /></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        }
+
                         <div class="row mt-4">
                             <div style="margin:auto">
                                 <button class="btn btn-primary" id="submitAppraisal">
@@ -514,7 +623,7 @@
 
     <script>
         $(function () {
-            
+
             var $texts = $(".capitalize-text");
             $.each($texts, function () {
                 $(this).text(capitalize($(this).text()));
@@ -644,11 +753,50 @@
                 var $sections = $(".section-item");
                 var $valid = true;
                 var $quatitativeValid = true;
+                var $bdsTrackerValid = true;
                 var $quatitativeFilledBy = '';
                 var $sectionResults = [];
+                var $isTrackerIncluded = $("#includeTracker").text();
+                var trackerObject = {};
+                var $trackerDiv = $("#trackerSection");
+                if ($isTrackerIncluded == "True") {
+                    var $annualTarget = $trackerDiv.find(".annual-target").val();
+                    var $expectedRsa = $trackerDiv.find(".expected-rsa").val();
+                    var $rsaAchieved = $trackerDiv.find(".rsa-achieved").val();
+                    var $fundedPins = $trackerDiv.find(".funded-pins").val();
+                    var $preFundedPins = $trackerDiv.find(".pre-funded-pins").val();
+                    var $cashVolume = $trackerDiv.find(".cash-volume").val();
+                    trackerObject = {
+                        annualTarget: parseInt($annualTarget),
+                        expectedRsa: parseInt($expectedRsa),
+                        rsaAchieved: parseInt($rsaAchieved),
+                        fundedPins: parseInt($fundedPins),
+                        preFundedPins: parseInt($preFundedPins),
+                        cashVolume: parseFloat($cashVolume)
+                    }
+                    if (isNaN($annualTarget) || $annualTarget == '' ||
+                        isNaN($expectedRsa) || $expectedRsa == '' ||
+                        isNaN($rsaAchieved) || $rsaAchieved == '' ||
+                        isNaN($fundedPins) || $fundedPins == '' ||
+                        isNaN($preFundedPins) || $preFundedPins == '' ||
+                        isNaN($cashVolume) || $cashVolume == '') {
+                        $bdsTrackerValid = false;
+                    }
+                }
                 $.each($sections, function () {
                     var $sectionTypeId = $(this).attr("data-sectionTypeId");
                     var $sectionId = $(this).attr("data-sectionId");
+                    var $sectionOptional = $(this).attr("data-sectionOptional");
+                    var $sectionOptionalCheckbox = $(this).find(".enableSection");
+                    var $validateField = true;
+
+                    if ($sectionOptional == "True") {
+                        if (!$sectionOptionalCheckbox.prop("checked")) {
+                            $validateField = false;
+                        }
+                    }
+
+                    //console.log($sectionOptional, $optionalCheckStatus);
                     if ($sectionTypeId == 1) {
                         var $taskAssignedArray = []
 
@@ -656,8 +804,10 @@
                         $.each($rows, function () {
                             var $task = $(this).find("td input").val();
                             var $count = parseInt($(this).find(".count").text().replace('.', ''));
-                            if ($task == '') {
-                                $valid = false;
+                            if ($validateField) {
+                                if ($task == '') {
+                                    $valid = false;
+                                }
                             }
                             var obj = {
                                 task: $task,
@@ -669,7 +819,9 @@
 
                         var $taskPerfomed = {
                             sectionId: $sectionId,
-                            taskPerformed: $taskAssignedArray
+                            taskPerformed: $taskAssignedArray,
+                            optional: $sectionOptional,
+                            optionSelected: $sectionOptionalCheckbox.prop("checked")
                         }
                         $sectionResults.push($taskPerfomed);
                     }
@@ -681,13 +833,17 @@
                             var $task = $(this).find("td input.duties").val();
                             var $resultAchieved = $(this).find("td input.resultAchieved").val();
                             var $count = parseInt($(this).find(".count").text().replace('.', ''));
-                            if ($task == '' || $resultAchieved == '') {
-                                $valid = false;
+                            if ($validateField) {
+                                if ($task == '') {
+                                    $valid = false;
+                                }
                             }
                             var obj = {
                                 task: $task,
                                 taskResult: $resultAchieved,
-                                number: $count
+                                number: $count,
+                                optional: $sectionOptional,
+                                optionSelected: $sectionOptionalCheckbox.prop("checked")
                             }
                             $taskAssignedArray.push(obj);
                         });
@@ -717,9 +873,11 @@
                                     breakdownId: $breakdownId
                                 }
                                 $breakdownArray.push(obj);
-                                if ($breakdownValue == '') {
-                                    if ($quatitativeFilledBy == 'appraisee') {
-                                        $quatitativeValid = false;
+                                if ($validateField) {
+                                    if ($breakdownValue == '') {
+                                        if ($quatitativeFilledBy == 'appraisee') {
+                                            $quatitativeValid = false;
+                                        }
                                     }
                                 }
                             });
@@ -739,14 +897,18 @@
                         });
                         var $taskPerfomed = {
                             sectionId: $sectionId,
-                            taskPerformed: $ValuesArray
+                            taskPerformed: $ValuesArray,
+                            optional: $sectionOptional,
+                            optionSelected: $sectionOptionalCheckbox.prop("checked")
                         }
                         $sectionResults.push($taskPerfomed);
                     }
                     else if ($sectionTypeId == 4) {
                         var $taskPerfomed = {
                             sectionId: $sectionId,
-                            taskPerformed: []
+                            taskPerformed: [],
+                            optional: $sectionOptional,
+                            optionSelected: $sectionOptionalCheckbox.prop("checked")
                         }
                         $sectionResults.push($taskPerfomed);
                     }
@@ -760,7 +922,11 @@
                     Swal.fire("Error!", "One or more empty fields detected in the quantitavie section.", "error");
                     return;
                 }
-                console.log($sectionResults);
+                if (!$bdsTrackerValid) {
+                    Swal.fire("Error!", "Empty fields detected", "error");
+                    return;
+                }
+
                 Swal.fire({
                     title: "Are you sure?",
                     text: "Are you sure you want to submit the appraisal to your supervisor?",
@@ -778,7 +944,8 @@
 
                         $.post(url, {
                             appraiseeId: $appraiseeId,
-                            sectionResults: $sectionResults
+                            sectionResults: $sectionResults,
+                            bdsTracker: trackerObject
                         }, function (data) {
                             Swal.fire({
                                 title: "Success",
@@ -801,7 +968,22 @@
                     }
                 });
             });
+
+            // when you switch optional sections
+            $(".enableSection").on("change", function () {
+                var $this = $(this);
+                var $inputs = $this.closest(".section-item").find("input:not('.enableSection')");
+                if ((this).checked) {
+                    $.each($inputs, function () {
+                        $(this).removeAttr("disabled");
+                    })
+                } else {
+                    $.each($inputs, function () {
+                        $(this).attr("disabled", "disabled");
+                    })
+                }
+            })
         })
-                        ////////////////////////////////////////////////////////////////////
+                                            ////////////////////////////////////////////////////////////////////
     </script>
 }

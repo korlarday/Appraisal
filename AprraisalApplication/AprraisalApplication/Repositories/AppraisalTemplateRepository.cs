@@ -19,57 +19,81 @@ namespace AprraisalApplication.Repositories
             db = context;
         }
 
-        internal void SaveNewAppraisalTemplate(AppraisalTemplateParams model)
+        internal string SaveNewAppraisalTemplate(AppraisalTemplateParams model)
         {
-            AppraisalTemplate newAppraisalTemplate = new AppraisalTemplate(model);
-            db.AppraisalTemplates.Add(newAppraisalTemplate);
-            db.SaveChanges();
-            var appraisalId = newAppraisalTemplate.Id;
-            List<DefaultRating> defaultRatings = db.DefaultRatings.ToList();
-            foreach (var item in defaultRatings)
+            using (var context = new ApplicationDbContext())
             {
-                TemplateRating templateRating = new TemplateRating(item, appraisalId);
-                db.TemplateRatings.Add(templateRating);
-            }
-
-            List<DefaultSummaryRating> defaultSummaries = db.DefaultSummaryRatings.ToList();
-            foreach (var item in defaultSummaries)
-            {
-                TemplateSummaryRating templateSummary = new TemplateSummaryRating(item, appraisalId);
-                db.TemplateSummaryRatings.Add(templateSummary);
-            }
-
-            // save the section
-            foreach (var item in model.AppraisalSectionParams)
-            {
-                AppraisalTemplateSection templateSection = new AppraisalTemplateSection(item, appraisalId);
-                db.AppraisalTemplateSections.Add(templateSection);
-                db.SaveChanges();
-                if(item.SectionTypeId == 4 || item.SectionTypeId == 3)
+                using (var dbContextTransaction = context.Database.BeginTransaction())
                 {
-                    if(item.QualitativeDetails != null && item.QualitativeDetails.Count() > 0)
+                    try
                     {
-                        foreach (var qualitativeDetail in item.QualitativeDetails)
+                        // first check if the new appraisal template name is unique
+                        if(context.AppraisalTemplates.Any(x => x.TemplateName == model.TemplateName))
                         {
-                            AppraisalSectionDetail detail = new AppraisalSectionDetail(qualitativeDetail, templateSection.Id);
-                            db.AppraisalSectionDetails.Add(detail);
-                            db.SaveChanges();
-                            if(item.SectionTypeId == 3)
+                            return "title exists";
+                        }
+
+                        AppraisalTemplate newAppraisalTemplate = new AppraisalTemplate(model);
+                        context.AppraisalTemplates.Add(newAppraisalTemplate);
+                        context.SaveChanges();
+                        var appraisalId = newAppraisalTemplate.Id;
+                        List<DefaultRating> defaultRatings = context.DefaultRatings.ToList();
+                        foreach (var item in defaultRatings)
+                        {
+                            TemplateRating templateRating = new TemplateRating(item, appraisalId);
+                            context.TemplateRatings.Add(templateRating);
+                        }
+
+                        List<DefaultSummaryRating> defaultSummaries = context.DefaultSummaryRatings.ToList();
+                        foreach (var item in defaultSummaries)
+                        {
+                            TemplateSummaryRating templateSummary = new TemplateSummaryRating(item, appraisalId);
+                            context.TemplateSummaryRatings.Add(templateSummary);
+                        }
+
+                        // save the section
+                        foreach (var item in model.AppraisalSectionParams)
+                        {
+                            AppraisalTemplateSection templateSection = new AppraisalTemplateSection(item, appraisalId);
+                            context.AppraisalTemplateSections.Add(templateSection);
+                            context.SaveChanges();
+                            if (item.SectionTypeId == 4 || item.SectionTypeId == 3)
                             {
-                                if(qualitativeDetail.ItemBreakDowns != null && qualitativeDetail.ItemBreakDowns.Count() > 0)
+                                if (item.QualitativeDetails != null && item.QualitativeDetails.Count() > 0)
                                 {
-                                    foreach (var itemBreakdown in qualitativeDetail.ItemBreakDowns)
+                                    foreach (var qualitativeDetail in item.QualitativeDetails)
                                     {
-                                        SectionDetailBreakdown breakdown = new SectionDetailBreakdown(itemBreakdown, detail.Id);
-                                        db.SectionDetailBreakdowns.Add(breakdown);
+                                        AppraisalSectionDetail detail = new AppraisalSectionDetail(qualitativeDetail, templateSection.Id);
+                                        context.AppraisalSectionDetails.Add(detail);
+                                        context.SaveChanges();
+                                        if (item.SectionTypeId == 3)
+                                        {
+                                            if (qualitativeDetail.ItemBreakDowns != null && qualitativeDetail.ItemBreakDowns.Count() > 0)
+                                            {
+                                                foreach (var itemBreakdown in qualitativeDetail.ItemBreakDowns)
+                                                {
+                                                    SectionDetailBreakdown breakdown = new SectionDetailBreakdown(itemBreakdown, detail.Id);
+                                                    context.SectionDetailBreakdowns.Add(breakdown);
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
+
+                        context.SaveChanges();
+                        dbContextTransaction.Commit();
+                        return "success";
+                    }
+                    catch (Exception)
+                    {
+                        dbContextTransaction.Rollback();
+                        return "failed";
                     }
                 }
             }
-            db.SaveChanges();
+            
         }
 
         internal void UpdateUserAppraisal(AppraisalUserParams model)
@@ -216,96 +240,49 @@ namespace AprraisalApplication.Repositories
             db.SaveChanges();
         }
 
-        internal void EditAppraisalTemplate(AppraisalTemplateParams model)
+        internal string EditAppraisalTemplate(AppraisalTemplateParams model)
         {
-            AppraisalTemplate template = db.AppraisalTemplates.Find(model.TemplateId);
-            if(template != null)
+            using (var context = new ApplicationDbContext())
             {
-                template.UpdateTemplate(model);
-
-                // update the section
-                foreach (var item in model.AppraisalSectionParams)
+                using (var dbContextTransaction = context.Database.BeginTransaction())
                 {
-                    if(item.SectionId == null)
+                    try
                     {
-                        AppraisalTemplateSection templateSection = new AppraisalTemplateSection(item, model.TemplateId);
-                        db.AppraisalTemplateSections.Add(templateSection);
-                        db.SaveChanges();
-                        if (item.SectionTypeId == 4 || item.SectionTypeId == 3)
+                        AppraisalTemplate template = context.AppraisalTemplates.Find(model.TemplateId);
+                        if (template != null)
                         {
-                            if (item.QualitativeDetails != null && item.QualitativeDetails.Count() > 0)
+                            // first check if the title is unique
+                            if(context.AppraisalTemplates.Where(x => x.Id != model.TemplateId).Any(x => x.TemplateName == model.TemplateName))
                             {
-                                foreach (var qualitativeDetail in item.QualitativeDetails)
-                                {
-                                    AppraisalSectionDetail detail = new AppraisalSectionDetail(qualitativeDetail, templateSection.Id);
-                                    db.AppraisalSectionDetails.Add(detail);
-                                    db.SaveChanges();
-                                    if (item.SectionTypeId == 3)
-                                    {
-                                        if (qualitativeDetail.ItemBreakDowns != null && qualitativeDetail.ItemBreakDowns.Count() > 0)
-                                        {
-                                            foreach (var itemBreakdown in qualitativeDetail.ItemBreakDowns)
-                                            {
-                                                SectionDetailBreakdown breakdown = new SectionDetailBreakdown(itemBreakdown, detail.Id);
-                                                db.SectionDetailBreakdowns.Add(breakdown);
-                                            }
-                                        }
-                                    }
-                                }
+                                return "title exists";
                             }
-                        }
-                    }
-                    else
-                    {
-                        AppraisalTemplateSection section = db.AppraisalTemplateSections.Find(item.SectionId);
-                        if(section != null)
-                        {
-                            section.Update(item);
+                            template.UpdateTemplate(model);
 
-                            // get all the details
-                            if(item.SectionTypeId == 4 || item.SectionTypeId == 3)
+                            // update the section
+                            foreach (var item in model.AppraisalSectionParams)
                             {
-                                if (item.QualitativeDetails != null && item.QualitativeDetails.Count() > 0)
+                                if (item.SectionId == null)
                                 {
-                                    foreach (var qualitativeDetail in item.QualitativeDetails)
+                                    AppraisalTemplateSection templateSection = new AppraisalTemplateSection(item, model.TemplateId);
+                                    context.AppraisalTemplateSections.Add(templateSection);
+                                    context.SaveChanges();
+                                    if (item.SectionTypeId == 4 || item.SectionTypeId == 3)
                                     {
-                                        if(qualitativeDetail.DetailId == null)
+                                        if (item.QualitativeDetails != null && item.QualitativeDetails.Count() > 0)
                                         {
-                                            AppraisalSectionDetail detail = new AppraisalSectionDetail(qualitativeDetail, section.Id);
-                                            db.AppraisalSectionDetails.Add(detail);
-                                            db.SaveChanges();
-                                            if (item.SectionTypeId == 3)
+                                            foreach (var qualitativeDetail in item.QualitativeDetails)
                                             {
-                                                if (qualitativeDetail.ItemBreakDowns != null && qualitativeDetail.ItemBreakDowns.Count() > 0)
+                                                AppraisalSectionDetail detail = new AppraisalSectionDetail(qualitativeDetail, templateSection.Id);
+                                                context.AppraisalSectionDetails.Add(detail);
+                                                context.SaveChanges();
+                                                if (item.SectionTypeId == 3)
                                                 {
-                                                    foreach (var itemBreakdown in qualitativeDetail.ItemBreakDowns)
+                                                    if (qualitativeDetail.ItemBreakDowns != null && qualitativeDetail.ItemBreakDowns.Count() > 0)
                                                     {
-                                                        SectionDetailBreakdown breakdown = new SectionDetailBreakdown(itemBreakdown, detail.Id);
-                                                        db.SectionDetailBreakdowns.Add(breakdown);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            AppraisalSectionDetail detail = db.AppraisalSectionDetails.Find(qualitativeDetail.DetailId);
-                                            detail.Update(qualitativeDetail);
-
-                                            if (item.SectionTypeId == 3)
-                                            {
-                                                if (qualitativeDetail.ItemBreakDowns != null && qualitativeDetail.ItemBreakDowns.Count() > 0)
-                                                {
-                                                    foreach (var itemBreakdown in qualitativeDetail.ItemBreakDowns)
-                                                    {
-                                                        if(itemBreakdown.BreakdownId == null)
+                                                        foreach (var itemBreakdown in qualitativeDetail.ItemBreakDowns)
                                                         {
                                                             SectionDetailBreakdown breakdown = new SectionDetailBreakdown(itemBreakdown, detail.Id);
-                                                            db.SectionDetailBreakdowns.Add(breakdown);
-                                                        }
-                                                        else
-                                                        {
-                                                            SectionDetailBreakdown breakdown = db.SectionDetailBreakdowns.Find(itemBreakdown.BreakdownId);
-                                                            breakdown.Update(itemBreakdown);
+                                                            context.SectionDetailBreakdowns.Add(breakdown);
                                                         }
                                                     }
                                                 }
@@ -313,13 +290,82 @@ namespace AprraisalApplication.Repositories
                                         }
                                     }
                                 }
-                            }
+                                else
+                                {
+                                    AppraisalTemplateSection section = context.AppraisalTemplateSections.Find(item.SectionId);
+                                    if (section != null)
+                                    {
+                                        section.Update(item);
 
+                                        // get all the details
+                                        if (item.SectionTypeId == 4 || item.SectionTypeId == 3)
+                                        {
+                                            if (item.QualitativeDetails != null && item.QualitativeDetails.Count() > 0)
+                                            {
+                                                foreach (var qualitativeDetail in item.QualitativeDetails)
+                                                {
+                                                    if (qualitativeDetail.DetailId == null)
+                                                    {
+                                                        AppraisalSectionDetail detail = new AppraisalSectionDetail(qualitativeDetail, section.Id);
+                                                        context.AppraisalSectionDetails.Add(detail);
+                                                        context.SaveChanges();
+                                                        if (item.SectionTypeId == 3)
+                                                        {
+                                                            if (qualitativeDetail.ItemBreakDowns != null && qualitativeDetail.ItemBreakDowns.Count() > 0)
+                                                            {
+                                                                foreach (var itemBreakdown in qualitativeDetail.ItemBreakDowns)
+                                                                {
+                                                                    SectionDetailBreakdown breakdown = new SectionDetailBreakdown(itemBreakdown, detail.Id);
+                                                                    context.SectionDetailBreakdowns.Add(breakdown);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        AppraisalSectionDetail detail = context.AppraisalSectionDetails.Find(qualitativeDetail.DetailId);
+                                                        detail.Update(qualitativeDetail);
+
+                                                        if (item.SectionTypeId == 3)
+                                                        {
+                                                            if (qualitativeDetail.ItemBreakDowns != null && qualitativeDetail.ItemBreakDowns.Count() > 0)
+                                                            {
+                                                                foreach (var itemBreakdown in qualitativeDetail.ItemBreakDowns)
+                                                                {
+                                                                    if (itemBreakdown.BreakdownId == null)
+                                                                    {
+                                                                        SectionDetailBreakdown breakdown = new SectionDetailBreakdown(itemBreakdown, detail.Id);
+                                                                        context.SectionDetailBreakdowns.Add(breakdown);
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        SectionDetailBreakdown breakdown = context.SectionDetailBreakdowns.Find(itemBreakdown.BreakdownId);
+                                                                        breakdown.Update(itemBreakdown);
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
                         }
+
+                        context.SaveChanges();
+                        dbContextTransaction.Commit();
+                        return "success";
+                    }
+                    catch (Exception)
+                    {
+                        dbContextTransaction.Rollback();
+                        return "failed";
                     }
                 }
             }
-            db.SaveChanges();
         }
 
         internal AppraisalTemplate GetAppraisalTemplateBySlug(string slug)

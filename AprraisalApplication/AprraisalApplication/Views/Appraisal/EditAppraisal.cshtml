@@ -303,11 +303,6 @@
                         $newEmployeesArray.push(parseInt($empId));
                     }
                 });
-
-                console.log($selectedEmployeesArray);
-                console.log($newEmployeesArray)
-
-
                 Swal.fire({
                     title: "Are you sure?",
                     text: "Are you sure you want to update this appraisal",
@@ -337,20 +332,24 @@
                             function (data) {
                                 Dashmix.layout('header_loader_off');
                                 $this.attr("disabled", false);
-                                Swal.fire({
-                                    title: "Success",
-                                    text: "Appraisal has been updated",
-                                    type: "success",
-                                    showCancelButton: 0,
-                                    customClass: { okButton: "btn btn-danger m-1" },
-                                    html: !1,
-                                    preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
+                                if (data == 'title exists') {
+                                    Swal.fire("Oops...", "The appraisal title already exists", "error");
+                                } else {
+                                    Swal.fire({
+                                        title: "Success",
+                                        text: "Appraisal has been updated",
+                                        type: "success",
+                                        showCancelButton: 0,
+                                        customClass: { okButton: "btn btn-danger m-1" },
+                                        html: !1,
+                                        preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
 
-                                }).then(function (n) {
-                                    if (n.value) {
-                                        window.location.href = '/appraisal/initiated-appraisals';
-                                    }
-                                });
+                                    }).then(function (n) {
+                                        if (n.value) {
+                                            window.location.href = '/appraisal/initiated-appraisals';
+                                        }
+                                    });
+                                }
                             });
                     }
                     else {

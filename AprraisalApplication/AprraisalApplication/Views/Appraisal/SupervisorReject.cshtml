@@ -235,8 +235,27 @@
                             var currentResultSection = sectionResult.Where(x => x.InitiatedTemplateSectionId == templateSection.Id).SingleOrDefault();
                             if (templateSection.SectionTypeId == 1)
                             {
-                                <div class="section-item" data-sectionTypeId="1" data-sectionId="@templateSection.Id">
+                                <div class="section-item" 
+                                     data-sectionTypeId="1" 
+                                     data-sectionId="@templateSection.Id"
+                                     data-sectionOptional="@templateSection.Optional">
                                     <h5 class="mt-4">Section @templateSection.SetupId</h5>
+                                    @if (templateSection.Optional)
+                                    {
+                                        <div style="overflow:hidden">
+                                            <div class="form-group float-right" style="width:250px">
+                                                <label>Include this section?</label>
+                                                <div class="custom-control custom-switch custom-control-lg mb-2">
+                                                    <input type="checkbox" 
+                                                            class="custom-control-input enableSection" 
+                                                            id="section@(templateSection.Id)" 
+                                                            name="section@(templateSection.Id)" 
+                                                           @(currentResultSection.SectionFilled? "checked": "")>
+                                                    <label class="custom-control-label" for="section@(templateSection.Id)">Enable section</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
                                     <div class="table-responsive mb-4 details">
                                         <table class="table table-bordered table-vcenter">
                                             <thead>
@@ -289,8 +308,27 @@
                             }
                             else if (templateSection.SectionTypeId == 2)
                             {
-                                <div class="section-item" data-sectionTypeId="2" data-sectionId="@templateSection.Id">
+                                <div class="section-item" 
+                                     data-sectionTypeId="2" 
+                                     data-sectionId="@templateSection.Id"
+                                     data-sectionOptional="@templateSection.Optional">
                                     <h5 class="mt-4">Section @templateSection.SetupId</h5>
+                                    @if (templateSection.Optional)
+                                    {
+                                        <div style="overflow:hidden">
+                                            <div class="form-group float-right" style="width:250px">
+                                                <label>Include this section?</label>
+                                                <div class="custom-control custom-switch custom-control-lg mb-2">
+                                                    <input type="checkbox" 
+                                                            class="custom-control-input enableSection" 
+                                                            id="section@(templateSection.Id)" 
+                                                            name="section@(templateSection.Id)" 
+                                                           @(currentResultSection.SectionFilled? "checked": "")>
+                                                    <label class="custom-control-label" for="section@(templateSection.Id)">Enable section</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
                                     <div class="table-responsive mb-4">
                                         <table class="table table-bordered table-vcenter">
                                             <thead>
@@ -351,8 +389,27 @@
                             }
                             else if (templateSection.SectionTypeId == 3)
                             {
-                                <div class="section-item" data-sectionTypeId="3" data-sectionId="@templateSection.Id">
+                                <div class="section-item" 
+                                     data-sectionTypeId="3" 
+                                     data-sectionId="@templateSection.Id"
+                                     data-sectionOptional="@templateSection.Optional">
                                     <h5 class="mt-4">Section @templateSection.SetupId</h5>
+                                    @if (templateSection.Optional)
+                                    {
+                                        <div style="overflow:hidden">
+                                            <div class="form-group float-right" style="width:250px">
+                                                <label>Include this section?</label>
+                                                <div class="custom-control custom-switch custom-control-lg mb-2">
+                                                    <input type="checkbox" 
+                                                            class="custom-control-input enableSection" 
+                                                            id="section@(templateSection.Id)" 
+                                                            name="section@(templateSection.Id)" 
+                                                           @(currentResultSection.SectionFilled? "checked": "")>
+                                                    <label class="custom-control-label" for="section@(templateSection.Id)">Enable section</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
                                     <div class="table-responsive mb-4">
                                         <span class="breakdown-value" style="display:none">@templateSection.BreakdownValueBy</span>
                                         <table class="table table-bordered table-vcenter">
@@ -418,8 +475,27 @@
                             }
                             else if (templateSection.SectionTypeId == 4)
                             {
-                                <div class="section-item" data-sectionTypeId="4" data-sectionId="@templateSection.Id">
+                                <div class="section-item" 
+                                     data-sectionTypeId="4" 
+                                     data-sectionId="@templateSection.Id"
+                                     data-sectionOptional="@templateSection.Optional">
                                     <h5 class="mt-4">Section @templateSection.SetupId</h5>
+                                    @if (templateSection.Optional)
+                                    {
+                                        <div style="overflow:hidden">
+                                            <div class="form-group float-right" style="width:250px">
+                                                <label>Include this section?</label>
+                                                <div class="custom-control custom-switch custom-control-lg mb-2">
+                                                    <input type="checkbox" 
+                                                            class="custom-control-input enableSection" 
+                                                            id="section@(templateSection.Id)" 
+                                                            name="section@(templateSection.Id)" 
+                                                           @(currentResultSection.SectionFilled? "checked": "")>
+                                                    <label class="custom-control-label" for="section@(templateSection.Id)">Enable section</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
                                     <div class="table-responsive mb-4">
                                         <table class="table table-bordered table-vcenter">
                                             <thead>
@@ -655,6 +731,16 @@
                 $.each($sections, function () {
                     var $sectionTypeId = $(this).attr("data-sectionTypeId");
                     var $sectionId = $(this).attr("data-sectionId");
+                    var $sectionOptional = $(this).attr("data-sectionOptional");
+                    var $sectionOptionalCheckbox = $(this).find(".enableSection");
+                    var $validateField = true;
+
+                    if ($sectionOptional == "True") {
+                        if (!$sectionOptionalCheckbox.prop("checked")) {
+                            $validateField = false;
+                        }
+                    }
+
                     if ($sectionTypeId == 1) {
                         var $taskAssignedArray = []
 
@@ -663,8 +749,10 @@
                             var $task = $(this).find("td input").val();
                             var $sectionDetailResultId = $(this).attr("data-sectionResultDetailId");
                             var $count = parseInt($(this).find(".count").text().replace('.', ''));
-                            if ($task == '') {
-                                $valid = false;
+                            if ($validateField) {
+                                if ($task == '') {
+                                    $valid = false;
+                                }
                             }
                             var obj = {
                                 task: $task,
@@ -677,7 +765,9 @@
 
                         var $taskPerfomed = {
                             sectionId: $sectionId,
-                            taskPerformed: $taskAssignedArray
+                            taskPerformed: $taskAssignedArray,
+                            optional: $sectionOptional,
+                            optionSelected: $sectionOptionalCheckbox.prop("checked")
                         }
                         $sectionResults.push($taskPerfomed);
                     }
@@ -690,8 +780,10 @@
                             var $sectionDetailResultId = $(this).attr("data-sectionResultDetailId");
                             var $resultAchieved = $(this).find("td input.resultAchieved").val();
                             var $count = parseInt($(this).find(".count").text().replace('.', ''));
-                            if ($task == '' || $resultAchieved == '') {
-                                $valid = false;
+                            if ($validateField) {
+                                if ($task == '' || $resultAchieved == '') {
+                                    $valid = false;
+                                }
                             }
                             var obj = {
                                 task: $task,
@@ -704,7 +796,9 @@
 
                         var $taskPerfomed = {
                             sectionId: $sectionId,
-                            taskPerformed: $taskAssignedArray
+                            taskPerformed: $taskAssignedArray,
+                            optional: $sectionOptional,
+                            optionSelected: $sectionOptionalCheckbox.prop("checked")
                         }
                         $sectionResults.push($taskPerfomed);
                     }
@@ -728,8 +822,10 @@
                                 }
                                 $breakdownArray.push(obj);
                             });
-                            if ($(this).find("input").val() == '') {
-                                $quatitativeValid = false;
+                            if ($validateField) {
+                                if ($(this).find("input").val() == '') {
+                                    $quatitativeValid = false;
+                                }
                             }
 
                             var $detailTitle = $(this).find(".detail-title").text();
@@ -745,14 +841,18 @@
                         });
                         var $taskPerfomed = {
                             sectionId: $sectionId,
-                            taskPerformed: $ValuesArray
+                            taskPerformed: $ValuesArray,
+                            optional: $sectionOptional,
+                            optionSelected: $sectionOptionalCheckbox.prop("checked")
                         }
                         $sectionResults.push($taskPerfomed);
                     }
                     else if ($sectionTypeId == 4) {
                         var $taskPerfomed = {
                             sectionId: $sectionId,
-                            taskPerformed: []
+                            taskPerformed: [],
+                            optional: $sectionOptional,
+                            optionSelected: $sectionOptionalCheckbox.prop("checked")
                         }
                         $sectionResults.push($taskPerfomed);
                     }
@@ -809,6 +909,21 @@
                     }
                 });
             });
+
+            // when you switch optional sections
+            $(".enableSection").on("change", function () {
+                var $this = $(this);
+                var $inputs = $this.closest(".section-item").find("input:not('.enableSection')");
+                if ((this).checked) {
+                    $.each($inputs, function () {
+                        $(this).removeAttr("disabled");
+                    })
+                } else {
+                    $.each($inputs, function () {
+                        $(this).attr("disabled", "disabled");
+                    })
+                }
+            })
         })
                                 ////////////////////////////////////////////////////////////////////
     </script>

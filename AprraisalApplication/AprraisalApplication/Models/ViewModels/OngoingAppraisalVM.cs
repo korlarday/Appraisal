@@ -16,5 +16,6 @@ namespace AprraisalApplication.Models.ViewModels
         public NewAppraisal NewAppraisal { get; set; }
         public Employee Employee { get; set; }
         public List<DefaultRating> DefaultRatings { get; set; }
+        public BdsPerformanceTracker BdsTracker { get; set; }
     }
 }

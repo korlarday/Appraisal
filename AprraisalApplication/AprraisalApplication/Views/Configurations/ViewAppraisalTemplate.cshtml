@@ -254,6 +254,41 @@
                 }
             }
         </div>
+        @if (Model.AppraisalTemplate.IncludeBdsTracker)
+        {
+            <div class="row">
+                <div class="mt-5 mb-5">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-vcenter">
+                            <thead>
+                                <tr>
+                                    <th>Annual Target</th>
+                                    <th>Expected RSA</th>
+                                    <th>RSA Achieved</th>
+                                    <th>Funded Pin</th>
+                                    <th>Pre Funded Pins</th>
+                                    <th>Cash Volume</th>
+                                    <th>% RSA Achieved</th>
+                                    <th>% Funding Achieved</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="height:70px"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 
     @Scripts.Render("~/bundles/js")

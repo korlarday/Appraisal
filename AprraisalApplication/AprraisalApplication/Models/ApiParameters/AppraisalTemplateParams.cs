@@ -12,6 +12,7 @@ namespace AprraisalApplication.Models.ApiParameters
         public string TemplateName { get; set; }
         public string TemplateDescription { get; set; }
         public List<AppraisalSectionParam> AppraisalSectionParams { get; set; }
+        public bool IncludeBdsTracker { get; set; }
     }
     public class AppraisalSectionParam
     {

@@ -143,6 +143,11 @@ namespace AprraisalApplication.Repositories
             }
         }
 
+        internal NewAppraisal GetNewAppraisalByTitle(string appraisalTitle)
+        {
+            return db.NewAppraisals.Where(x => x.AppraisalTitle == appraisalTitle).FirstOrDefault();
+        }
+
         internal void RejectAppraisalToHod(SectionScoresParams model)
         {
             using (var context = new ApplicationDbContext())
@@ -218,6 +223,11 @@ namespace AprraisalApplication.Repositories
                     }
                 }
             }
+        }
+
+        internal BdsPerformanceTracker GetBdsTracker(int? bdsTrackerId)
+        {
+            return db.BdsPerformanceTrackers.Find(bdsTrackerId);
         }
 
         internal List<NewAppraisal> GetEmployeeCompletedAppraisals(int employeeId)
@@ -457,6 +467,7 @@ namespace AprraisalApplication.Repositories
                         Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
                                                             .Include(x => x.AppraiseeProgress)
                                                             .Include(x => x.AppraiseeComments)
+                                                            .Include(x => x.AppraiseeRejections)
                                                             .SingleOrDefault();
 
                         // save the progress
@@ -470,7 +481,15 @@ namespace AprraisalApplication.Repositories
                         comments.HodCommentDate = DateTime.Now;
                         comments.HodEmployeeId = employeeId;
 
-
+                        // change the rejection status
+                        List<AppraiseeRejection> rejections = appraisee.AppraiseeRejections.Where(x => x.New == true).ToList();
+                        if (rejections != null && rejections.Count() > 0)
+                        {
+                            foreach (var item in rejections)
+                            {
+                                item.New = false;
+                            }
+                        }
 
                         context.SaveChanges();
                         dbContextTransaction.Commit();
@@ -694,15 +713,16 @@ namespace AprraisalApplication.Repositories
                         {
                             if(section.IsDeleted == false)
                             {
-                                // store section result
+                                var sectionResult = model.SectionResults.Where(x => x.SectionId == section.Id).SingleOrDefault();
+                                
+                                // update section result
                                 Models.MigrationModels.SectionResult sectionResultDb = context.SectionResults.Where(x => x.AppraiseeId == appraisee.Id
                                                                                                             && x.InitiatedTemplateSectionId == section.Id)
                                                                                                         .SingleOrDefault();
+                                sectionResultDb.SectionFilled = sectionResult.OptionSelected;
 
                                 if (section.SectionTypeId == SectionTypeCS.TaskPerfomed)
                                 {
-                                    var sectionResult = model.SectionResults.Where(x => x.SectionId == section.Id).SingleOrDefault();
-                                
                                     foreach (var item in sectionResult.TaskPerformed)
                                     {
                                         if(item.SectionDetailResultId == null)
@@ -719,9 +739,6 @@ namespace AprraisalApplication.Repositories
                                 }
                                 else if (section.SectionTypeId == SectionTypeCS.DutiesAssigned)
                                 {
-
-                                    var sectionResult = model.SectionResults.Where(x => x.SectionId == section.Id).SingleOrDefault();
-                                
                                     foreach (var item in sectionResult.TaskPerformed)
                                     {
                                         if(item.SectionDetailResultId == null)
@@ -738,7 +755,6 @@ namespace AprraisalApplication.Repositories
                                 }
                                 else if (section.SectionTypeId == SectionTypeCS.Quantitative)
                                 {
-                                    var sectionResult = model.SectionResults.Where(x => x.SectionId == section.Id).SingleOrDefault();
                                     if (sectionResult != null)
                                     {
                                         foreach (var item in section.InitiatedSectionDetails)
@@ -766,6 +782,16 @@ namespace AprraisalApplication.Repositories
                             }
                         }
 
+                        // save bds tracker performance
+                        if (appraisee.InitiatedAppraisalTemplate.IncludeBdsTracker)
+                        {
+                            BdsPerformanceTracker tracker = context.BdsPerformanceTrackers.Find(appraisee.BdsPerformanceTrackerId);
+                            if (tracker != null)
+                            {
+                                tracker.UpdateTrackerAppraisee(model.BdsTracker);
+                            }
+                        }
+
                         // save the progress
                         AppraiseeProgress progress = appraisee.AppraiseeProgress;
                         progress.SupervisorReject = false;
@@ -780,6 +806,8 @@ namespace AprraisalApplication.Repositories
                         {
                             item.New = false;
                         }
+
+
                         context.SaveChanges();
                         dbContextTransaction.Commit();
                     }
@@ -846,6 +874,7 @@ namespace AprraisalApplication.Repositories
                     {
                         // first get the appraisee
                         Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.InitiatedAppraisalTemplate)
                                                             .Include(x => x.SectionResults.Select(d => d.SectionDetailResults))
                                                             .Include(x => x.AppraiseeProgress)
                                                             .SingleOrDefault();
@@ -858,11 +887,16 @@ namespace AprraisalApplication.Repositories
                             {
                                 sectionResult.TotalScore = sectionScore.SectionTotalScore;
                                 sectionResult.PercentageScore = sectionScore.SectionPercentageScore;
+                                
                                 foreach (var detail in sectionResult.SectionDetailResults)
                                 {
                                     var detailScore = sectionScore.SectionDetailsScore.Where(x => x.SectionResultDetailId == detail.Id).SingleOrDefault();
                                     if(detailScore != null)
                                     {
+                                        if(sectionScore.SectionTypeId == 2)
+                                        {
+                                            detail.Title2 = detailScore.ResultAchieved;
+                                        }
                                         detail.Score = detailScore.Score;
                                         if(detailScore.Breakdowns != null && detailScore.Breakdowns.Count() > 0)
                                         {
@@ -878,6 +912,16 @@ namespace AprraisalApplication.Repositories
                                     }
                                 }
 
+                            }
+                        }
+
+                        // if appraisal has bds tracker
+                        if (appraisee.InitiatedAppraisalTemplate.IncludeBdsTracker)
+                        {
+                            BdsPerformanceTracker tracker = context.BdsPerformanceTrackers.Find(appraisee.BdsPerformanceTrackerId);
+                            if(tracker != null)
+                            {
+                                tracker.UpdateTrackerAppraiser(model.BdsTracker);
                             }
                         }
 
@@ -919,15 +963,15 @@ namespace AprraisalApplication.Repositories
                         // store the task performed and the duties assigned
                         foreach (var section in appraisee.InitiatedAppraisalTemplate.InitiatedTemplateSections)
                         {
+                            var sectionResult = model.SectionResults.Where(x => x.SectionId == section.Id).SingleOrDefault();
+                            
                             // store section result
-                            Models.MigrationModels.SectionResult sectionResultDb = new Models.MigrationModels.SectionResult(appraisee.Id, section.Id);
+                            Models.MigrationModels.SectionResult sectionResultDb = new Models.MigrationModels.SectionResult(appraisee.Id, section.Id, section.Optional, sectionResult.OptionSelected);
                             context.SectionResults.Add(sectionResultDb);
                             context.SaveChanges();
 
                             if (section.SectionTypeId == SectionTypeCS.TaskPerfomed)
                             {
-                                var sectionResult = model.SectionResults.Where(x => x.SectionId == section.Id).SingleOrDefault();
-                                
                                 if (sectionResult != null)
                                 {
                                     foreach (var item in sectionResult.TaskPerformed)
@@ -940,8 +984,6 @@ namespace AprraisalApplication.Repositories
                             }
                             else if (section.SectionTypeId == SectionTypeCS.DutiesAssigned)
                             {
-
-                                var sectionResult = model.SectionResults.Where(x => x.SectionId == section.Id).SingleOrDefault();
                                 if (sectionResult != null)
                                 {
                                     foreach (var item in sectionResult.TaskPerformed)
@@ -971,7 +1013,6 @@ namespace AprraisalApplication.Repositories
                             }
                             else if (section.SectionTypeId == SectionTypeCS.Quantitative)
                             {
-                                var sectionResult = model.SectionResults.Where(x => x.SectionId == section.Id).SingleOrDefault();
                                 if (sectionResult != null)
                                 {
                                     foreach (var item in section.InitiatedSectionDetails)
@@ -1000,6 +1041,16 @@ namespace AprraisalApplication.Repositories
                         // save the progress
                         AppraiseeProgress progress = appraisee.AppraiseeProgress;
                         progress.AppraiseeSubmit = true;
+
+                        // save bds tracker performance
+                        if (appraisee.InitiatedAppraisalTemplate.IncludeBdsTracker)
+                        {
+                            BdsPerformanceTracker tracker = context.BdsPerformanceTrackers.Find(appraisee.BdsPerformanceTrackerId);
+                            if(tracker != null)
+                            {
+                                tracker.UpdateTrackerAppraisee(model.BdsTracker);
+                            }
+                        }
 
                         context.SaveChanges();
                         dbContextTransaction.Commit();
@@ -1092,6 +1143,14 @@ namespace AprraisalApplication.Repositories
                 {
                     try
                     {
+
+                        BdsPerformanceTracker tracker = new BdsPerformanceTracker();
+                        if (template.IncludeBdsTracker)
+                        {
+                            // if bds tracker is included
+                            context.BdsPerformanceTrackers.Add(tracker);
+                        }
+
                         // add the appraisee comments
                         AppraiseeComments comments = new AppraiseeComments();
                         context.AppraiseeComments.Add(comments);
@@ -1109,7 +1168,23 @@ namespace AprraisalApplication.Repositories
                         context.AppraiserPersonalDatas.Add(appraiserPd);
                         context.SaveChanges();
 
-                        Appraisee newAppraisee = new Appraisee(newAppraisalId, employeeId, appraiseePD.Id, appraiserPd.Id, template.Id, progress.Id, comments.Id);
+                        // check if bds tracker is included 
+                        int? trackerId = null;
+
+                        if (template.IncludeBdsTracker)
+                        {
+                            trackerId = tracker.Id;
+                        }
+
+                        Appraisee newAppraisee = new Appraisee(
+                                                        newAppraisalId, 
+                                                        employeeId, 
+                                                        appraiseePD.Id, 
+                                                        appraiserPd.Id, 
+                                                        template.Id, 
+                                                        progress.Id, 
+                                                        comments.Id,
+                                                        trackerId);
                         context.Appraisees.Add(newAppraisee);
                         context.SaveChanges();
 
@@ -1229,61 +1304,105 @@ namespace AprraisalApplication.Repositories
             return Appraisees;
         }
 
-        internal void UpdateAppraisal(NewAppraisalParams model)
+        internal string UpdateAppraisal(NewAppraisalParams model)
         {
-            // get the Appraisal
-            NewAppraisal newAppraisal = db.NewAppraisals.Find(model.AppraisalId);
-            newAppraisal.Update(model);
-
-            // first if the number of selected staff is equal to the number in db then skip, else, update
-            List<AppraisalStaff> appraisalStaffs = db.AppraisalStaffs
-                                                        .Where(x => x.NewAppraisalId == newAppraisal.Id)
-                                                        .ToList();
-            if(model.SelectedEmployees != null && model.SelectedEmployees.Count() > 0)
+            using (var context = new ApplicationDbContext())
             {
-                if(model.SelectedEmployees.Count() != appraisalStaffs.Count())
+                using (var dbContextTransaction = context.Database.BeginTransaction())
                 {
-                    foreach (var staffAppraisal in appraisalStaffs)
+                    try
                     {
-                        if (!model.SelectedEmployees.Contains(staffAppraisal.EmployeeId))
+                        // first check if the new title is unique
+                        if (context.NewAppraisals.Where(x => x.Id != model.AppraisalId).Any(x => x.AppraisalTitle == model.AppraisalTitle))
                         {
-                            Appraisee appraisee = db.Appraisees
-                                                    .Where(x => x.EmployeeId == staffAppraisal.EmployeeId
-                                                            && x.NewAppraisalId == newAppraisal.Id)
-                                                    .SingleOrDefault();
-                            if(appraisee != null)
-                            {
-                                db.Appraisees.Remove(appraisee);
-                            }
-                            db.AppraisalStaffs.Remove(staffAppraisal);
+                            return "title exists";
                         }
+                        // get the Appraisal
+                        NewAppraisal newAppraisal = context.NewAppraisals.Find(model.AppraisalId);
+                        newAppraisal.Update(model);
+
+                        // first if the number of selected staff is equal to the number in db then skip, else, update
+                        List<AppraisalStaff> appraisalStaffs = context.AppraisalStaffs
+                                                                    .Where(x => x.NewAppraisalId == newAppraisal.Id)
+                                                                    .ToList();
+                        if (model.SelectedEmployees != null && model.SelectedEmployees.Count() > 0)
+                        {
+                            foreach (var staffAppraisal in appraisalStaffs)
+                            {
+                                if (!model.SelectedEmployees.Contains(staffAppraisal.EmployeeId))
+                                {
+                                    Appraisee appraisee = context.Appraisees
+                                                            .Where(x => x.EmployeeId == staffAppraisal.EmployeeId
+                                                                    && x.NewAppraisalId == newAppraisal.Id)
+                                                            .Include(x => x.SectionResults.Select(d => d.SectionDetailResults))
+                                                            .SingleOrDefault();
+                                    if (appraisee != null)
+                                    {
+                                        foreach (var sectionResult in appraisee.SectionResults)
+                                        {
+                                            foreach (var detailResult in sectionResult.SectionDetailResults)
+                                            {
+                                                context.SectionDetailResults.Remove(detailResult);
+                                                context.SaveChanges();
+                                            }
+                                            context.SectionResults.Remove(sectionResult);
+                                            context.SaveChanges();
+                                        }
+                                        context.Appraisees.Remove(appraisee);
+                                    }
+                                    context.AppraisalStaffs.Remove(staffAppraisal);
+                                }
+                            }
+
+                        }
+                        else
+                        {
+                            foreach (var staffAppraisal in appraisalStaffs)
+                            {
+                                Appraisee appraisee = context.Appraisees
+                                                        .Where(x => x.EmployeeId == staffAppraisal.EmployeeId
+                                                                && x.NewAppraisalId == newAppraisal.Id)
+                                                        .SingleOrDefault();
+                                if (appraisee != null)
+                                {
+                                    foreach (var sectionResult in appraisee.SectionResults)
+                                    {
+                                        foreach (var detailResult in sectionResult.SectionDetailResults)
+                                        {
+                                            context.SectionDetailResults.Remove(detailResult);
+                                            context.SaveChanges();
+                                        }
+                                        context.SectionResults.Remove(sectionResult);
+                                        context.SaveChanges();
+                                    }
+                                    context.Appraisees.Remove(appraisee);
+                                }
+                                context.AppraisalStaffs.Remove(staffAppraisal);
+                            }
+                        }
+                        if (model.NewSelectedEmployee != null && model.NewSelectedEmployee.Count() > 0)
+                        {
+                            foreach (var employeeId in model.NewSelectedEmployee)
+                            {
+                                AppraisalStaff appraisalStaff = new AppraisalStaff(newAppraisal.Id, employeeId);
+                                context.AppraisalStaffs.Add(appraisalStaff);
+                            }
+                        }
+                        
+
+                        context.SaveChanges();
+                        dbContextTransaction.Commit();
+                        return "success";
                     }
-                }
-            }
-            else
-            {
-                foreach (var staffAppraisal in appraisalStaffs)
-                {
-                    Appraisee appraisee = db.Appraisees
-                                            .Where(x => x.EmployeeId == staffAppraisal.EmployeeId
-                                                    && x.NewAppraisalId == newAppraisal.Id)
-                                            .SingleOrDefault();
-                    if (appraisee != null)
+                    catch (Exception)
                     {
-                        db.Appraisees.Remove(appraisee);
+                        dbContextTransaction.Rollback();
+                        return "failed";
                     }
-                    db.AppraisalStaffs.Remove(staffAppraisal);
                 }
             }
-            if(model.NewSelectedEmployee != null && model.NewSelectedEmployee.Count() > 0)
-            {
-                foreach (var employeeId in model.NewSelectedEmployee)
-                {
-                    AppraisalStaff appraisalStaff = new AppraisalStaff(newAppraisal.Id, employeeId);
-                    db.AppraisalStaffs.Add(appraisalStaff);
-                }
-            }
-            db.SaveChanges();
+
+            
         }
 
         internal AppraisalStaff GetEmployeeOngoingAppraisal(int employeeId, int newAppraisalId)

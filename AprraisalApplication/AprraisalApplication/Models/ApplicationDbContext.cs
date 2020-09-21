@@ -56,6 +56,7 @@ namespace AprraisalApplication.Models
         public DbSet<InitiatedSectionDetailBreakdown> InitiatedSectionDetailBreakdowns { get; set; }
         public DbSet<AppraiseeRejection> AppraiseeRejections { get; set; }
         public DbSet<AppraiseeComments> AppraiseeComments { get; set; }
+        public DbSet<BdsPerformanceTracker> BdsPerformanceTrackers { get; set; }
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {

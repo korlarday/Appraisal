@@ -48,6 +48,46 @@
                         <label for="description">Descriptions (optional)</label>
                         <textarea class="form-control" id="description" name="description" rows="4" placeholder="Descriptions...">@Model.AppraisalTemplate.Description</textarea>
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-10 offset-1 mt-5 mb-5">
+                    <div class="custom-control custom-checkbox custom-control-lg mb-1">
+                        <input type="checkbox" class="custom-control-input" id="includeTracker" name="includeTracker" @(Model.AppraisalTemplate.IncludeBdsTracker ? "checked":"")>
+                        <label class="custom-control-label" for="includeTracker">Include BDS Performance Tracker</label>
+                    </div>
+                    <div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-vcenter">
+                                <thead>
+                                    <tr>
+                                        <th>Annual Target</th>
+                                        <th>Expected RSA</th>
+                                        <th>RSA Achieved</th>
+                                        <th>Funded Pin</th>
+                                        <th>Pre Funded Pins</th>
+                                        <th>Cash Volume</th>
+                                        <th>% RSA Achieved</th>
+                                        <th>% Funding Achieved</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="height:70px"></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-8 offset-2">
                     <div class="form-group">
                         <button class="btn btn-primary bg-primary" id="dropdown-default-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-plus"></i> Add Section</button>
                         <div class="dropdown-menu" id="sectionTypeOptions" aria-labelledby="dropdown-default-primary">
@@ -59,7 +99,6 @@
                             }
                         </div>
                     </div>
-
                     <div class="text-danger-light">Kindly note that the total sum of percentage score obtainable of all mandatory sections must equal 100%.</div>
                 </div>
             </div>
@@ -94,7 +133,7 @@
                                     <input type="number" class="form-control sectionPercentageScore" style="max-width:350px" placeholder="">
                                 </div>
                                 <div class="form-group">
-                                    <label>Total Points in this section (optional)</label>
+                                    <label>Total Points in this section</label>
                                     <input type="number" class="form-control sectionTotalPoints" style="max-width:350px" placeholder="">
                                 </div>
                                 <div class="form-group">
@@ -148,7 +187,7 @@
                                     <input type="number" class="form-control sectionPercentageScore" style="max-width:350px" placeholder="">
                                 </div>
                                 <div class="form-group">
-                                    <label>Total Points in this section (optional)</label>
+                                    <label>Total Points in this section</label>
                                     <input type="number" class="form-control sectionTotalPoints" style="max-width:350px" placeholder="">
                                 </div>
                                 <div class="form-group">
@@ -205,7 +244,7 @@
                                         <option value="appraisee">Appraisee</option>
                                     </select>
                                 </div>
-                                <div class="form-group" style="display:none">
+                                <div class="form-group">
                                     <label>Section Type</label>
                                     <select class="form-control sectionType" style="max-width:350px">
                                         <option value="mandatory">Mandatory</option>
@@ -335,7 +374,7 @@
                                     <label>Total Points in this section</label>
                                     <input type="number" class="form-control sectionTotalPoints" style="max-width:350px" placeholder="">
                                 </div>
-                                <div class="form-group" style="display:none">
+                                <div class="form-group">
                                     <label>Section Type</label>
                                     <select class="form-control sectionType" style="max-width:350px">
                                         <option value="mandatory">Mandatory</option>
@@ -457,11 +496,29 @@
                                                         <option value="optional" @(item.Optional ? "selected" : "")>Optional</option>
                                                     </select>
                                                 </div>
-                                                <div class="form-group derivedSectionContainer" style="display:none">
-                                                    <label>Derived From Section:</label>
-                                                    <select class="form-control derivedSection" style="max-width:350px">
-                                                    </select>
-                                                </div>
+                                                @if (item.Optional)
+                                                {
+                                                    <div class="form-group derivedSectionContainer">
+                                                        <label>Derived From Section:</label>
+                                                        <select class="form-control derivedSection" style="max-width:350px">
+                                                            @foreach (var sections in Model.AppraisalTemplate.AppraisalTemplateSections)
+                                                            {
+                                                                if(sections.SetupId != item.SetupId)
+                                                                {
+                                                                    <option value="@sections.SetupId" @(sections.DerivedSectionSetupId == item.SetupId ? "selected" : "")>Section  @sections.SetupId</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="form-group derivedSectionContainer" style="display:none">
+                                                        <label>Derived From Section:</label>
+                                                        <select class="form-control derivedSection" style="max-width:350px">
+                                                        </select>
+                                                    </div>
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -511,14 +568,32 @@
                                                     <label>Section Type</label>
                                                     <select class="form-control sectionType" style="max-width:350px">
                                                         <option value="mandatory">Mandatory</option>
-                                                        <option value="optional" @(item.Optional? "selected":"")>Optional</option>
+                                                        <option value="optional" @(item.Optional ? "selected" : "")>Optional</option>
                                                     </select>
                                                 </div>
-                                                <div class="form-group derivedSectionContainer" style="display:none">
-                                                    <label>Derived From Section:</label>
-                                                    <select class="form-control derivedSection" style="max-width:350px">
-                                                    </select>
-                                                </div>
+                                                @if (item.Optional)
+                                                {
+                                                    <div class="form-group derivedSectionContainer">
+                                                        <label>Derived From Section:</label>
+                                                        <select class="form-control derivedSection" style="max-width:350px">
+                                                            @foreach (var sections in Model.AppraisalTemplate.AppraisalTemplateSections)
+                                                            {
+                                                                if(sections.SetupId != item.SetupId)
+                                                                {
+                                                                    <option value="@sections.SetupId" @(sections.DerivedSectionSetupId == item.SetupId ? "selected" : "")>Section  @sections.SetupId</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="form-group derivedSectionContainer" style="display:none">
+                                                        <label>Derived From Section:</label>
+                                                        <select class="form-control derivedSection" style="max-width:350px">
+                                                        </select>
+                                                    </div>
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -563,18 +638,36 @@
                                                         <option value="appraisee" @(item.BreakdownValueBy == "appraisee" ? "selected" : "")>Appraisee</option>
                                                     </select>
                                                 </div>
-                                                <div class="form-group" style="display:none">
+                                                <div class="form-group">
                                                     <label>Section Type</label>
                                                     <select class="form-control sectionType" style="max-width:350px">
                                                         <option value="mandatory">Mandatory</option>
-                                                        <option value="optional">Optional</option>
+                                                        <option value="optional" @(item.Optional ? "selected" : "")>Optional</option>
                                                     </select>
                                                 </div>
-                                                <div class="form-group derivedSectionContainer" style="display:none">
-                                                    <label>Derived From Section:</label>
-                                                    <select class="form-control derivedSection" style="max-width:350px">
-                                                    </select>
-                                                </div>
+                                                @if (item.Optional)
+                                                {
+                                                    <div class="form-group derivedSectionContainer">
+                                                        <label>Derived From Section:</label>
+                                                        <select class="form-control derivedSection" style="max-width:350px">
+                                                            @foreach (var sections in Model.AppraisalTemplate.AppraisalTemplateSections)
+                                                            {
+                                                                if(sections.SetupId != item.SetupId)
+                                                                {
+                                                                    <option value="@sections.SetupId" @(sections.DerivedSectionSetupId == item.SetupId ? "selected" : "")>Section  @sections.SetupId</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="form-group derivedSectionContainer" style="display:none">
+                                                        <label>Derived From Section:</label>
+                                                        <select class="form-control derivedSection" style="max-width:350px">
+                                                        </select>
+                                                    </div>
+                                                }
                                             </div>
                                         </div>
                                         <div class="row">
@@ -747,14 +840,33 @@
                                                     <label>Section Type</label>
                                                     <select class="form-control sectionType" style="max-width:350px">
                                                         <option value="mandatory">Mandatory</option>
-                                                        <option value="optional">Optional</option>
+                                                        <option value="optional" @(item.Optional ? "selected" : "")>Optional</option>
                                                     </select>
                                                 </div>
-                                                <div class="form-group derivedSectionContainer" style="display:none">
-                                                    <label>Derived From Section:</label>
-                                                    <select class="form-control derivedSection" style="max-width:350px">
-                                                    </select>
-                                                </div>
+                                                @if (item.Optional)
+                                                {
+                                                    <div class="form-group derivedSectionContainer">
+                                                        <label>Derived From Section:</label>
+                                                        <select class="form-control derivedSection" style="max-width:350px">
+                                                            @foreach (var sections in Model.AppraisalTemplate.AppraisalTemplateSections)
+                                                            {
+                                                                if(sections.SetupId != item.SetupId)
+                                                                {
+                                                                    <option value="@sections.SetupId" @(sections.DerivedSectionSetupId == item.SetupId ? "selected" : "")>Section  @sections.SetupId</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="form-group derivedSectionContainer" style="display:none">
+                                                        <label>Derived From Section:</label>
+                                                        <select class="form-control derivedSection" style="max-width:350px">
+                                                        </select>
+                                                    </div>
+                                                }
+
                                             </div>
                                         </div>
                                         <div class="row">
@@ -919,6 +1031,7 @@
                 var $templateName = $("#templateName").val();
                 var $description = $("#description").val();
                 var $sectionCount = parseInt($(".appraisalSection").length);
+                var $includeTracker = $("#includeTracker").prop("checked");
                 var $sections = $(".appraisalSection");
 
                 if ($templateName == '') {
@@ -936,6 +1049,7 @@
                 var $qualitativeDetailsScoreValid = true;
                 var $breakdownIsValid = true;
                 var $percentageTotal = 0;
+                var $deriveSectionValid = true;
 
                 $.each($sections, function () {
                     var $this = $(this);
@@ -1013,6 +1127,17 @@
                     if ($sectionType == 'mandatory') {
                         $percentageTotal += parseInt($sectionPercentageScore);
                     }
+
+                    if ($sectionType == 'optional') {
+                        if ($derivedSection == '' || $derivedSection == null) {
+                            $deriveSectionValid = false;
+                        }
+                        var $derivedSectionDiv = $("#sectionContainer").find("[data-sectionNum='" + $derivedSection + "']");
+                        var $derivedSectionScore = parseInt($derivedSectionDiv.find(".sectionPercentageScore").val());
+                        if (parseInt($sectionPercentageScore) >= $derivedSectionScore) {
+                            $deriveSectionValid = false;
+                        }
+                    }
                     var obj = {
                         sectionId: $sectionId,
                         sectionSetupId: $sectionSetupId,
@@ -1056,30 +1181,43 @@
                     return false;
                 }
 
+                if (!$deriveSectionValid) {
+                    Swal.fire("Error...", "For optional sections, ensure that the section is linked to a mandatory section. Also, the total percentage score of optional sections must not be greater than the parent sections");
+                    return false;
+                }
+
                 var url = "/api/Configurations/PostEditAppraisalTemplate";
-                console.log($appraisalTemplate)
                 $.post(url,
                     {
                         templateId: $templateId,
                         templateName: $templateName,
                         templateDescription: $description,
-                        appraisalSectionParams: $appraisalTemplate
+                        appraisalSectionParams: $appraisalTemplate,
+                        includeBdsTracker: $includeTracker,
                     },
                     function (data) {
-                        Swal.fire({
-                            title: "Success",
-                            text: "Appraisal template was updated successfully",
-                            type: "success",
-                            showCancelButton: 0,
-                            customClass: { okButton: "btn btn-danger m-1" },
-                            html: !1,
-                            preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
+                        if (data == "success") {
+                            Swal.fire({
+                                title: "Success",
+                                text: "Appraisal template was updated successfully",
+                                type: "success",
+                                showCancelButton: 0,
+                                customClass: { okButton: "btn btn-danger m-1" },
+                                html: !1,
+                                preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
 
-                        }).then(function (n) {
-                            if (n.value) {
-                                window.location.href = '/configurations/appraisal-templates';
-                            }
-                        });
+                            }).then(function (n) {
+                                if (n.value) {
+                                    window.location.href = '/configurations/appraisal-templates';
+                                }
+                            });
+                        }
+                        else if (data == "title exists") {
+                            Swal.fire("Oops...", "The template title name already exists", "error");
+                        }
+                        else if (data == "failed") {
+                            Swal.fire("Oops...", "Something went wrong. Unable to save the template at this time.", "error");
+                        }
                     });
 
             });
@@ -1087,6 +1225,7 @@
             // when you select section type to be optional
             $("#sectionContainer").on("change", ".sectionType", function () {
                 var $this = $(this);
+                var $thisSectionNum = $this.closest(".appraisalSection").attr("data-sectionNum");
                 var $value = $this.val();
                 var $sections = $(".appraisalSection");
                 var $select = $this.closest(".appraisalSection").find(".derivedSectionContainer .derivedSection");
@@ -1095,8 +1234,10 @@
                     $.each($sections, function () {
                         var $this = $(this);
                         var $sectionNum = $this.attr("data-sectionNum");
-                        var $option = '<option value="' + $sectionNum + '">Section ' + $sectionNum + '</option>';
-                        $select.append($option);
+                        if ($sectionNum != $thisSectionNum) {
+                            var $option = '<option value="' + $sectionNum + '">Section ' + $sectionNum + '</option>';
+                            $select.append($option);
+                        }
                     });
                     $this.closest(".appraisalSection").find(".derivedSectionContainer").show();
                 } else {

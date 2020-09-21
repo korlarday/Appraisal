@@ -18,5 +18,6 @@ namespace AprraisalApplication.Models.ViewModels
         public Employee HodEmployee { get; set; }
         public Employee HrEmployee { get; set; }
         public Employee MdEmployee { get; set; }
+        public BdsPerformanceTracker BdsTracker { get; set; }
     }
 }

@@ -128,6 +128,7 @@
                 <div class="block-content block-content-full">
                     <span style="display:none" id="appraiseeId">@Model.Appraisee.Id</span>
                     <span style="display:none" id="highestRating">@highestRating.Score</span>
+
                     <div class="row">
                         <h6 class="col-12 text-header">Personal Data: Appraisee</h6>
                         <div class="col-md-6 details">
@@ -336,7 +337,23 @@
                                             <div class="row">
                                                 <div class="col-5">Percentage Score:</div>
                                                 <div class="col-2 percentageScore score">@currentResultSection.PercentageScore</div>/
-                                                <div class="col-2 score">@templateSection.TotalPercentageObtainable %</div>
+                                                @{
+                                                    var sectionPercentage = templateSection.TotalPercentageObtainable;
+                                                    var templateSectionSetupId = templateSection.SetupId;
+                                                    var childSection = Model.InitiatedAppraisalTemplate.InitiatedTemplateSections
+                                                                        .Where(x => x.IsDeleted == false &&
+                                                                                x.DerivedSectionSetupId == templateSectionSetupId)
+                                                                        .FirstOrDefault();
+                                                    if (childSection != null)
+                                                    {
+                                                        var childResult = sectionResult.Where(x => x.InitiatedTemplateSectionId == childSection.Id).SingleOrDefault();
+                                                        if (childResult.SectionFilled)
+                                                        {
+                                                            sectionPercentage = templateSection.TotalPercentageObtainable - childSection.TotalPercentageObtainable;
+                                                        }
+                                                    }
+                                                }
+                                                <div class="col-2 score percentageObtainable">@sectionPercentage %</div>
                                             </div>
                                         </div>
                                     </div>
@@ -415,7 +432,23 @@
                                             <div class="row">
                                                 <div class="col-5">Percentage Score:</div>
                                                 <div class="col-2 percentageScore score">@currentResultSection.PercentageScore</div>/
-                                                <div class="col-2 score">@templateSection.TotalPercentageObtainable %</div>
+                                                @{
+                                                    var sectionPercentage = templateSection.TotalPercentageObtainable;
+                                                    var templateSectionSetupId = templateSection.SetupId;
+                                                    var childSection = Model.InitiatedAppraisalTemplate.InitiatedTemplateSections
+                                                                        .Where(x => x.IsDeleted == false &&
+                                                                                x.DerivedSectionSetupId == templateSectionSetupId)
+                                                                        .FirstOrDefault();
+                                                    if (childSection != null)
+                                                    {
+                                                        var childResult = sectionResult.Where(x => x.InitiatedTemplateSectionId == childSection.Id).SingleOrDefault();
+                                                        if (childResult.SectionFilled)
+                                                        {
+                                                            sectionPercentage = templateSection.TotalPercentageObtainable - childSection.TotalPercentageObtainable;
+                                                        }
+                                                    }
+                                                }
+                                                <div class="col-2 score percentageObtainable">@sectionPercentage %</div>
                                             </div>
                                         </div>
                                     </div>
@@ -512,7 +545,23 @@
                                             <div class="row">
                                                 <div class="col-5">Percentage Score:</div>
                                                 <div class="col-2 percentageScore score">@currentResultSection.PercentageScore</div>/
-                                                <div class="col-2 score">@templateSection.TotalPercentageObtainable %</div>
+                                                @{
+                                                    var sectionPercentage = templateSection.TotalPercentageObtainable;
+                                                    var templateSectionSetupId = templateSection.SetupId;
+                                                    var childSection = Model.InitiatedAppraisalTemplate.InitiatedTemplateSections
+                                                                        .Where(x => x.IsDeleted == false &&
+                                                                                x.DerivedSectionSetupId == templateSectionSetupId)
+                                                                        .FirstOrDefault();
+                                                    if (childSection != null)
+                                                    {
+                                                        var childResult = sectionResult.Where(x => x.InitiatedTemplateSectionId == childSection.Id).SingleOrDefault();
+                                                        if (childResult.SectionFilled)
+                                                        {
+                                                            sectionPercentage = templateSection.TotalPercentageObtainable - childSection.TotalPercentageObtainable;
+                                                        }
+                                                    }
+                                                }
+                                                <div class="col-2 score percentageObtainable">@sectionPercentage %</div>
                                             </div>
                                         </div>
                                     </div>
@@ -588,7 +637,23 @@
                                             <div class="row">
                                                 <div class="col-5">Percentage Score:</div>
                                                 <div class="col-2 percentageScore score">@currentResultSection.PercentageScore</div>/
-                                                <div class="col-2 score">@templateSection.TotalPercentageObtainable %</div>
+                                                @{
+                                                    var sectionPercentage = templateSection.TotalPercentageObtainable;
+                                                    var templateSectionSetupId = templateSection.SetupId;
+                                                    var childSection = Model.InitiatedAppraisalTemplate.InitiatedTemplateSections
+                                                                        .Where(x => x.IsDeleted == false &&
+                                                                                x.DerivedSectionSetupId == templateSectionSetupId)
+                                                                        .FirstOrDefault();
+                                                    if (childSection != null)
+                                                    {
+                                                        var childResult = sectionResult.Where(x => x.InitiatedTemplateSectionId == childSection.Id).SingleOrDefault();
+                                                        if (childResult.SectionFilled)
+                                                        {
+                                                            sectionPercentage = templateSection.TotalPercentageObtainable - childSection.TotalPercentageObtainable;
+                                                        }
+                                                    }
+                                                }
+                                                <div class="col-2 score percentageObtainable">@sectionPercentage %</div>
                                             </div>
                                         </div>
                                     </div>
@@ -597,6 +662,40 @@
                             }
                         }
                     }
+                    @if (Model.InitiatedAppraisalTemplate.IncludeBdsTracker)
+                    {
+                        <div class="row mt-5" id="trackerSection">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-vcenter">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Annual Target</th>
+                                            <th class="text-center"><div>Expected RSA</div><span style="font-size:14px">(@Model.NewAppraisal.AppraisalPeriodStartDate.ToString("MMM") - @Model.NewAppraisal.AppraisalPeriodEndDate.ToString("MMM"))</span></th>
+                                            <th class="text-center">RSA Achieved</th>
+                                            <th class="text-center">Funded Pin <span style="font-size:14px">(@Model.NewAppraisal.AppraisalPeriodEndDate.ToString("yyyy") REG)</span></th>
+                                            <th class="text-center">Pre-@Model.NewAppraisal.AppraisalPeriodStartDate.ToString("yyyy") Funded Pins</th>
+                                            <th class="text-center">Cash Volume</th>
+                                            <th class="text-center">% RSA Achieved</th>
+                                            <th class="text-center">% Funding Achieved</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="height:70px" class="text-center">@Model.BdsTracker.AnnualTarget</td>
+                                            <td class="text-center">@Model.BdsTracker.ExpectedRSA</td>
+                                            <td class="text-center">@Model.BdsTracker.RSAAchieved</td>
+                                            <td class="text-center">@Model.BdsTracker.FundedPins</td>
+                                            <td class="text-center">@Model.BdsTracker.PreFundedPins</td>
+                                            <td style="width:150px" class="text-center">@Model.BdsTracker.CashVolume</td>
+                                            <td class="text-center">@Model.BdsTracker.RSAAchievedPercentage%</td>
+                                            <td class="text-center">@Model.BdsTracker.FundingAchievedPercentage%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                    
                     <div class="row">
                         <div class="offset-2 col-8 p-5 my-5" style="border: 1px solid grey">
                             <div class="row">
@@ -745,12 +844,16 @@
 
                 }).then(function (n) {
                     if (n.value) {
+                        Dashmix.layout('header_loader_on');
+                        $this.attr("disabled", true);
                         var url = "/api/Appraisal/PostEnterHRComment";
 
                         $.post(url, {
                             appraiseeId: $appraiseeId,
                             hrComment: $hrComment
                         }, function (data) {
+                                Dashmix.layout('header_loader_off');
+                                $this.attr("disabled", false);
                             Swal.fire({
                                 title: "Success",
                                 text: "This appraisal has been submitted to the MD",
@@ -784,6 +887,7 @@
 
             // when you click on submit reject //appraisal/view-participants-hr?d=13&s=2020-annual-appraisal-new
             $("#submitReject").on("click", function () {
+                var $this = $(this);
                 var $appraiseeId = parseInt($("#appraiseeId").text());
                 var $rejectionReason = $("#rejectionReasonText").val();
                 var $slug = $("#slug").text()
@@ -794,11 +898,15 @@
                     return;
                 }
 
+                Dashmix.layout('header_loader_on');
+                $this.attr("disabled", true);
                 var url = "/api/Appraisal/PostRejectAppraisalToHod";
                 $.post(url, {
                     appraiseeId: $appraiseeId,
                     rejectionReason: $rejectionReason
                 }, function (data) {
+                        Dashmix.layout('header_loader_off');
+                        $this.attr("disabled", false);
                     Swal.fire({
                         title: "Success",
                         text: "This appraisal has been retured back to the appraisee with the rejection reason specified",

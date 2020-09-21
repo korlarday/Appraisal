@@ -404,6 +404,26 @@
     <Compile Include="Migrations\202009150912489_AddingDateCreatedToAppraisalStaff.Designer.cs">
       <DependentUpon>202009150912489_AddingDateCreatedToAppraisalStaff.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009181437125_AddingOptionalSectionFilledToSectionResult.cs" />
+    <Compile Include="Migrations\202009181437125_AddingOptionalSectionFilledToSectionResult.Designer.cs">
+      <DependentUpon>202009181437125_AddingOptionalSectionFilledToSectionResult.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009190514535_AddingOptionalSectionFieldToSectionResult.cs" />
+    <Compile Include="Migrations\202009190514535_AddingOptionalSectionFieldToSectionResult.Designer.cs">
+      <DependentUpon>202009190514535_AddingOptionalSectionFieldToSectionResult.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009201248073_AddingBDSTrackerToDb.cs" />
+    <Compile Include="Migrations\202009201248073_AddingBDSTrackerToDb.Designer.cs">
+      <DependentUpon>202009201248073_AddingBDSTrackerToDb.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009201305390_UpdatingTemplateModels.cs" />
+    <Compile Include="Migrations\202009201305390_UpdatingTemplateModels.Designer.cs">
+      <DependentUpon>202009201305390_UpdatingTemplateModels.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009201638198_UpdatingBdsTrackerModel.cs" />
+    <Compile Include="Migrations\202009201638198_UpdatingBdsTrackerModel.Designer.cs">
+      <DependentUpon>202009201638198_UpdatingBdsTrackerModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApiModels\NewBranchVM.cs" />
@@ -412,6 +432,7 @@
     <Compile Include="Models\ApiParameters\AppraisalDepartmentParams.cs" />
     <Compile Include="Models\ApiParameters\AppraisalTemplateParams.cs" />
     <Compile Include="Models\ApiParameters\AppraisalUserParams.cs" />
+    <Compile Include="Models\ApiParameters\BdsTrackerParam.cs" />
     <Compile Include="Models\ApiParameters\BranchParams.cs" />
     <Compile Include="Models\ApiParameters\CareerHistoryParams.cs" />
     <Compile Include="Models\ApiParameters\NewAppraisalParams.cs" />
@@ -445,6 +466,7 @@
     <Compile Include="Models\MigrationModels\AppraiseeRejection.cs" />
     <Compile Include="Models\MigrationModels\AppraiseeSectionDetail.cs" />
     <Compile Include="Models\MigrationModels\AppraiserPersonalData.cs" />
+    <Compile Include="Models\MigrationModels\BdsPerformanceTracker.cs" />
     <Compile Include="Models\MigrationModels\Branch.cs" />
     <Compile Include="Models\MigrationModels\CareerHistory.cs" />
     <Compile Include="Models\MigrationModels\DefaultRating.cs" />
@@ -4848,6 +4870,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009150912489_AddingDateCreatedToAppraisalStaff.resx">
       <DependentUpon>202009150912489_AddingDateCreatedToAppraisalStaff.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009181437125_AddingOptionalSectionFilledToSectionResult.resx">
+      <DependentUpon>202009181437125_AddingOptionalSectionFilledToSectionResult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009190514535_AddingOptionalSectionFieldToSectionResult.resx">
+      <DependentUpon>202009190514535_AddingOptionalSectionFieldToSectionResult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009201248073_AddingBDSTrackerToDb.resx">
+      <DependentUpon>202009201248073_AddingBDSTrackerToDb.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009201305390_UpdatingTemplateModels.resx">
+      <DependentUpon>202009201305390_UpdatingTemplateModels.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009201638198_UpdatingBdsTrackerModel.resx">
+      <DependentUpon>202009201638198_UpdatingBdsTrackerModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

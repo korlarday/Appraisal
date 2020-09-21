@@ -103,7 +103,8 @@ namespace AprraisalApplication.Controllers
                 Appraisee = appraisee,
                 InitiatedAppraisalTemplate = InitiatedAppraisalTemplate,
                 HodEmployee = _unitOfWork.Account.GetEmployeeById(hodEmployeeId),
-                HrEmployee = _unitOfWork.Account.GetEmployeeById(hrEmployeeId)
+                HrEmployee = _unitOfWork.Account.GetEmployeeById(hrEmployeeId),
+                BdsTracker = InitiatedAppraisalTemplate.IncludeBdsTracker ? _unitOfWork.Appraisal.GetBdsTracker(appraisee.BdsPerformanceTrackerId) : null
             };
             return View("MdComments", model);
         }
@@ -149,7 +150,8 @@ namespace AprraisalApplication.Controllers
                 HodEmployee = hodEmployeeId != 0 ? _unitOfWork.Account.GetEmployeeById(hodEmployeeId) : null,
                 HrEmployee = hrEmployeeId != 0 ? _unitOfWork.Account.GetEmployeeById(hrEmployeeId) : null,
                 MdEmployee = mdEmployeeId != 0 ? _unitOfWork.Account.GetEmployeeById(mdEmployeeId) : null,
-                SummaryRatings = _unitOfWork.Resources.GetTemplateSummaryRatings(InitiatedAppraisalTemplate.AppraisalTemplateId)
+                SummaryRatings = _unitOfWork.Resources.GetTemplateSummaryRatings(InitiatedAppraisalTemplate.AppraisalTemplateId),
+                BdsTracker = InitiatedAppraisalTemplate.IncludeBdsTracker ? _unitOfWork.Appraisal.GetBdsTracker(appraisee.BdsPerformanceTrackerId) : null
             };
             return new ViewAsPdf("ViewAppraisalMdPDF", model)
             {

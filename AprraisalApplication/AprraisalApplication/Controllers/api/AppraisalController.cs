@@ -28,8 +28,8 @@ namespace AprraisalApplication.Controllers.api
 
         public IHttpActionResult PostUpdateAppraisalExercise([FromBody] NewAppraisalParams model)
         {
-            _unitOfWork.Appraisal.UpdateAppraisal(model);
-            return Ok();
+            string result = _unitOfWork.Appraisal.UpdateAppraisal(model);
+            return Ok(result);
         }
 
         public IHttpActionResult PostStartEmployeeAppraisal([FromBody] StartEmployeeAppraisalParams model)

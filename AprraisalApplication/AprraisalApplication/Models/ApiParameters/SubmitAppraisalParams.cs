@@ -14,11 +14,14 @@ namespace AprraisalApplication.Models.ApiParameters
         public string HodComment { get; set; }
         public string HrComment { get; set; }
         public string MdComment { get; set; }
+        public BdsTrackerParam BdsTracker { get; set; }
     }
     public class SectionResult
     {
         public int SectionId { get; set; }
         public List<TaskPerformed> TaskPerformed { get; set; }
+        public string Optional { get; set; }
+        public bool OptionSelected { get; set; }
     }
     public class TaskPerformed
     {
