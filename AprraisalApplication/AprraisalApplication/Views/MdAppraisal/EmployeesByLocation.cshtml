@@ -1,0 +1,74 @@
+﻿@model IEnumerable<AprraisalApplication.Models.ViewModels.LocationAndEmployees>
+
+@{
+    ViewBag.Title = "Employees By Location";
+}
+
+
+<!-- Hero -->
+<div class="bg-body-light">
+    <div class="content content-full">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Employees</h1>
+            <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Home</li>
+                    <li class="breadcrumb-item">Employees</li>
+                    <li class="breadcrumb-item active" aria-current="page">Employees By Location</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
+<!-- Page Content -->
+<div class="content">
+    <!-- Elements -->
+    <div class="block block-rounded block-bordered">
+        <div class="block-header block-header-default">
+            <h3 class="block-title">Employees By Location</h3>
+        </div>
+        <div class="block-content">
+            <div class="block block-rounded block-bordered">
+                <div class="block-content block-content-full">
+                    <div class="block-content pb-3">
+                        @if (Model.Count() < 1)
+                        {
+                            <p>No location was registered</p>
+                        }
+                        else
+                        {
+                            <div class="row">
+                                @foreach (var item in Model)
+                                {
+
+                                    <div class="col-sm-4 invisible pt-3 pb-3" data-toggle="appear">
+                                        <a class="block block-rounded block-bordered block-link-shadow"
+                                           href="/mdappraisal/view-employees-in-location/@item.State.Id">
+                                            <div class="block-content block-content-full text-center bg-body-light" data-toggle="appear">
+                                                <div class="mt-2">
+                                                    <p class="font-w600 mb-0">
+                                                        @item.State.Description
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="block-content block-content-full">
+                                                <div class="">
+                                                    <div class="text-center">
+                                                        <div class="m-2">@item.Employees.Count()</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Elements -->
+</div>
+

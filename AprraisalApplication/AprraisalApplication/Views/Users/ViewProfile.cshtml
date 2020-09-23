@@ -21,22 +21,22 @@
         <div class="content content-full">
             <div class="text-center">
                 <a class="" href="#">
-                    @if (imgsrc != null)
+                    @if (imgsrc != "")
                     {
                         <img class="img-avatar img-avatar96 img-avatar-thumb" src="@imgsrc" alt="Passport">
                     }
                     else
                     {
-                        <img class="img-avatar img-avatar96 img-avatar-thumb" src="~/Content/Template/media/avatars/avatar10.jpg" alt="">
+                        <img class="img-avatar img-avatar96 img-avatar-thumb" src="~/Images/avatar10.jpg" alt="Passport">
                     }
                 </a>
                 <h1 class="font-w700 my-2 text-white">@Model.Firstname @Model.Lastname</h1>
                 <h2 class="h4 font-w700 text-white-75">
                     @Model.JobTitle.Name
                 </h2>
-                <a href="/users/edit-profile" class="btn btn-hero-primary">
+                @*<a href="/users/edit-profile" class="btn btn-hero-primary">
                     <i class="fa fa-pencil-alt mr-1"></i> Edit Profile
-                </a>
+                </a>*@
             </div>
         </div>
     </div>
@@ -69,6 +69,10 @@
                             <tr>
                                 <th scope="row">Name</th>
                                 <td class="font-w600">@Model.Firstname @Model.Lastname @Model.Othername</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Email</th>
+                                <td class="font-w600">@Model.ApplicationUser.Email</td>
                             </tr>
                             <tr>
                                 <th scope="row">Gender</th>
@@ -108,20 +112,15 @@
                                 <td class="font-w600">@Model.Grade.Name</td>
                             </tr>
                             <tr>
+                                <th scope="row">Staff Code No.</th>
+                                <td class="font-w600">@Model.StaffCodeNo</td>
+                            </tr>
+                            <tr>
                                 <th scope="row">Qualifications</th>
                                 <td class="font-w600">
                                     @foreach (var item in Model.EmployeeQualifications)
                                     {
                                         <span>@item.Qualification.Name</span><br />
-                                    }
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Signature</th>
-                                <td class="">
-                                    @if (sigsrc != null)
-                                    {
-                                        <img src="@sigsrc" height="60" />
                                     }
                                 </td>
                             </tr>

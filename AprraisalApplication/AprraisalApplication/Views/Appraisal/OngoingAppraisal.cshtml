@@ -107,10 +107,8 @@
 
                         <hr />
                         <div class="text-danger">
-                            Note: Make sure your profile is updated before starting an appraisal exercise <br />
-                            <a class="btn btn-link btn-sm" href="/users/edit-profile">
-                                <i class="fa fa-pencil-alt"></i> Update Profile
-                            </a> <br />
+                            Note: Update your career history before starting an appraisal exercise <br />
+                            
                             <a class="btn btn-link btn-sm" href="/users/edit-career-history">
                                 <i class="fa fa-pencil-alt"></i> Update Career History With Company
                             </a>
@@ -345,7 +343,7 @@
                                         {
                                             <div style="overflow:hidden">
                                                 <div class="form-group float-right" style="width:250px">
-                                                    <label>Optional section</label>
+                                                    <label>Include this section?</label>
                                                     <div class="custom-control custom-switch custom-control-lg mb-2">
                                                         <input type="checkbox"
                                                                class="custom-control-input enableSection"
@@ -419,7 +417,7 @@
                                         {
                                             <div style="overflow:hidden">
                                                 <div class="form-group float-right" style="width:250px">
-                                                    <label>Optional section</label>
+                                                    <label>Include this section?</label>
                                                     <div class="custom-control custom-switch custom-control-lg mb-2">
                                                         <input type="checkbox"
                                                                class="custom-control-input enableSection"
@@ -506,7 +504,7 @@
                                         {
                                             <div style="overflow:hidden">
                                                 <div class="form-group float-right" style="width:250px">
-                                                    <label>Optional section</label>
+                                                    <label>Include this section?</label>
                                                     <div class="custom-control custom-switch custom-control-lg mb-2">
                                                         <input type="checkbox"
                                                                class="custom-control-input enableSection"
@@ -750,6 +748,7 @@
 
             // when you click on submit appraisal
             $("#submitAppraisal").on("click", function () {
+                var $this = $(this);
                 var $sections = $(".section-item");
                 var $valid = true;
                 var $quatitativeValid = true;
@@ -939,6 +938,8 @@
 
                 }).then(function (n) {
                     if (n.value) {
+                        Dashmix.layout('header_loader_on');
+                        $this.attr("disabled", true);
                         var $appraiseeId = parseInt($("#appraiseeId").text());
                         var url = "/api/Appraisal/PostSubmitAppraisalToSupervisor";
 
@@ -947,6 +948,8 @@
                             sectionResults: $sectionResults,
                             bdsTracker: trackerObject
                         }, function (data) {
+                                Dashmix.layout('header_loader_off');
+                                $this.attr("disabled", false);
                             Swal.fire({
                                 title: "Success",
                                 text: "Your appraisal has been submitted to your supervisor",

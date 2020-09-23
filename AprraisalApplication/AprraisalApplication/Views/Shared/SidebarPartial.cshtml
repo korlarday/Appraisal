@@ -59,10 +59,10 @@
                             </a>
                         </li>
                         @*<li class="nav-main-item">
-                            <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "ongoing-appraisal" ? "active" : "")" href="/appraisal/ongoing-appraisal">
-                                <span class="nav-main-link-name">Ongoing Appraisals</span>
-                            </a>
-                        </li>*@
+                    <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "ongoing-appraisal" ? "active" : "")" href="/appraisal/ongoing-appraisal">
+                        <span class="nav-main-link-name">Ongoing Appraisals</span>
+                    </a>
+                </li>*@
                         <li class="nav-main-item">
                             <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "previous-appraisals"
                                 ? "active" : "")" href="/appraisal/previous-appraisals">
@@ -107,6 +107,44 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="nav-main-item">
+                        <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                            <i class="nav-main-link-icon fa fa-users"></i>
+                            <span class="nav-main-link-name">Employees</span>
+                        </a>
+                        <ul class="nav-main-submenu">
+                            <li class="nav-main-item">
+                                <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "employees-in-department" ||
+                                    ViewContext.RouteData.Values["Action"].ToString() == "view-employee"
+                                    ? "active" : "")" href="/departmentAppraisal/employees-in-department">
+                                    <span class="nav-main-link-name">Employees In My Dept.</span>
+                                </a>
+                            </li>
+                            <li class="nav-main-item">
+                                <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "all-employees-hod" ||
+                                    ViewContext.RouteData.Values["Action"].ToString() == "view-profile-hod"
+                                    ? "active" : "")" href="/departmentAppraisal/all-employees-hod">
+                                    <span class="nav-main-link-name">All Employees</span>
+                                </a>
+                            </li>
+                            <li class="nav-main-item">
+                                <a class="nav-main-link
+                                   @(ViewContext.RouteData.Values["Action"].ToString() == "employees-by-department-hod" ||
+                                    ViewContext.RouteData.Values["Action"].ToString() == "view-employees-in-department-hod"
+                                    ? "active" : "")" href="/departmentAppraisal/employees-by-department-hod">
+                                    <span class="nav-main-link-name">Employees By Dept.</span>
+                                </a>
+                            </li>
+                            <li class="nav-main-item">
+                                <a class="nav-main-link
+                                   @(ViewContext.RouteData.Values["Action"].ToString() == "employees-by-location-hod" ||
+                                    ViewContext.RouteData.Values["Action"].ToString() == "view-employees-in-location-hod"
+                                    ? "active" : "")" href="/departmentAppraisal/employees-by-location-hod">
+                                    <span class="nav-main-link-name">Employees By Location</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 }
                 @if (User.IsInRole("MD"))
                 {
@@ -126,6 +164,37 @@
                                     ViewContext.RouteData.Values["Action"].ToString() == "md-comments"
                                     ? "active" : "")" href="/mdappraisal/initiated-appraisals-md">
                                     <span class="nav-main-link-name">Appraisals</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-main-item">
+                        <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                            <i class="nav-main-link-icon fa fa-users"></i>
+                            <span class="nav-main-link-name">Employees</span>
+                        </a>
+                        <ul class="nav-main-submenu">
+                            <li class="nav-main-item">
+                                <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "all-employees" ||
+                                    ViewContext.RouteData.Values["Action"].ToString() == "view-profile"
+                                    ? "active" : "")" href="/mdappraisal/all-employees">
+                                    <span class="nav-main-link-name">All Employees</span>
+                                </a>
+                            </li>
+                            <li class="nav-main-item">
+                                <a class="nav-main-link
+                                   @(ViewContext.RouteData.Values["Action"].ToString() == "employees-by-department" ||
+                                    ViewContext.RouteData.Values["Action"].ToString() == "view-employees-in-department"
+                                    ? "active" : "")" href="/mdappraisal/employees-by-department">
+                                    <span class="nav-main-link-name">Employees By Dept.</span>
+                                </a>
+                            </li>
+                            <li class="nav-main-item">
+                                <a class="nav-main-link
+                                   @(ViewContext.RouteData.Values["Action"].ToString() == "employees-by-location" ||
+                                    ViewContext.RouteData.Values["Action"].ToString() == "view-employees-in-location"
+                                    ? "active" : "")" href="/mdappraisal/employees-by-location">
+                                    <span class="nav-main-link-name">Employees By Location</span>
                                 </a>
                             </li>
                         </ul>
@@ -160,8 +229,41 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="nav-main-item">
+                        <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                            <i class="nav-main-link-icon fa fa-users"></i>
+                            <span class="nav-main-link-name">Employees</span>
+                        </a>
+                        <ul class="nav-main-submenu">
+                            <li class="nav-main-item">
+                                <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "all-employees" ||
+                                    ViewContext.RouteData.Values["Action"].ToString() == "view-profile" ||
+                                    ViewContext.RouteData.Values["Action"].ToString() == "edit-profile" ||
+                                    ViewContext.RouteData.Values["Action"].ToString() == "edit-career-history-hr"
+                                    ? "active" : "")" href="/hr/all-employees">
+                                    <span class="nav-main-link-name">All Employees</span>
+                                </a>
+                            </li>
+                            <li class="nav-main-item">
+                                <a class="nav-main-link
+                                   @(ViewContext.RouteData.Values["Action"].ToString() == "employees-by-department" ||
+                                    ViewContext.RouteData.Values["Action"].ToString() == "view-employees-in-department"
+                                    ? "active" : "")" href="/hr/employees-by-department">
+                                    <span class="nav-main-link-name">Employees By Dept.</span>
+                                </a>
+                            </li>
+                            <li class="nav-main-item">
+                                <a class="nav-main-link
+                                   @(ViewContext.RouteData.Values["Action"].ToString() == "employees-by-location" ||
+                                    ViewContext.RouteData.Values["Action"].ToString() == "view-employees-in-location"
+                                    ? "active" : "")" href="/hr/employees-by-location">
+                                    <span class="nav-main-link-name">Employees By Location</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 }
-                @if(User.IsInRole("HOD") || User.IsInRole("HR"))
+                @if (User.IsInRole("HOD") || User.IsInRole("HR"))
                 {
                     <li class="nav-main-heading">Configurations</li>
                 }

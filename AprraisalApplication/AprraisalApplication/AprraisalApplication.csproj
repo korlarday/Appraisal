@@ -198,6 +198,7 @@
     <Compile Include="Controllers\ConfigurationsController.cs" />
     <Compile Include="Controllers\DepartmentAppraisalController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\HRController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MdAppraisalController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -424,6 +425,18 @@
     <Compile Include="Migrations\202009201638198_UpdatingBdsTrackerModel.Designer.cs">
       <DependentUpon>202009201638198_UpdatingBdsTrackerModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009211435112_UpdatingRejectionReasonModel.cs" />
+    <Compile Include="Migrations\202009211435112_UpdatingRejectionReasonModel.Designer.cs">
+      <DependentUpon>202009211435112_UpdatingRejectionReasonModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009212045446_UpdatingEmployeeModel.cs" />
+    <Compile Include="Migrations\202009212045446_UpdatingEmployeeModel.Designer.cs">
+      <DependentUpon>202009212045446_UpdatingEmployeeModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009221103395_AddingAccountDisabledToUser.cs" />
+    <Compile Include="Migrations\202009221103395_AddingAccountDisabledToUser.Designer.cs">
+      <DependentUpon>202009221103395_AddingAccountDisabledToUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApiModels\NewBranchVM.cs" />
@@ -435,6 +448,7 @@
     <Compile Include="Models\ApiParameters\BdsTrackerParam.cs" />
     <Compile Include="Models\ApiParameters\BranchParams.cs" />
     <Compile Include="Models\ApiParameters\CareerHistoryParams.cs" />
+    <Compile Include="Models\ApiParameters\DeactivateUserParams.cs" />
     <Compile Include="Models\ApiParameters\NewAppraisalParams.cs" />
     <Compile Include="Models\ApiParameters\NewDepartmentParams.cs" />
     <Compile Include="Models\ApiParameters\SectionResultParams.cs" />
@@ -447,6 +461,7 @@
     <Compile Include="Models\Attributes\Appraisee.cs" />
     <Compile Include="Models\Attributes\CompleteYourProfile.cs" />
     <Compile Include="Models\Attributes\EmailConfirmation.cs" />
+    <Compile Include="Models\Constants\PositionsCS.cs" />
     <Compile Include="Models\Constants\RoleModel.cs" />
     <Compile Include="Models\Constants\SectionTypeCS.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -498,13 +513,16 @@
     <Compile Include="Models\ViewModels\AppraiseesVM.cs" />
     <Compile Include="Models\ViewModels\AppraiseMembersVM.cs" />
     <Compile Include="Models\ViewModels\AppraiseStaffVM.cs" />
+    <Compile Include="Models\ViewModels\ChangePasswordVM.cs" />
     <Compile Include="Models\ViewModels\CreateEmployeeProfileVM.cs" />
     <Compile Include="Models\MigrationModels\DefaultUserAppraiser.cs" />
     <Compile Include="Models\ViewModels\DashboardVM.cs" />
     <Compile Include="Models\ViewModels\DepartmentInitiatedAppraisalsVM.cs" />
     <Compile Include="Models\ViewModels\EditCareerHistoryVM.cs" />
     <Compile Include="Models\ViewModels\EditEmployeeRolesVM.cs" />
+    <Compile Include="Models\ViewModels\EmployeesInDepartmentVM.cs" />
     <Compile Include="Models\ViewModels\InitiatedAppraisalsVM.cs" />
+    <Compile Include="Models\ViewModels\LocationAndEmployees.cs" />
     <Compile Include="Models\ViewModels\NewAccountVM.cs" />
     <Compile Include="Models\ViewModels\NewAppraisalVM.cs" />
     <Compile Include="Models\ViewModels\OngoingAppraisalVM.cs" />
@@ -4431,8 +4449,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\avatar10.jpg" />
     <Content Include="Images\checkmark.png" />
+    <Content Include="Images\emaillogo.png" />
     <Content Include="Images\ieilogo.png" />
+    <Content Include="Images\user.jpg" />
     <Content Include="Rotativa\help-wkhtmltoimage.txt" />
     <Content Include="Rotativa\help-wkhtmltopdf.txt" />
     <Content Include="Rotativa\wkhtmltoimage.exe" />
@@ -4622,9 +4643,34 @@
     <Content Include="Views\Configurations\ManageRoles.cshtml" />
     <Content Include="Views\Configurations\EditEmployeeRoles.cshtml" />
     <Content Include="Views\Appraisal\OngoingAppraisalsAll.cshtml" />
+    <Content Include="Views\HR\AllEmployees.cshtml" />
+    <Content Include="Views\HR\ViewProfile.cshtml" />
+    <Content Include="Views\HR\EditProfile.cshtml" />
+    <Content Include="Views\HR\EditCareerHistory.cshtml" />
+    <Content Include="Views\HR\EmployeesByDepartment.cshtml" />
+    <Content Include="Views\HR\ViewEmployeesInDepartment.cshtml" />
+    <Content Include="Views\HR\EmployeesByLocation.cshtml" />
+    <Content Include="Views\HR\ViewEmployeesInLocation.cshtml" />
+    <Content Include="Views\Account\ChangePassword.cshtml" />
+    <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
+    <Content Include="Views\DepartmentAppraisal\EmployeesInDepartment.cshtml" />
+    <Content Include="Views\DepartmentAppraisal\ViewEmployee.cshtml" />
+    <Content Include="Views\MdAppraisal\AllEmployees.cshtml" />
+    <Content Include="Views\MdAppraisal\ViewProfile.cshtml" />
+    <Content Include="Views\MdAppraisal\EmployeesByDepartment.cshtml" />
+    <Content Include="Views\MdAppraisal\ViewEmployeesInDepartment.cshtml" />
+    <Content Include="Views\MdAppraisal\EmployeesByLocation.cshtml" />
+    <Content Include="Views\MdAppraisal\ViewEmployeesInLocation.cshtml" />
+    <Content Include="Views\DepartmentAppraisal\AllEmployees.cshtml" />
+    <Content Include="Views\DepartmentAppraisal\ViewProfile.cshtml" />
+    <Content Include="Views\DepartmentAppraisal\EmployeesByDepartment.cshtml" />
+    <Content Include="Views\DepartmentAppraisal\ViewEmployeesInDepartment.cshtml" />
+    <Content Include="Views\DepartmentAppraisal\EmployeesByLocation.cshtml" />
+    <Content Include="Views\DepartmentAppraisal\ViewEmployeesInLocation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\HumanResource\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -4885,6 +4931,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009201638198_UpdatingBdsTrackerModel.resx">
       <DependentUpon>202009201638198_UpdatingBdsTrackerModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009211435112_UpdatingRejectionReasonModel.resx">
+      <DependentUpon>202009211435112_UpdatingRejectionReasonModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009212045446_UpdatingEmployeeModel.resx">
+      <DependentUpon>202009212045446_UpdatingEmployeeModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009221103395_AddingAccountDisabledToUser.resx">
+      <DependentUpon>202009221103395_AddingAccountDisabledToUser.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

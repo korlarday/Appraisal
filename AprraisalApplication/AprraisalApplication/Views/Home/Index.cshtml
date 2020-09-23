@@ -12,20 +12,59 @@
     <!-- Overview -->
     <h5 class="mt-4 mb-3">Home - Dashboard</h5>
     <div class="row">
-        <div class="col-sm-5 invisible" data-toggle="appear">
+        <a href="/appraisal/ongoing-appraisals-all" class="col-sm-5 invisible text-muted" data-toggle="appear">
+            <div class="block block-rounded block-fx-pop text-center">
+                <div class="block-content block-content-full">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <i class="fa fa-clipboard font-size-h1 text-primary"></i>
+                            <div class="font-size-h6">My Ongoing Appraisals</div>
+                        </div>
+                        <div class="font-size-h3 col-md-4 align-self-center" style="border-left:1px solid #e3e3e3">@Model.MyOngoingAppraisals</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a href="/appraisal/appraisees" class="col-sm-5 offset-1 invisible text-muted" data-toggle="appear">
+            <div class="block block-rounded block-fx-pop text-center">
+                <div class="block-content block-content-full">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <i class="si si-users font-size-h1 text-primary"></i>
+                            <div class="font-size-h6">My Subordinates</div>
+                        </div>
+                        <div class="font-size-h3 col-md-4 align-self-center" style="border-left:1px solid #e3e3e3">@Model.MySubordinates</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a href="/departmentappraisal/employees-in-department" class="col-sm-5 invisible text-muted" data-toggle="appear">
             <div class="block block-rounded block-fx-pop text-center">
                 <div class="block-content block-content-full">
                     <div class="row">
                         <div class="col-md-6">
                             <i class="fa fa-users font-size-h1 text-primary"></i>
-                            <div class="font-size-h6">Employees</div>
+                            <div class="font-size-h6">Employees in Dept.</div>
+                        </div>
+                        <div class="font-size-h3 col-md-6 align-self-center" style="border-left:1px solid #e3e3e3">@Model.EmployeesInDept</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a href="/hr/all-employees" class="col-sm-5 offset-1 invisible text-muted" data-toggle="appear">
+            <div class="block block-rounded block-fx-pop text-center">
+                <div class="block-content block-content-full">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <i class="fa fa-users font-size-h1 text-primary"></i>
+                            <div class="font-size-h6">All Employees</div>
                         </div>
                         <div class="font-size-h3 col-md-6 align-self-center" style="border-left:1px solid #e3e3e3">@Model.NumberOfEmployees</div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="offset-1 col-sm-5 invisible" data-toggle="appear">
+        </a>
+        <a href="/appraisal/initiated-appraisals" class="col-sm-5 invisible text-muted" data-toggle="appear">
             <div class="block block-rounded block-fx-pop text-center">
                 <div class="block-content block-content-full">
                     <div class="row">
@@ -37,8 +76,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-sm-5 invisible" data-toggle="appear">
+        </a>
+        <a href="/appraisal/initiated-appraisals" class="col-sm-5 offset-1 invisible text-muted" data-toggle="appear">
             <div class="block block-rounded block-fx-pop text-center">
                 <div class="block-content block-content-full">
                     <div class="row">
@@ -50,7 +89,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
     <!-- END Overview -->
 </div>

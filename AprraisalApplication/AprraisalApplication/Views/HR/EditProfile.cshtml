@@ -1,0 +1,213 @@
+﻿@model AprraisalApplication.Models.ViewModels.CreateEmployeeProfileVM
+
+@{
+    ViewBag.Title = "Edit Profile";
+
+    var imgsrc = String.Empty;
+    if (Model.PassportImage != null)
+    {
+        var imgbase64 = Convert.ToBase64String(Model.PassportImage);
+        imgsrc = string.Format("data:image/jpg;base64,{0}", imgbase64);
+    }
+ 
+}
+
+
+<!-- Hero -->
+<div class="bg-body-light">
+    <div class="content content-full">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Edit Profile</h1>
+            <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Home</li>
+                    <li class="breadcrumb-item">User Options</li>
+                    <li class="breadcrumb-item active" aria-current="page">update profile</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
+<!-- Page Content -->
+<div class="content">
+    <!-- Elements -->
+    <a href="/hr/all-employees" class="btn btn-sm btn-link"><i class="fa fa-arrow-left"></i> Back</a>
+    <div class="block block-rounded block-bordered">
+        <div class="block-header block-header-default">
+            <h3 class="block-title">Edit @Model.Firstname @Model.Lastname's Profile</h3>
+        </div>
+        <div class="block-content">
+            @if (TempData["SM"] != null)
+            {
+                <div class="alert alert-success">
+                    <span>@TempData["SM"]</span>
+                </div>
+            }
+
+            @using (Html.BeginForm("edit-profile", "hr", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(x => x.ApplicationUserId)
+                <div class="">
+                    <h4>Basic Information</h4>
+                    <div class="form-group form-row">
+                        <div class="col-sm-4 mb-4 pr-3">
+                            @Html.LabelFor(model => model.Firstname)
+                            @Html.EditorFor(model => model.Firstname, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Firstname, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-4 mb-4 pr-3">
+                            @Html.LabelFor(model => model.Lastname)
+                            @Html.EditorFor(model => model.Lastname, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Lastname, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-4 mb-4 pr-3">
+                            @Html.LabelFor(model => model.Othername)
+                            @Html.EditorFor(model => model.Othername, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Othername, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-4 mb-4 pr-3">
+                            @Html.LabelFor(model => model.DateOfEmployment)
+                            <input type="text" name="DateOfEmployment" id="DateOfEmployment" value="@Model.DateOfEmployment" class="form-control js-flatpickr bg-white" data-date-format="d-m-Y" />
+                            @Html.ValidationMessageFor(model => model.DateOfEmployment, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-4 mb-4 pr-3">
+                            @Html.LabelFor(model => model.DateOfLastPromotion)
+                            <input type="text" name="DateOfLastPromotion" id="DateOfLastPromotion" value="@Model.DateOfLastPromotion" class="form-control js-flatpickr bg-white" data-date-format="d-m-Y" />
+                            @Html.ValidationMessageFor(model => model.DateOfLastPromotion, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-4 mb-4 pr-3">
+                            @Html.LabelFor(model => model.GenderId)
+                            @Html.DropDownListFor(model => model.GenderId, Model.Genders, "Select Gender", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.GenderId, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-4 mb-4 pr-3">
+                            @Html.LabelFor(model => model.TitleId)
+                            @Html.DropDownListFor(model => model.TitleId, Model.Titles, "Select Title", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.TitleId, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-4 mb-4 pr-3">
+                            @Html.LabelFor(model => model.StateId)
+                            @Html.DropDownListFor(model => model.StateId, Model.States, "State Of Posting", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.StateId, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-4 mb-4 pr-3">
+                            @Html.LabelFor(model => model.JobTitleId)
+                            @Html.DropDownListFor(model => model.JobTitleId, Model.JobTitles, "Job Title", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.JobTitleId, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-4 mb-4 pr-3">
+                            @Html.LabelFor(model => model.DepartmentId)
+                            @Html.DropDownListFor(model => model.DepartmentId, Model.Departments, "Department", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.DepartmentId, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-4 mb-4 pr-3">
+                            @Html.LabelFor(model => model.BranchId)
+                            @Html.DropDownListFor(model => model.BranchId, Model.Branches, "Branch", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-4 mb-4 pr-3">
+                            @Html.LabelFor(model => model.GradeId)
+                            @Html.DropDownListFor(model => model.GradeId, Model.Grades, "Grade", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.GradeId, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-4 mb-4 pr-3">
+                            @Html.LabelFor(model => model.StaffCodeNo)
+                            @Html.EditorFor(model => model.StaffCodeNo, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.StaffCodeNo, "", new { @class = "text-danger" })
+                        </div>
+
+                    </div>
+                    <div class="form-group form-row">
+                        <div class="col-sm-4 mb-4 pr-3">
+                            @Html.LabelFor(model => model.UploadPassport, htmlAttributes: new { @class = "control-label" })
+                            @Html.TextBoxFor(model => model.UploadPassport, " ", new { @type = "file", @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.UploadPassport, "", new { @class = "text-danger" })
+                            @if (imgsrc != String.Empty)
+                            {
+                                <img src="@imgsrc" height="70" />
+                            }
+                        </div>
+                        <div class="col-sm-4 pr-3">
+                            <img style="margin-top: 9px" id="passportpreview" src="#" />
+                        </div>
+                    </div>
+
+                    <h4>Select Employee Qualifications</h4>
+                    <div class="form-group form-row">
+                        @foreach (var item in Model.Qualifications)
+                        {
+                            <div class="col-sm-3 mb-4 pr-3">
+                                <div class="custom-control custom-checkbox custom-control-primary" style="display:inline !important">
+                                    <input type="checkbox"
+                                           class="custom-control-input controlCheck"
+                                           value="@item.Id"
+                                           id="@item.Id"
+                                           name="SelectedQualifications"
+                                           @(Model.SelectedQualifications.Contains(item.Id) ? "checked" : "")>
+                                    <label class="custom-control-label" for="@item.Id">@item.Name</label>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary mt-3 bg-primary-dark">Update Profile</button>
+                    </div>
+
+                </div>
+
+            }
+        </div>
+    </div>
+    <!-- END Elements -->
+</div>
+<!-- END Page Content -->
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    <script>jQuery(function () { Dashmix.helpers(['flatpickr','datepicker']); });</script>
+
+    <script>
+
+
+        /*
+        * Preview Selected image
+        */
+        $("#passportpreview").hide();
+        $("#signaturepreview").hide();
+
+
+        $("#UploadPassport").change(function () {
+            $("#passportpreview").show();
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $("img#passportpreview").attr("src", e.target.result).width(120).height(120);
+                }
+                reader.readAsDataURL(this.files[0]);
+            }
+        })
+        $("#UploadSignature").change(function () {
+            $("#signaturepreview").show();
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $("img#signaturepreview").attr("src", e.target.result).width(120).height(120);
+                }
+                reader.readAsDataURL(this.files[0]);
+            }
+        })
+
+    </script>
+}
+

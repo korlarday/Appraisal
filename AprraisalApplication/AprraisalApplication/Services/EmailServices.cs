@@ -4,33 +4,35 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace AprraisalApplication.Services
 {
     public class EmailServices
     {
-        public static void SendEmailToken(string email, string content)
+        public async static Task<string> SendEmailToken(string email, string content)
         {
             // string path = context.Request.Scheme.Current.Server.MapPath("~/Views/EmailTemplate.html");
-            string file = System.IO.Path.GetFullPath("Services/EmailTemplate.html");
-            StreamReader str = new StreamReader(file);
-            string MailText = str.ReadToEnd();
-            str.Close();
+            //string file = System.IO.Path.GetFullPath("Services/EmailTemplate.html");
+            //StreamReader str = new StreamReader(file);
+            //string MailText = str.ReadToEnd();
+            //str.Close();
 
             //Replace [content] with the content of the mail  
-            MailText = MailText.Replace("[Content]", content);
+            //MailText = MailText.Replace("[Content]", content);
 
 
             var apiKey = "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";
             var client = new SendGridClient(apiKey);
-            var from = new EmailAddress("cservice@ieianchorpensions.com", "IEI Anchor Pensions");
+            var from = new EmailAddress("noreply@notifications.ieianchorpensions.com", "IEI Anchor Pensions");
             var subject = "Email Verification";
             var to = new EmailAddress(email, "Name");
             var plainTextContent = "content";
             var htmlContent = content;
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-            var response = client.SendEmailAsync(msg);
+            var response = await client.SendEmailAsync(msg);
+            return response.ToString();
         }
         public static string GenerateValidationToken()
         {

@@ -721,11 +721,7 @@
                             </div>
                             <div class="mb-5 pb-3" style="border-bottom:1px dashed grey;line-height:2em">@Model.Appraisee.AppraiseeComments.AppraiseeComment</div>
                             <div class="row pb-0" style="margin-top:70px">
-                                <div class="col-2 ml-3" style="border-top:1px dashed grey;">
-                                    <div>Signature</div>
-                                    <div style="width:100px;position:relative;top:-70px;margin-bottom:0"><img src="@sigsrc" style="width:100%" /></div>
-                                </div>
-                                <div class="offset-7 col-2" style="border-top:1px dashed grey;">
+                                <div class="ml-3 col-2" style="border-top:1px dashed grey;">
                                     <div>Date</div>
                                     <div style="width:100px;position:relative;top:-50px;margin-bottom:0">@Model.Appraisee.AppraiseeComments.AppraiseeCommentDate.ToShortDateString()</div>
                                 </div>
@@ -740,11 +736,7 @@
                             </div>
                             <div class="mb-5 pb-3" style="border-bottom:1px dashed grey;line-height:2em">@Model.Appraisee.AppraiseeComments.AppraiserComment</div>
                             <div class="row pb-0" style="margin-top:70px">
-                                <div class="col-2 ml-3" style="border-top:1px dashed grey;">
-                                    <div>Signature</div>
-                                    <div style="width:100px;position:relative;top:-70px;margin-bottom:0"><img src="@appraiserSigsrc" style="width:100%" /></div>
-                                </div>
-                                <div class="offset-7 col-2" style="border-top:1px dashed grey;">
+                                <div class="ml-3 col-2" style="border-top:1px dashed grey;">
                                     <div>Date</div>
                                     <div style="width:100px;position:relative;top:-50px;margin-bottom:0">@Model.Appraisee.AppraiseeComments.AppraiserCommentDate.ToShortDateString()</div>
                                 </div>
@@ -764,18 +756,31 @@
                     </div>
 
                     <div class="row mt-4">
-                        <div style="margin:auto">
-                            <button class="btn btn-primary mr-5" id="submitAppraisal">
-                                Submit
-                            </button>
-                            <button class="btn btn-danger ml-3" id="rejectAppraisal">
-                                Reject Appraisal
-                            </button>
+                        <div style="margin:auto;width:350px;">
+                            <div class="row">
+                                <div class="col-6">
+                                    <button class="btn btn-primary mr-4" id="submitAppraisal">
+                                        Submit
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button class="btn btn-outline-danger" id="dropdown-default-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-times"></i> Reject</button>
+                                    <div class="dropdown-menu" id="sectionTypeOptions" aria-labelledby="dropdown-default-primary">
+                                        <a class="dropdown-item rejectAppraisal" href="javascript:void(0)" data-rejectType="supervisor">
+                                            Reject to supervisor
+                                        </a>
+                                        <a class="dropdown-item rejectAppraisal" href="javascript:void(0)" data-rejectType="appraisee">
+                                            Reject to appraisee
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div id="rejection-div" style="display:none;">
                         <div class="row mt-5">
-                            <h5 class="col-12 text-center">Rejection Reason</h5>
+                            <div class="col-12 mb-3 text-center">Reject Appraisal to <span id="rejectType"></span></div>
+                            <h5 class="col-12 text-center">Rejection Reason:</h5>
                             <div class="col-12">
                                 <textarea class="form-control" id="rejectionReasonText" rows="5" style="width:400px;margin:auto"></textarea>
                             </div>
@@ -868,7 +873,11 @@
 
             //
             // 
-            $("#rejectAppraisal").on("click", function () {
+            $(".rejectAppraisal").on("click", function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                var $rejectType = $this.attr("data-rejectType");
+                $("#rejectType").text($rejectType);
                 $("#rejection-div").show();
             });
             $("#cancelReject").on("click", function () {
@@ -880,6 +889,7 @@
                 var $this = $(this);
                 var $appraiseeId = parseInt($("#appraiseeId").text());
                 var $rejectionReason = $("#rejectionReasonText").val();
+                var $rejectType = $("#rejectType").text();
                 var $slug = $("#slug").text()
                 //check if rejection reason text is not empty
                 if ($rejectionReason == '') {
@@ -892,13 +902,14 @@
                 var url = "/api/Appraisal/PostRejectAppraisalToSupervisor";
                 $.post(url, {
                     appraiseeId: $appraiseeId,
-                    rejectionReason: $rejectionReason
+                    rejectionReason: $rejectionReason,
+                    rejectionType: $rejectType
                 }, function (data) {
                         Dashmix.layout('header_loader_off');
                         $this.attr("disabled", false);
                     Swal.fire({
                         title: "Success",
-                        text: "This appraisal has been retured back to the appraisee with the rejection reason specified",
+                        text: "This appraisal has been retured back with the rejection reason specified",
                         type: "success",
                         showCancelButton: 0,
                         customClass: { okButton: "btn btn-danger m-1" },

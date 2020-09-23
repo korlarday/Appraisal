@@ -161,5 +161,74 @@ namespace AprraisalApplication.Controllers
             };
         }
 
+        [ActionName("employees-by-department")]
+        public ActionResult EmployeesByDepartment()
+        {
+            List<DepartmentAndParticipants> participants = _unitOfWork.Office.GetDepartmentAndEmployeesCount();
+            return View("EmployeesByDepartment", participants);
+        }
+
+        [ActionName("view-employees-in-department")]
+        public ActionResult ViewEmployeesInDepartment(int slug)
+        {
+            int departmentId = slug;
+            Department department = _unitOfWork.Resources.GetDepartmentById(departmentId);
+            if (department == null)
+            {
+                return HttpNotFound();
+            }
+            List<Employee> employees = _unitOfWork.Office.GetAllEmployeesInDepartment(departmentId);
+            EmployeesInDepartmentVM model = new EmployeesInDepartmentVM
+            {
+                Employees = employees,
+                Department = department
+            };
+            return View("ViewEmployeesInDepartment", model);
+        }
+
+        [ActionName("employees-by-location")]
+        public ActionResult EmployeesByLocation()
+        {
+            List<LocationAndEmployees> locations = _unitOfWork.Office.GetLocationAndEmployees();
+            return View("EmployeesByLocation", locations);
+        }
+
+        [ActionName("view-employees-in-location")]
+        public ActionResult ViewEmployeesInLocation(int slug)
+        {
+            int stateId = slug;
+            State state = _unitOfWork.Resources.GetStateById(stateId);
+            if (state == null)
+            {
+                return HttpNotFound();
+            }
+            List<Employee> employees = _unitOfWork.Office.GetAllEmployeesInState(stateId);
+            LocationAndEmployees model = new LocationAndEmployees
+            {
+                Employees = employees,
+                State = state
+            };
+            return View("ViewEmployeesInLocation", model);
+        }
+
+        [ActionName("all-employees")]
+        public ActionResult AllEmployees()
+        {
+            List<Employee> employees = _unitOfWork.Office.GetAllEmployees();
+            return View("AllEmployees", employees);
+        }
+
+        [ActionName("view-profile")]
+        public ActionResult ViewProfile(string slug)
+        {
+            string userId = slug;
+            Employee employee = _unitOfWork.Account.GetEmployeeByUserId(userId);
+            if (employee == null)
+            {
+                return HttpNotFound();
+            }
+            return View("ViewProfile", employee);
+        }
+
     }
 }

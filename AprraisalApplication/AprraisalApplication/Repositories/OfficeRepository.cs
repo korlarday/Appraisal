@@ -1,6 +1,7 @@
 ﻿using AprraisalApplication.Models;
 using AprraisalApplication.Models.ApiParameters;
 using AprraisalApplication.Models.MigrationModels;
+using AprraisalApplication.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -27,6 +28,8 @@ namespace AprraisalApplication.Repositories
         {
             return db.Employees.Where(x => x.DepartmentId == departmentId)
                                 .Include(x => x.DefaultUserAppraiser)
+                                .Include(x => x.State)
+                                .Include(x => x.Department)
                                 .ToList();
         }
 
@@ -108,6 +111,51 @@ namespace AprraisalApplication.Repositories
                     .Include(x => x.Department)
                     .Include(x => x.State)
                     .ToList();
+        }
+
+        internal List<DepartmentAndParticipants> GetDepartmentAndEmployeesCount()
+        {
+            List<DepartmentAndParticipants> participants = new List<DepartmentAndParticipants>();
+            List<Department> departments = db.Departments.Where(x => x.IsDeleted == false).OrderBy(x => x.Name).ToList();
+            foreach (var depart in departments)
+            {
+                int count = db.Employees.Where(x => x.DepartmentId == depart.Id).Count();
+                DepartmentAndParticipants item = new DepartmentAndParticipants
+                {
+                    Department = depart,
+                    NumberOfParticipants = count
+                };
+                participants.Add(item);
+            }
+            return participants;
+        }
+
+        internal List<LocationAndEmployees> GetLocationAndEmployees()
+        {
+            List<LocationAndEmployees> results = new List<LocationAndEmployees>();
+            List<State> states = db.States.Where(x => x.IsDeleted == false).OrderBy(x => x.Description).ToList();
+
+            foreach (var state in states)
+            {
+                List<Employee> employees = db.Employees.Where(x => x.StateId == state.Id)
+                                                        .ToList();
+                LocationAndEmployees location = new LocationAndEmployees
+                {
+                    State = state,
+                    Employees = employees
+                };
+                results.Add(location);
+            }
+            return results;
+        }
+
+        internal List<Employee> GetAllEmployeesInState(int stateId)
+        {
+            return db.Employees.Where(x => x.StateId == stateId)
+                                .Include(x => x.DefaultUserAppraiser)
+                                .Include(x => x.State)
+                                .Include(x => x.Department)
+                                .ToList();
         }
     }
 }

@@ -32,6 +32,14 @@ namespace AprraisalApplication.Controllers.api
         }
 
         [HttpPost]
+        public IHttpActionResult PostSaveCareerHistoryHr([FromBody] CareerHistoryParams model)
+        {
+            CareerHistory history = _unitOfWork.Account.SaveCareerHistoryHr(model);
+            NewHistoryApiVM historyApiVM = new NewHistoryApiVM(history);
+            return Ok(historyApiVM);
+        }
+
+        [HttpPost]
         public IHttpActionResult PostEditCareerHistory([FromBody] CareerHistoryParams model)
         {
             CareerHistory history = _unitOfWork.Account.UpdateCareerHistory(model);

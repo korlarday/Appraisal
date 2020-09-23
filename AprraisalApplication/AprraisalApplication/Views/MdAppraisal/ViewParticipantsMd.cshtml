@@ -46,7 +46,14 @@
                             }
                             <div class="block block-rounded block-bordered block-link-shadow col-md-6 p-0" href="javascript:void(0)">
                                 <div class="block-content block-content-full text-center bg-body-light">
-                                    <img class="img-avatar img-avatar-thumb" src="@imgsrc" alt="Employee passport">
+                                    @if (imgsrc == String.Empty)
+                                    {
+                                        <img class="img-avatar img-avatar-thumb" src="~/Images/avatar10.jpg" alt="Employee passport">
+                                    }
+                                    else
+                                    {
+                                        <img class="img-avatar img-avatar-thumb" src="@imgsrc" alt="Employee passport">
+                                    }
                                     <div class="mt-2">
                                         <p class="font-w600 mb-0">
                                             @item.Employee.Firstname @item.Employee.Lastname

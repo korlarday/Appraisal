@@ -105,15 +105,15 @@
                     <span style="display:none" id="appraiseeId">@Model.Appraisee.Id</span>
                     <span style="display:none" id="highestRating">@highestRating.Score</span>
                     <div class="row">
-                        <div class="offset-6 text-danger">
-                            <div style="font-weight:bold">The Hod has rejected the appraisal due to the following reason(s):</div>
+                        <div class="col-8 text-danger">
+                            <div style="font-weight:bold">This appraisal form was rejected for corrections</div>
                             <div style="text-decoration:underline">Rejection reasons</div>
                             <div>
                                 <ul>
-                                    @foreach (var reason in Model.Appraisee.AppraiseeRejections.Where(x => x.RejectedByPosition == "hod").OrderByDescending(x => x.DateRejected))
+                                    @foreach (var reason in Model.Appraisee.AppraiseeRejections.Where(x => x.RejectTo == "supervisor").OrderByDescending(x => x.DateRejected))
                                     {
                                         <li>
-                                            @reason.RejectionReason
+                                            @reason.RejectionReason (From @reason.RejectedByPosition)
                                             @if (reason.New)
                                             {
                                                 <span class="badge badge-warning">New</span>
@@ -631,28 +631,41 @@
                         </div>
                     </div>
                     <div class="row mt-4">
-                        <div style="margin:auto">
-                            <button class="btn btn-primary mr-4" id="submitAppraisal">
-                                Resubmit to HOD
-                            </button>
-                            <button class="btn btn-danger" id="rejectAppraisal">
-                                Reject Appraisal to Appraisee
-                            </button>
+                        <div style="margin:auto;width:450px;">
+                            <div class="row">
+                                <div class="col-6">
+                                    <button class="btn btn-primary mr-4" id="submitAppraisal">
+                                        Resubmit to HOD
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button class="btn btn-outline-danger" id="dropdown-default-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-times"></i> Reject to appraisee</button>
+                                    <div class="dropdown-menu" id="sectionTypeOptions" aria-labelledby="dropdown-default-primary">
+                                        <a class="dropdown-item rejectAppraisal" href="javascript:void(0)" data-rejectType="comments">
+                                            Reject for comments
+                                        </a>
+                                        <a class="dropdown-item rejectAppraisal" href="javascript:void(0)" data-rejectType="corrections">
+                                            Reject for corrections
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div id="rejection-div" style="display:none;">
                         <div class="row mt-5">
-                            <h5 class="col-12 text-center">Rejection Reason</h5>
+                            <div class="col-12 mb-3 text-center">Reject Appraisal to appraisee for <span id="rejectType"></span></div>
+                            <h5 class="col-12 text-center">Rejection Reason:</h5>
                             <div class="col-12">
                                 <textarea class="form-control" id="rejectionReasonText" rows="5" style="width:400px;margin:auto"></textarea>
                             </div>
                         </div>
                         <div class="row mt-4">
                             <div style="margin:auto">
-                                <button class="btn btn-danger mr-4" id="submitReject">
+                                <button class="btn btn-secondary btn-sm mr-4" id="submitReject">
                                     Submit
                                 </button>
-                                <button class="btn btn-primary mr-4" id="cancelReject">
+                                <button class="btn btn-success btn-sm mr-4" id="cancelReject">
                                     Cancel
                                 </button>
                             </div>
@@ -903,7 +916,11 @@
             });
 
             //
-            $("#rejectAppraisal").on("click", function () {
+            $(".rejectAppraisal").on("click", function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                var $rejectType = $this.attr("data-rejectType");
+                $("#rejectType").text($rejectType);
                 $("#rejection-div").show();
             });
             $("#cancelReject").on("click", function () {
@@ -914,16 +931,18 @@
             $("#submitReject").on("click", function () {
                 var $appraiseeId = parseInt($("#appraiseeId").text());
                 var $rejectionReason = $("#rejectionReasonText").val();
+                var $rejectType = $("#rejectType").text();
                 //check if rejection reason text is not empty
                 if ($rejectionReason == '') {
                     Swal.fire("Error!", "You need to enter a rejection reason!", "error");
                     return;
                 }
 
-                var url = "/api/Appraisal/PostRejectAppraisalToAppraisee";
+                var url = "/api/Appraisal/PostRejectAppraisalCommentsToAppraisee";
                 $.post(url, {
                     appraiseeId: $appraiseeId,
-                    rejectionReason: $rejectionReason
+                    rejectionReason: $rejectionReason,
+                    rejectionType: $rejectType
                 }, function (data) {
                     Swal.fire({
                         title: "Success",

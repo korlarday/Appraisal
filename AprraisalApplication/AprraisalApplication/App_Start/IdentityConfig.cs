@@ -55,7 +55,7 @@ namespace AprraisalApplication
 
             var myMessage = new SendGridMessage();
             myMessage.AddTo(message.Destination);
-            myMessage.From = new SendGrid.Helpers.Mail.EmailAddress("no_reply@ieianchorpensions.com", "IEI Anchor Pensions");
+            myMessage.From = new EmailAddress("noreply@notifications.ieianchorpensions.com", "IEI Anchor Pensions");
             myMessage.Subject = message.Subject;
             myMessage.PlainTextContent = message.Body;
             myMessage.HtmlContent = message.Body;

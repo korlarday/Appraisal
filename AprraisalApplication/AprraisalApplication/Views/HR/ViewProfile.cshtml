@@ -1,0 +1,190 @@
+﻿@model AprraisalApplication.Models.MigrationModels.Employee
+
+@{
+    ViewBag.Title = "View Profile";
+
+    var imgsrc = String.Empty;
+    if (Model.PassportImage != null)
+    {
+        var imgbase64 = Convert.ToBase64String(Model.PassportImage);
+        imgsrc = string.Format("data:image/jpg;base64,{0}", imgbase64);
+    }
+}
+
+
+<div class="bg-image" style="">
+    <div class="bg-black-25">
+        <div class="content content-full">
+            <div class="text-center">
+                <a class="" href="#">
+                    @if (imgsrc != "")
+                    {
+                        <img class="img-avatar img-avatar96 img-avatar-thumb" src="@imgsrc" alt="Passport">
+                    }
+                    else
+                    {
+                        <img class="img-avatar img-avatar96 img-avatar-thumb" src="~/Images/avatar10.jpg" alt="Passport">
+                    }
+                </a>
+                <h1 class="font-w700 my-2 text-white">@Model.Firstname @Model.Lastname</h1>
+                <h2 class="h4 font-w700 text-white-75">
+                    @Model.JobTitle.Name
+                </h2>
+                <a href="/hr/edit-profile/@Model.ApplicationUserId" class="btn btn-hero-primary">
+                    <i class="fa fa-pencil-alt mr-1"></i> Edit Profile
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
+<!-- Page Content -->
+<div class="content content-full content-boxed">
+    @if (TempData["SM"] != null)
+    {
+        <div class="alert alert-success">
+            <span>@TempData["SM"]</span>
+        </div>
+    }
+    <h2 class="content-heading">
+        <i class="si si-user mr-1"></i> Employee Details
+    </h2>
+    <div class="row">
+        <a href="/hr/all-employees" class="btn btn-sm btn-link"><i class="fa fa-arrow-left"></i> Back</a>
+        <div class="block block-rounded block-bordered col-md-12 p-0">
+            <div class="block-header block-header-default">
+                <h3 class="block-title">Details</h3>
+            </div>
+            <div class="block-content block-content-full">
+                <div class="col-md-12">
+                    <table class="table table-borderless table-vcenter table-hover">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Title</th>
+                                <td class="font-w600">@Model.Title.Name</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Name</th>
+                                <td class="font-w600">@Model.Firstname @Model.Lastname @Model.Othername</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Email</th>
+                                <td class="font-w600">@Model.ApplicationUser.Email</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Gender</th>
+                                <td class="font-w600">@Model.Gender.Name</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Date Of Employment</th>
+                                <td class="font-w600">@Model.DateOfEmployment.ToString("dd/MM/yyyy")</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Date Of Last Promotion</th>
+                                <td class="font-w600">
+                                    @if (Model.DateOfLastPromotion != null)
+                                    {
+                                        <span>@Model.DateOfLastPromotion.Value.ToString("dd/MM/yyyy")</span>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Department</th>
+                                <td class="font-w600">@Model.Department.Name</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Branch</th>
+                                <td class="font-w600">@Model.Branch.Description</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">State Of Posting</th>
+                                <td class="font-w600">@Model.State.Description</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Job Title</th>
+                                <td class="font-w600">@Model.JobTitle.Name</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Grade</th>
+                                <td class="font-w600">@Model.Grade.Name</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Staff Code No.</th>
+                                <td class="font-w600">@Model.StaffCodeNo</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Qualifications</th>
+                                <td class="font-w600">
+                                    @foreach (var item in Model.EmployeeQualifications)
+                                    {
+                                        <span>@item.Qualification.Name</span><br />
+                                    }
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <h2 class="content-heading">
+        <i class="si si-user mr-1"></i> Career history with the company
+    </h2>
+    <div class="row">
+        <div class="block block-rounded block-bordered col-md-12 p-0">
+            <div class="block-header block-header-default">
+                <h3 class="block-title">Career History</h3>
+                <div class="block-options">
+                    <a href="/hr/edit-career-history-hr/@Model.ApplicationUserId" class="btn-block-option mr-2">
+                        <i class="fa fa-pencil-alt mr-1"></i> Update Career History
+                    </a>
+                </div>
+            </div>
+            <div class="block-content block-content-full">
+                <div class="col-md-12">
+                    <table class="table table-hover table-vcenter">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 50px;">S/N</th>
+                                <th class="d-none d-sm-table-cell" style="width: 15%;">Date</th>
+                                <th>Department/Unit</th>
+                                <th>Grade</th>
+                                <th class="text-center">Trainings Attended</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var num = 1;
+                                foreach (var item in Model.CareerHistories)
+                                {
+                                    <tr>
+                                        <th class="text-center" scope="row">@num</th>
+                                        <td class="d-none d-sm-table-cell">
+                                            @item.Date.ToShortDateString()
+                                        </td>
+                                        <td>
+                                            @item.Department.Name
+                                        </td>
+                                        <td>
+                                            @item.Grade.Name
+                                        </td>
+                                        <td class="text-center">
+                                            @item.TrainingAttended
+                                        </td>
+                                    </tr>
+                                    ++num;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<!-- END Page Content -->

@@ -32,6 +32,7 @@ namespace AprraisalApplication.Models.ViewModels
             SelectedQualifications = employee.EmployeeQualifications.Select(x => x.QualificationId).ToList();
             PassportImage = employee.PassportImage;
             SignatureImage = employee.SignatureImage;
+            StaffCodeNo = employee.StaffCodeNo;
         }
 
         public int Id { get; set; }
@@ -51,6 +52,11 @@ namespace AprraisalApplication.Models.ViewModels
         [MaxLength(255)]
         [Display(Name = "Other Name")]
         public string Othername { get; set; }
+
+        [MaxLength(15)]
+        [Display(Name = "Staff Code No")]
+        [Required]
+        public string StaffCodeNo { get; set; }
 
         [Required]
         [Display(Name = "State Of Posting")]
@@ -105,7 +111,7 @@ namespace AprraisalApplication.Models.ViewModels
         public List<Qualification> Qualifications { get; set; }
         public List<int> SelectedQualifications { get; set; }
 
-        [Display(Name = "Upload Passport")]
+        [Display(Name = "Upload Passport (Optional)")]
         public HttpPostedFileBase UploadPassport { get; set; }
 
         [Display(Name = "Upload Signature")]

@@ -10,5 +10,8 @@ namespace AprraisalApplication.Models.ViewModels
         public int NumberOfEmployees { get; set; }
         public int CompletedAppraisals { get; set; }
         public int OngoingAppraisals { get; set; }
+        public int EmployeesInDept { get; set; }
+        public int MyOngoingAppraisals { get; set; }
+        public int MySubordinates { get; set; }
     }
 }

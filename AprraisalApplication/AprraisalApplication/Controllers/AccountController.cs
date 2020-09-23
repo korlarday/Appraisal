@@ -93,24 +93,66 @@ namespace AprraisalApplication.Controllers
                 return View(model);
             }
 
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, shouldLockout: false);
-            switch (result)
+            var appUser = UserManager.Users.FirstOrDefault(u => u.UserName == model.Username || u.Email == model.Username);
+
+            if(appUser != null)
             {
-                case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
+
+                if (appUser.AccountDisabled == true)
+                {
+                    ModelState.AddModelError("", "Your account has been disabled!");
                     return View(model);
+                }
+
+                // This doesn't count login failures towards account lockout
+                // To enable password failures to trigger account lockout, change to shouldLockout: true
+                var result = await SignInManager.PasswordSignInAsync(appUser.UserName, model.Password, model.RememberMe, shouldLockout: false);
+                switch (result)
+                {
+                    case SignInStatus.Success:
+                        return RedirectToLocal(returnUrl);
+                    case SignInStatus.LockedOut:
+                        return View("Lockout");
+                    case SignInStatus.RequiresVerification:
+                        return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                    case SignInStatus.Failure:
+                    default:
+                        ModelState.AddModelError("", "Invalid login attempt.");
+                        return View(model);
+                }
             }
+            ModelState.AddModelError("", "Invalid login attempt.");
+            return View(model);
         }
 
+
+        [ActionName("change-password")]
+        public ActionResult ChangePassword()
+        {
+            return View("ChangePassword");
+        }
+
+        [ValidateAntiForgeryToken, HttpPost]
+        [ActionName("change-password")]
+        public ActionResult ChangePassword(ChangePasswordVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("ChangePassword", model);
+            }
+            string userId = User.Identity.GetUserId();
+            var result = UserManager.ChangePassword(userId, model.OldPassword, model.NewPassword);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error);
+                }
+                return View("ChangePassword", model);
+            }
+            TempData["SM"] = "Password updated successfully";
+            return RedirectToAction("change-password");
+        }
         //
         // GET: /Account/VerifyCode
         [AllowAnonymous]
@@ -206,7 +248,7 @@ namespace AprraisalApplication.Controllers
                     var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("email-confirmation", "Account");
                 }
                 AddErrors(result);
             }
@@ -214,7 +256,16 @@ namespace AprraisalApplication.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
-
+        
+        public async Task<ActionResult> ResendEmailLink()
+        {
+            string userId = User.Identity.GetUserId();
+            string code = await UserManager.GenerateEmailConfirmationTokenAsync(userId);
+            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = userId, code = code }, protocol: Request.Url.Scheme);
+            await UserManager.SendEmailAsync(userId, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+            TempData["SM"] = "A confirmation link has been sent to your email address. Please check your mail.";
+            return RedirectToAction("email-confirmation", "Account");
+        }
         //
         // GET: /Account/ConfirmEmail
         [AllowAnonymous]
@@ -250,7 +301,7 @@ namespace AprraisalApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindByNameAsync(model.Email);
+                var user = await UserManager.FindByEmailAsync(model.Email);
                 if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
@@ -259,14 +310,21 @@ namespace AprraisalApplication.Controllers
 
                 // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        [AllowAnonymous]
+        public async Task<ActionResult> TestEmail()
+        {
+            var response = await EmailServices.SendEmailToken("reedwan47@gmail.com", "Helloworld");
+            return RedirectToAction("login");
         }
 
         //
@@ -296,7 +354,7 @@ namespace AprraisalApplication.Controllers
             {
                 return View(model);
             }
-            var user = await UserManager.FindByNameAsync(model.Email);
+            var user = await UserManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
@@ -316,7 +374,7 @@ namespace AprraisalApplication.Controllers
         [AllowAnonymous]
         public ActionResult ResetPasswordConfirmation()
         {
-            return View();
+            return View("ResetPasswordConfirmation");
         }
 
         //

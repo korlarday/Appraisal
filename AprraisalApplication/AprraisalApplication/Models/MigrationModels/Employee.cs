@@ -20,6 +20,7 @@ namespace AprraisalApplication.Models.MigrationModels
 
         public DefaultUserAppraiser DefaultUserAppraiser { get; set; }
         public int DefaultUserAppraiserId { get; set; }
+        public bool AccountDisabled { get; set; }
 
         [Required]
         [MaxLength(255)]
@@ -31,6 +32,9 @@ namespace AprraisalApplication.Models.MigrationModels
 
         [MaxLength(255)]
         public string Othername { get; set; }
+
+        [MaxLength(20)]
+        public string StaffCodeNo { get; set; }
 
         public State State { get; set; }
         [Required]
@@ -93,16 +97,17 @@ namespace AprraisalApplication.Models.MigrationModels
             DateOfLastPromotion = model.DateOfLastPromotion;
             TitleId = model.TitleId;
             DepartmentId = model.DepartmentId;
+            StaffCodeNo = model.StaffCodeNo;
             if(model.UploadPassport != null)
             {
                 PassportImage = new byte[model.UploadPassport.ContentLength];
                 model.UploadPassport.InputStream.Read(PassportImage, 0, model.UploadPassport.ContentLength);
             }
-            if (model.UploadSignature != null)
-            {
-                SignatureImage = new byte[model.UploadSignature.ContentLength];
-                model.UploadSignature.InputStream.Read(SignatureImage, 0, model.UploadSignature.ContentLength);
-            }
+            //if (model.UploadSignature != null)
+            //{
+            //    SignatureImage = new byte[model.UploadSignature.ContentLength];
+            //    model.UploadSignature.InputStream.Read(SignatureImage, 0, model.UploadSignature.ContentLength);
+            //}
         }
 
         internal void UpdateEmployee(CreateEmployeeProfileVM model)
@@ -119,16 +124,17 @@ namespace AprraisalApplication.Models.MigrationModels
             DateOfLastPromotion = model.DateOfLastPromotion;
             TitleId = model.TitleId;
             DepartmentId = model.DepartmentId;
+            StaffCodeNo = model.StaffCodeNo;
             if (model.UploadPassport != null)
             {
                 PassportImage = new byte[model.UploadPassport.ContentLength];
                 model.UploadPassport.InputStream.Read(PassportImage, 0, model.UploadPassport.ContentLength);
             }
-            if (model.UploadSignature != null)
-            {
-                SignatureImage = new byte[model.UploadSignature.ContentLength];
-                model.UploadSignature.InputStream.Read(SignatureImage, 0, model.UploadSignature.ContentLength);
-            }
+            //if (model.UploadSignature != null)
+            //{
+            //    SignatureImage = new byte[model.UploadSignature.ContentLength];
+            //    model.UploadSignature.InputStream.Read(SignatureImage, 0, model.UploadSignature.ContentLength);
+            //}
         }
     }
 }

@@ -9,7 +9,7 @@
     var sectionResult = Model.Appraisee.SectionResults;
     var highestRating = Model.DefaultRatings.OrderByDescending(x => x.Score).FirstOrDefault();
     double totalPercentageScore = 0;
-    var rejections = Model.Appraisee.AppraiseeRejections.Where(x => x.RejectedByPosition == "supervisor").OrderByDescending(x => x.DateRejected).ToList();
+    var rejections = Model.Appraisee.AppraiseeRejections.Where(x => x.RejectTo == "appraisee" && x.New == true).OrderByDescending(x => x.DateRejected).ToList();
 }
 
 @section Stylesheet{
@@ -100,15 +100,15 @@
                     @if(rejections.Count() > 0)
                     {
                         <div class="row">
-                            <div class="offset-6 text-danger">
-                                <div style="font-weight:bold">Your appraisal form was rejected by your supervisor for corrections</div>
+                            <div class="col-8 text-danger">
+                                <div style="font-weight:bold">Your appraisal form was rejected for corrections</div>
                                 <div style="text-decoration:underline">Rejection reasons</div>
                                 <div>
                                     <ul>
-                                        @foreach (var reason in Model.Appraisee.AppraiseeRejections.Where(x => x.RejectedByPosition == "supervisor").OrderByDescending(x => x.DateRejected))
+                                        @foreach (var reason in rejections)
                                         {
                                             <li>
-                                                @reason.RejectionReason
+                                                @reason.RejectionReason (From @reason.RejectedByPosition)
                                                 @if (reason.New)
                                                 {
                                                     <span class="badge badge-warning">New</span>

@@ -75,5 +75,17 @@ namespace AprraisalApplication.Controllers.api
             _unitOfWork.Office.SetEmployeesAppraiser(model);
             return Ok();
         }
+
+        public IHttpActionResult PostDeactivateAccount([FromBody] DeactivateUserParams model)
+        {
+            _unitOfWork.Account.DeactivateUserAccount(model);
+            return Ok();
+        }
+
+        public IHttpActionResult PostActivateAccount([FromBody] DeactivateUserParams model)
+        {
+            _unitOfWork.Account.ActivateUserAccount(model);
+            return Ok();
+        }
     }
 }

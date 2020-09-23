@@ -1137,6 +1137,7 @@
 
             // when you click on submit reject
             $("#submitReject").on("click", function () {
+                var $this = $(this);
                 var $appraiseeId = parseInt($("#appraiseeId").text());
                 var $rejectionReason = $("#rejectionReasonText").val();
                 //check if rejection reason text is not empty
@@ -1145,11 +1146,15 @@
                     return;
                 }
 
+                Dashmix.layout('header_loader_on');
+                $this.attr("disabled", true);
                 var url = "/api/Appraisal/PostRejectAppraisalToAppraisee";
                 $.post(url, {
                     appraiseeId: $appraiseeId,
                     rejectionReason: $rejectionReason
                 }, function (data) {
+                        Dashmix.layout('header_loader_off');
+                        $this.attr("disabled", false);
                     Swal.fire({
                         title: "Success",
                         text: "This appraisal has been retured back to the appraisee with the rejection reason specified",

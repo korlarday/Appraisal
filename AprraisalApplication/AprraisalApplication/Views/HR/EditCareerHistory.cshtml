@@ -1,0 +1,414 @@
+﻿@model AprraisalApplication.Models.ViewModels.EditCareerHistoryVM
+
+@{
+    ViewBag.Title = "Edit Career History";
+}
+
+
+
+<!-- Hero -->
+<div class="bg-body-light">
+    <div class="content content-full">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Career History</h1>
+            <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Home</li>
+                    <li class="breadcrumb-item">All Employees</li>
+                    <li class="breadcrumb-item active" aria-current="page">update career history</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
+<!-- Page Content -->
+<div class="content">
+    <a href="/hr/view-profile/@Model.Employee.ApplicationUserId" class="btn btn-sm btn-link">
+        <i class="fa fa-arrow-left mr-1"></i> Profile
+    </a>
+    <!-- Elements -->
+    <div class="block block-rounded block-bordered">
+        <div class="block-header block-header-default">
+            <h3 class="block-title">Career History (@Model.Employee.Firstname @Model.Employee.Lastname)</h3>
+            <span id="userId" style="display:none;">@Model.Employee.ApplicationUserId</span>
+        </div>
+        <div class="block-content">
+            @if (TempData["SM"] != null)
+            {
+                <div class="alert alert-success">
+                    <span>@TempData["SM"]</span>
+                </div>
+            }
+
+            <div class="mb-2 p-0" style="overflow:hidden">
+
+                <button class="btn btn-hero-info float-right" data-toggle="modal" data-target="#new_history_modal">
+                    <i class="fa fa-plus mr-1"></i> Add Career History
+                </button>
+                <button type="button" style="display:none" data-toggle="modal" id="show_edit_modal" data-target="#edit_history_modal">Edit History</button>
+            </div>
+            <div>
+                <table class="table table-hover table-vcenter" id="table">
+                    <thead>
+                        <tr>
+                            <th class="text-center" style="width: 50px;">S/N</th>
+                            <th style="display:none">Dept Id</th>
+                            <th style="display:none">Grade Id</th>
+                            <th class="d-none d-sm-table-cell" style="width: 15%;">Date</th>
+                            <th>Department/Unit</th>
+                            <th>Grade</th>
+                            <th class="text-center">Trainings Attended</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_body">
+                        <tr data-careerHistoryId="1" class="table-row" style="display:none">
+                            <th class="text-center count" scope="row">1</th>
+                            <th style="display:none" class="deptId">Dept Id</th>
+                            <th style="display:none" class="gradeId">Grade Id</th>
+                            <td class="d-none d-sm-table-cell trainingDate">
+                                hello
+                            </td>
+                            <td class="trainingDeptName text-sm">
+                                hello
+                            </td>
+                            <td class="trainingGradeName">
+                                hello
+                            </td>
+                            <td class="text-center trainingDesc">
+                                hello
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="#" class="btn btn-sm btn-primary edit_history" data-toggle="tooltip" title="Edit">
+                                        <i class="fa fa-pencil-alt"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-sm btn-danger delete_history" data-toggle="tooltip" title="Delete">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        @{
+                            var num = 1;
+                            foreach (var item in Model.Employee.CareerHistories)
+                            {
+                                <tr data-careerHistoryId="@item.Id" id="@item.Id">
+                                    <th class="text-center" scope="row">@num</th>
+                                    <th style="display:none" class="deptId">@item.DepartmentId</th>
+                                    <th style="display:none" class="gradeId">@item.GradeId</th>
+                                    <td class="d-none d-sm-table-cell trainingDate">
+                                        @item.Date.ToShortDateString()
+                                    </td>
+                                    <td class="trainingDeptName">
+                                        @item.Department.Name
+                                    </td>
+                                    <td class="trainingGradeName">
+                                        @item.Grade.Name
+                                    </td>
+                                    <td class="text-center trainingDesc">
+                                        @item.TrainingAttended
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="#" class="btn btn-sm btn-primary edit_history" data-toggle="tooltip" title="Edit">
+                                                <i class="fa fa-pencil-alt"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-sm btn-danger delete_history" data-toggle="tooltip" title="Delete">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                ++num;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+    <!-- END Elements -->
+</div>
+<!-- END Page Content -->
+<!-- New Subject Modal -->
+<div class="modal fade" id="new_history_modal" tabindex="-1" role="dialog" aria-labelledby="new_history_modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-popout" role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title">Add Career History</h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="fa fa-fw fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
+                    <div class="row push">
+                        <div class="col-md-10 offset-md-1">
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input type="text" name="enter_date" id="enter_date" class="form-control js-flatpickr bg-white" data-date-format="d-m-Y" />
+                                <span style="display:none" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.CreateCareerHistory.DepartmentId)
+                                @Html.DropDownListFor(model => model.CreateCareerHistory.DepartmentId, Model.Departments, "Select Department", new { @class = "form-control", id = "department_type" })
+                                <span style="display:none" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.CreateCareerHistory.GradeId)
+                                @Html.DropDownListFor(model => model.CreateCareerHistory.GradeId, Model.Grades, "Select Grade", new { @class = "form-control", id = "grade_type" })
+                                <span style="display:none" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="training">Training Attended</label>
+                                <textarea class="form-control" id="training" name="trainings" rows="4" placeholder="Training Attended.."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <button id="submit_history" class="btn btn-primary mt-3">Add History</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="block-content block-content-full text-right bg-light">
+                    <button type="button" class="btn btn-sm btn-light close_modal" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END  -->
+<!-- Edit Career Modal -->
+<div class="modal fade" id="edit_history_modal" tabindex="-1" role="dialog" aria-labelledby="edit_history_modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-popout" role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title">Edit Career History</h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="fa fa-fw fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
+                    <div class="row push">
+                        <div class="col-md-10 offset-md-1">
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input type="text" name="edit_date" id="edit_date" class="form-control js-flatpickr bg-white" data-date-format="d-m-Y" />
+                                <span style="display:none" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.CreateCareerHistory.DepartmentId)
+                                @Html.DropDownListFor(model => model.CreateCareerHistory.DepartmentId, Model.Departments, "Select Department", new { @class = "form-control", id = "edit_department_type" })
+                                <span style="display:none" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.CreateCareerHistory.GradeId)
+                                @Html.DropDownListFor(model => model.CreateCareerHistory.GradeId, Model.Grades, "Select Grade", new { @class = "form-control", id = "edit_grade_type" })
+                                <span style="display:none" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="training">Training Attended</label>
+                                <textarea class="form-control" id="edit_training" name="trainings" rows="4" placeholder="Training Attended.."></textarea>
+                            </div>
+                            <span style="display:none" id="careerHistoryEditId"></span>
+                            <div class="form-group">
+                                <button id="update_history" class="btn btn-primary mt-3">Update History</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="block-content block-content-full text-right bg-light">
+                    <button type="button" class="btn btn-sm btn-light close_modal" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END  -->
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    <script>jQuery(function () { Dashmix.helpers(['flatpickr', 'datepicker']); });</script>
+    <script src="~/Content/Template/js/plugins/moment.js"></script>
+    <script>
+        var $userId = $("#userId").text();
+        // when you click on submit
+        $("#submit_history").on("click", function () {
+            var $this = $(this);
+            var $date = $("#enter_date").val();
+            var $departmentId = $("#department_type").val();
+            var $gradeId = $("#grade_type").val();
+            var $training = $("#training").val();
+
+            if ($date == '' || $departmentId == '' || $gradeId == '' || $training == '') {
+                Swal.fire("Oops...", "All fields are required", "error");
+                return;
+            }
+
+            var isoDate = moment($date, "DD-MM-YYYY");
+
+
+
+            $this.attr("disabled", true);
+
+            var url = '/api/employees/PostSaveCareerHistoryHr';
+            $.post(url,
+                {
+                    userId: $userId,
+                    date: isoDate.format(),
+                    departmentId: $departmentId,
+                    gradeId: $gradeId,
+                    training: $training
+                },
+                function (data) {
+                    $(".close_modal").click();
+                    Swal.fire("Success...", "Branch created successfully", "success");
+
+                    $("#enter_date").val('');
+                    $("#department_type").val('');
+                    $("#grade_type").val('');
+                    $("#training").val('');
+
+                    var $count = $("#table tbody tr").length;
+                    var toAppend = $("table#table tbody tr:first").clone();
+
+                    toAppend.attr("data-careerHistoryId", data.id);
+                    toAppend.children(".count").text($count);
+                    toAppend.children(".deptId").text(data.departmentId);
+                    toAppend.children(".gradeId").text(data.gradeId);
+                    toAppend.children(".trainingDate").text(data.day + '/' + data.month + '/' + data.year);
+                    toAppend.children(".trainingDeptName").text(data.department.name);
+                    toAppend.children(".trainingGradeName").text(data.department.name);
+                    toAppend.children(".trainingDesc").text(data.trainingAttended);
+
+                    toAppend.show();
+                    $("#table tbody").append($(toAppend).hide().fadeIn(1200));
+                    $this.attr("disabled", false);
+                });
+        });
+
+        /*
+            * Delete Subject js
+            */
+        $("#table").on("click", ".delete_history", function (e) {
+            var $this = $(this);
+            e.preventDefault();
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to rever this!",
+                type: "warning",
+                showCancelButton: !0,
+                customClass: { confirmButton: "btn btn-danger m-1", cancelButton: "btn btn-secondary m-1" },
+                confirmButtonText: "Yes, delete it!",
+                html: !1,
+                preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
+
+            }).then(function (n) {
+                if (n.value) {
+                    var id = $this.closest('tr').attr("data-careerHistoryId");
+                    console.log(id);
+                    var url = "/api/Employees/PostDeleteBranch";
+
+                    $.post(url, { id: id }, function (data) {
+                        Swal.fire("Deleted!", "Career history has been deleted.", "success");
+                        $this.closest('tr').fadeOut("slow", function () {
+                            $(this).remove();
+                        });
+                    });
+                }
+                else {
+                    "cancel" === n.dismiss && Swal.fire("Cancelled", "Cancelled :)", "error")
+                }
+
+            })
+            //if (!confirm("Are you sure you want to delete")) return false;
+            //var $this = $(this);
+            //var id = $this.parent().parent().children(".id").text();
+
+        });
+
+
+        // For show edit
+        $("#table").on("click", ".edit_history", function (e) {
+            e.preventDefault();
+
+            $this = $(this);
+            var id = $this.closest('tr').attr("data-careerHistoryId")
+            var date = $this.closest('tr').children(".trainingDate").text();
+            var deptId = $this.closest('tr').children(".deptId").text();
+            var gradeId = $this.closest('tr').children(".gradeId").text();
+            var trainingDesc = $this.closest('tr').children(".trainingDesc").text();
+
+            console.log(id);
+            console.log(date);
+            console.log(deptId);
+            console.log(gradeId);
+            console.log(trainingDesc)
+
+            $("#edit_date").val(date.trim().split("/").join("-"));
+            $("#edit_department_type").val(deptId.trim());
+            $("#edit_grade_type").val(gradeId.trim());
+            $("#edit_training").val(trainingDesc.trim());
+            $("#careerHistoryEditId").val(id);
+
+            $("#show_edit_modal").click();
+        });
+        // END
+
+        // submit edit
+        var submitEdit = $("#update_history");
+        submitEdit.click(function (e) {
+            e.preventDefault();
+            $this = $(this);
+            $this.attr("disabled", true);
+
+            var $departmentId = $("#edit_department_type").val();
+            var $date = $("#edit_date").val();
+            var $gradeId = $("#edit_grade_type").val();
+            var $training = $("#edit_training").val();
+            var $id = $("#careerHistoryEditId").val();
+
+
+            if ($id == '' || $date == '' || $departmentId == '' || $gradeId == '' || $training == '') {
+                Swal.fire("Oops...", "All fields are required", "error");
+                return;
+            }
+
+            var isoDate = moment($date, "DD-MM-YYYY");
+            var url = "/api/Employees/PostEditCareerHistory";
+
+            $.post(url,
+                { id: $id, date: isoDate.format(), departmentId: $departmentId, gradeId: $gradeId, training: $training },
+                function (data) {
+                    $this.attr("disabled", false);
+                    $(".close_modal").click();
+                    Swal.fire("Success...", "Career history was updated successfully", "success");
+
+                    $("#table_body").children("#" + data.id).hide().fadeIn(1000);
+                    $("#table_body").children("#" + data.id).children(".deptId").text(data.departmentId);
+                    $("#table_body").children("#" + data.id).children(".gradeId").text(data.gradeId);
+                    $("#table_body").children("#" + data.id).children(".trainingDate").text(data.day + '/' + data.month + '/' + data.year);
+                    $("#table_body").children("#" + data.id).children(".trainingDeptName").text(data.department.name);
+                    $("#table_body").children("#" + data.id).children(".trainingGradeName").text(data.grade.name);
+                    $("#table_body").children("#" + data.id).children(".trainingDesc").text(data.trainingAttended);
+
+                });
+        })
+        //END
+    </script>
+}
+

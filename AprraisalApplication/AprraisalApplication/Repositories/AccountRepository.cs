@@ -53,6 +53,19 @@ namespace AprraisalApplication.Repositories
             return db.SaveChanges() != 0;
         }
 
+        internal CareerHistory SaveCareerHistoryHr(CareerHistoryParams model)
+        {
+            string userId = model.UserId;
+            ApplicationUser user = db.Users.Find(userId);
+            CareerHistory careerHistory = new CareerHistory(model, (int)user.EmployeeId);
+            db.CareerHistories.Add(careerHistory);
+            db.SaveChanges();
+            return db.CareerHistories.Where(x => x.Id == careerHistory.Id)
+                                        .Include(x => x.Department)
+                                        .Include(x => x.Grade)
+                                        .SingleOrDefault();
+        }
+
         internal CareerHistory UpdateCareerHistory(CareerHistoryParams model)
         {
             CareerHistory careerHistory = db.CareerHistories.Find(model.Id);
@@ -65,6 +78,30 @@ namespace AprraisalApplication.Repositories
                                         .Include(x => x.Department)
                                         .Include(x => x.Grade)
                                         .SingleOrDefault();
+        }
+
+        internal ApplicationUser GetEmployeeByUsername(string username)
+        {
+            return db.Users.Where(x => x.UserName == username).SingleOrDefault();
+        }
+
+        internal void DeactivateUserAccount(DeactivateUserParams model)
+        {
+            ApplicationUser user = db.Users.Find(model.UserId);
+            Employee employee = db.Employees.Where(x => x.ApplicationUserId == model.UserId).SingleOrDefault();
+            employee.AccountDisabled = true;
+            user.AccountDisabled = true;
+
+            db.SaveChanges();
+        }
+        internal void ActivateUserAccount(DeactivateUserParams model)
+        {
+            ApplicationUser user = db.Users.Find(model.UserId);
+            Employee employee = db.Employees.Where(x => x.ApplicationUserId == model.UserId).SingleOrDefault();
+            employee.AccountDisabled = false;
+            user.AccountDisabled = false;
+
+            db.SaveChanges();
         }
 
         internal void DeleteCareerHistory(int id)
@@ -103,6 +140,7 @@ namespace AprraisalApplication.Repositories
                                 .Include(x => x.Grade)
                                 .Include(x => x.Gender)
                                 .Include(x => x.Department)
+                                .Include(x => x.ApplicationUser)
                                 .SingleOrDefault();
         }
 

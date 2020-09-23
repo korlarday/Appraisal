@@ -163,13 +163,37 @@ namespace AprraisalApplication.Repositories
                         string userId = HttpContext.Current.User.Identity.GetUserId();
                         Employee employee = context.Employees.Where(x => x.ApplicationUserId == userId).SingleOrDefault();
 
-                        AppraiseeRejection rejection = new AppraiseeRejection(model.AppraiseeId, model.RejectionReason, employee.Id, "hr");
-                        context.AppraiseeRejections.Add(rejection);
+                        //AppraiseeRejection rejection = new AppraiseeRejection(model.AppraiseeId, model.RejectionReason, employee.Id, "hr");
+                        //context.AppraiseeRejections.Add(rejection);
 
+                        string rejectTo = "";
                         // update the appraisee progress
                         var progress = appraisee.AppraiseeProgress;
-                        progress.HRReject = true;
-                        progress.HODSubmit = false;
+                        if (model.RejectionType == "hod")
+                        {
+                            progress.HRReject = true;
+                            progress.HODSubmit = false;
+                            rejectTo = PositionsCS.Hod;
+                        }
+                        else if (model.RejectionType == "supervisor")
+                        {
+                            progress.HODReject = true;
+                            progress.HODSubmit = false;
+                            progress.SupervisorSubmit = false;
+                            rejectTo = PositionsCS.Supervisor;
+                        }
+                        else
+                        {
+                            // if rejection is to appraisee
+                            progress.SupervisorReject = true;
+                            progress.FeedbackFromAppraisee = false;
+                            progress.SupervisorSubmit = false;
+                            progress.HODSubmit = false;
+                            rejectTo = PositionsCS.Appraisee;
+                        }
+
+                        AppraiseeRejection rejection = new AppraiseeRejection(model.AppraiseeId, model.RejectionReason, employee.Id, PositionsCS.Hr, rejectTo);
+                        context.AppraiseeRejections.Add(rejection);
 
                         context.SaveChanges();
                         dbContextTransaction.Commit();
@@ -393,14 +417,29 @@ namespace AprraisalApplication.Repositories
                         string userId = HttpContext.Current.User.Identity.GetUserId();
                         Employee employee = context.Employees.Where(x => x.ApplicationUserId == userId).SingleOrDefault();
 
-                        AppraiseeRejection rejection = new AppraiseeRejection(model.AppraiseeId, model.RejectionReason, employee.Id, "hod");
-                        context.AppraiseeRejections.Add(rejection);
 
                         // update the appraisee progress
+                        //check to whom the appraiser was rejected to
+                        var rejectTo = "";
                         var progress = appraisee.AppraiseeProgress;
-                        progress.HODReject = true;
-                        progress.HODSubmit = false;
-                        progress.SupervisorSubmit = false;
+                        if(model.RejectionType == "supervisor")
+                        {
+                            progress.HODReject = true;
+                            progress.HODSubmit = false;
+                            progress.SupervisorSubmit = false;
+                            rejectTo = PositionsCS.Supervisor;
+                        }
+                        else
+                        {
+                            // if rejection is to appraisee
+                            progress.SupervisorReject = true;
+                            progress.FeedbackFromAppraisee = false;
+                            progress.SupervisorSubmit = false;
+                            rejectTo = PositionsCS.Appraisee;
+                        }
+
+                        AppraiseeRejection rejection = new AppraiseeRejection(model.AppraiseeId, model.RejectionReason, employee.Id, PositionsCS.Hod, rejectTo);
+                        context.AppraiseeRejections.Add(rejection);
 
                         context.SaveChanges();
                         dbContextTransaction.Commit();
@@ -430,14 +469,28 @@ namespace AprraisalApplication.Repositories
                         string userId = HttpContext.Current.User.Identity.GetUserId();
                         Employee employee = context.Employees.Where(x => x.ApplicationUserId == userId).SingleOrDefault();
 
-                        AppraiseeRejection rejection = new AppraiseeRejection(model.AppraiseeId, model.RejectionReason, employee.Id, "supervisor");
+                        AppraiseeRejection rejection = new AppraiseeRejection(model.AppraiseeId, model.RejectionReason, employee.Id, PositionsCS.Supervisor, PositionsCS.Appraisee);
                         context.AppraiseeRejections.Add(rejection);
 
                         // update the appraisee progress
+
                         var progress = appraisee.AppraiseeProgress;
-                        progress.SupervisorReject = false;
-                        progress.SupervisorSubmit = false;
-                        progress.SupervisorAskForFeedback = true;
+                        if(model.RejectionType == "comments")
+                        {
+                            // send the form back to appraisee for comments
+                            progress.SupervisorReject = false;
+                            progress.SupervisorSubmit = false;
+                            progress.SupervisorAskForFeedback = true;
+                            progress.HODReject = false;
+                        }
+                        else
+                        {
+                            // restart the process
+                            progress.SupervisorReject = true;
+                            progress.FeedbackFromAppraisee = false;
+                            progress.SupervisorSubmit = false;
+                            progress.HODReject = false;
+                        }
 
                         context.SaveChanges();
                         dbContextTransaction.Commit();
@@ -843,7 +896,7 @@ namespace AprraisalApplication.Repositories
                         string userId = HttpContext.Current.User.Identity.GetUserId();
                         Employee employee = context.Employees.Where(x => x.ApplicationUserId == userId).SingleOrDefault();
 
-                        AppraiseeRejection rejection = new AppraiseeRejection(model.AppraiseeId, model.RejectionReason, employee.Id, "supervisor");
+                        AppraiseeRejection rejection = new AppraiseeRejection(model.AppraiseeId, model.RejectionReason, employee.Id, PositionsCS.Supervisor, PositionsCS.Appraisee);
                         context.AppraiseeRejections.Add(rejection);
 
                         // update the appraisee progress

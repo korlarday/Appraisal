@@ -10,6 +10,7 @@ namespace AprraisalApplication.Models.ApiParameters
         public int AppraiseeId { get; set; }
         public List<SectionScoresResult> SectionScoresResults { get; set; }
         public string RejectionReason { get; set; }
+        public string RejectionType { get; set; }
         public string AppraiserComment { get; set; }
         public BdsTrackerParam BdsTracker { get; set; }
     }

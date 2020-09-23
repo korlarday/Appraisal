@@ -1,0 +1,115 @@
+﻿@model IEnumerable<AprraisalApplication.Models.MigrationModels.Employee>
+
+@{
+    ViewBag.Title = "All Employees";
+}
+
+
+
+
+
+@section Stylesheet{
+    <style>
+        .blacklist {
+            background-color: #ffe6e6 !important;
+        }
+
+        .hideItem {
+            display: none !important;
+        }
+    </style>
+}
+
+<!-- Hero -->
+<div class="bg-body-light">
+    <div class="content content-full">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">All Employees</h1>
+            <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Home</li>
+                    <li class="breadcrumb-item">HOD</li>
+                    <li class="breadcrumb-item active" aria-current="page">All Employees</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
+<!-- Page Content -->
+<div class="content">
+    <!-- Elements -->
+    <div class="block block-rounded block-bordered">
+        <div class="block-header block-header-default">
+            <h3 class="block-title">All Employees</h3>
+        </div>
+        <div class="block-content">
+            <div class="block block-rounded block-bordered">
+                <div class="block-content block-content-full">
+                    <!-- DataTables init on table by adding .js-dataTable-buttons class, functionality is initialized in js/pages/be_tables_datatables.min.js which was auto compiled from _es6/pages/be_tables_datatables.js -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-vcenter js-dataTable-full-pagination" id="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">#</th>
+                                    <th>Passport</th>
+                                    <th>Employee Name</th>
+                                    <th>State</th>
+                                    <th>Department</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table_body">
+                                @{
+                                    int num = 1;
+                                    foreach (var item in Model)
+                                    {
+                                        var imgsrc = String.Empty;
+                                        if (item.PassportImage != null)
+                                        {
+                                            var imgbase64 = Convert.ToBase64String(item.PassportImage);
+                                            imgsrc = string.Format("data:image/jpg;base64,{0}", imgbase64);
+                                        }
+                                        <tr class="@(item.AccountDisabled ? "blacklist": "")">
+                                            <td class="text-center">@num</td>
+                                            <td class="text-center">
+                                                @if (imgsrc != String.Empty)
+                                                {
+                                                    <img class="img-avatar img-avatar48" src="@imgsrc" alt="Employee Photo">
+                                                }
+                                                else
+                                                {
+                                                    <img class="img-avatar img-avatar48" src="~/Images/avatar10.jpg" />
+                                                }
+                                            </td>
+                                            <td>
+                                                @item.Firstname @item.Lastname
+                                            </td>
+                                            <td class="state">
+                                                @item.State.Description
+                                            </td>
+                                            <td class="state">
+                                                @item.Department.Name
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="btn-group">
+                                                    <a href="/departmentappraisal/view-profile-hod/@item.ApplicationUserId" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="View Profile">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        ++num;
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Elements -->
+</div>
+<!-- END Page Content -->

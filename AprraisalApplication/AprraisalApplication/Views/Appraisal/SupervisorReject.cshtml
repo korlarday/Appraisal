@@ -71,15 +71,15 @@
                 <div class="block-content block-content-full">
                     <span style="display:none" id="appraiseeId">@Model.Appraisee.Id</span>
                     <div class="row">
-                        <div class="offset-6 text-danger">
-                            <div style="font-weight:bold">Your appraisal form was rejected by your supervisor for corrections</div>
+                        <div class="col-8 text-danger">
+                            <div style="font-weight:bold">Your appraisal form was rejected for corrections</div>
                             <div style="text-decoration:underline">Rejection reasons</div>
                             <div>
                                 <ul>
-                                    @foreach (var reason in Model.Appraisee.AppraiseeRejections.Where(x => x.RejectedByPosition == "supervisor").OrderByDescending(x => x.DateRejected))
+                                    @foreach (var reason in Model.Appraisee.AppraiseeRejections.Where(x => x.RejectTo == "appraisee").OrderByDescending(x => x.DateRejected))
                                     {
                                         <li>
-                                            @reason.RejectionReason 
+                                            @reason.RejectionReason (From @reason.RejectedByPosition)
                                             @if (reason.New)
                                             {
                                                 <span class="badge badge-warning">New</span>
@@ -723,6 +723,7 @@
 
             // when you click on submit appraisal
             $("#submitAppraisal").on("click", function () {
+                var $this = $(this);
                 var $sections = $(".section-item");
                 var $valid = true;
                 var $quatitativeValid = true;
@@ -881,6 +882,8 @@
 
                 }).then(function (n) {
                     if (n.value) {
+                        Dashmix.layout('header_loader_on');
+                        $this.attr("disabled", true);
                         var $appraiseeId = parseInt($("#appraiseeId").text());
                         var url = "/api/Appraisal/PostResubmitAppraisalToSupervisor";
 
@@ -888,6 +891,8 @@
                             appraiseeId: $appraiseeId,
                             sectionResults: $sectionResults
                         }, function (data) {
+                                Dashmix.layout('header_loader_off');
+                                $this.attr("disabled", false);
                             Swal.fire({
                                 title: "Success",
                                 text: "Your appraisal has been resubmitted to your supervisor",

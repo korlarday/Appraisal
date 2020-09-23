@@ -16,11 +16,12 @@ namespace AprraisalApplication.Models.MigrationModels
         public Employee RejectedBy { get; set; }
         public int RejectedById { get; set; }
         public string RejectedByPosition { get; set; }
+        public string RejectTo { get; set; }
         public AppraiseeRejection()
         {
 
         }
-        public AppraiseeRejection(int appraiseeId, string rejectionReason, int employeeId, string rejectedByPosition)
+        public AppraiseeRejection(int appraiseeId, string rejectionReason, int employeeId, string rejectedByPosition, string rejectTo)
         {
             AppraiseeId = appraiseeId;
             RejectionReason = rejectionReason;
@@ -28,6 +29,7 @@ namespace AprraisalApplication.Models.MigrationModels
             DateRejected = DateTime.Now;
             New = true;
             RejectedByPosition = rejectedByPosition;
+            RejectTo = rejectTo;
         }
     }
 }
