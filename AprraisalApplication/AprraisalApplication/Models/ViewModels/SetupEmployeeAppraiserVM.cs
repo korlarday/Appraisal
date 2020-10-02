@@ -10,5 +10,6 @@ namespace AprraisalApplication.Models.ViewModels
     {
         public List<Employee> UserAppraisers { get; set; }
         public List<Employee> Employees { get; set; }
+        public List<Employee> Supervisors { get; set; }
     }
 }

@@ -178,10 +178,7 @@ namespace AprraisalApplication.Controllers
         }
 
 
-        /// <summary>
-        /// ///////
-        /// </summary>
-        /// <returns></returns>
+        
         [ActionName("employees-by-department-hod")]
         public ActionResult EmployeesByDepartment()
         {
@@ -249,6 +246,13 @@ namespace AprraisalApplication.Controllers
                 return HttpNotFound();
             }
             return View("ViewProfile", employee);
+        }
+
+        [ActionName("deactivated-employees-hod")]
+        public ActionResult DeactivatedEmployees()
+        {
+            List<Employee> employees = _unitOfWork.Office.GetDeactivatedEmployees();
+            return View("DeactivatedEmployees", employees);
         }
 
     }

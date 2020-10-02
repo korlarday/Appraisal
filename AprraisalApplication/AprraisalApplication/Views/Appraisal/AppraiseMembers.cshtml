@@ -128,6 +128,10 @@
                                         {
                                             <div class="text-success" style="margin:auto">Returned to appraisee for comments</div>
                                         }
+                                        else if (item.AppraiseeProgress.SupervisorSubmit && item.AppraiseeProgress.HODSubmit)
+                                        {
+                                            <div class="text-success" style="margin:auto">Submitted to HR</div>
+                                        }
                                         else if (item.AppraiseeProgress.SupervisorSubmit)
                                         {
                                             <div class="text-success" style="margin:auto">Submitted to the HOD</div>

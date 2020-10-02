@@ -5,6 +5,7 @@ using AprraisalApplication.Persistence;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -54,7 +55,6 @@ namespace AprraisalApplication.Controllers
             return View("EditProfile", model);
         }
 
-
         [ActionName("edit-profile")]
         [ValidateAntiForgeryToken, HttpPost]
         public ActionResult EditProfile(CreateEmployeeProfileVM model)
@@ -78,7 +78,6 @@ namespace AprraisalApplication.Controllers
                 return View("EditProfile", model);
             }
         }
-
 
         [ActionName("edit-career-history-hr")]
         public ActionResult EditCareerHistory(string slug)
@@ -148,6 +147,26 @@ namespace AprraisalApplication.Controllers
             return View("ViewEmployeesInLocation", model);
         }
 
+        [ActionName("deactivated-employees")]
+        public ActionResult DeactivatedEmployees()
+        {
+            List<Employee> employees = _unitOfWork.Office.GetDeactivatedEmployees();
+            return View("DeactivatedEmployees", employees);
+        }
+
+        [ActionName("set-hod-supervisors")]
+        public ActionResult SetHodSupervisors()
+        {
+            List<Employee> supervisors = _unitOfWork.Office.GetAllHodsAndHigherRanks();
+            List<Employee> employees = _unitOfWork.Office.GetAllHods();
+            SetupEmployeeAppraiserVM model = new SetupEmployeeAppraiserVM
+            {
+                UserAppraisers = employees,
+                Employees = employees,
+                Supervisors = supervisors
+            };
+            return View("SetHodSupervisors", model);
+        }
 
         private CreateEmployeeProfileVM PopulateSelectList(CreateEmployeeProfileVM model)
         {

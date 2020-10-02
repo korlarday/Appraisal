@@ -5,6 +5,7 @@ using AprraisalApplication.Models.Constants;
 using AprraisalApplication.Models.MigrationModels;
 using AprraisalApplication.Models.ViewModels;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,6 +18,38 @@ namespace AprraisalApplication.Repositories
     public class AppraisalRepository
     {
         private readonly ApplicationDbContext db;
+        private ApplicationSignInManager _signInManager;
+        private ApplicationUserManager _userManager;
+
+        public AppraisalRepository(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        {
+            UserManager = userManager;
+            SignInManager = signInManager;
+        }
+        public ApplicationSignInManager SignInManager
+        {
+            get
+            {
+                return _signInManager ?? HttpContext.Current.GetOwinContext().Get<ApplicationSignInManager>();
+            }
+            private set
+            {
+                _signInManager = value;
+            }
+        }
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+
 
         public AppraisalRepository(ApplicationDbContext context)
         {
@@ -36,7 +69,6 @@ namespace AprraisalApplication.Repositories
                 {
                     try
                     {
-
                         // save the new Appraisal
                         NewAppraisal newAppraisal = new NewAppraisal(model);
                         context.NewAppraisals.Add(newAppraisal);
@@ -171,9 +203,22 @@ namespace AprraisalApplication.Repositories
                         var progress = appraisee.AppraiseeProgress;
                         if (model.RejectionType == "hod")
                         {
-                            progress.HRReject = true;
-                            progress.HODSubmit = false;
-                            rejectTo = PositionsCS.Hod;
+                            if(UserManager.IsInRole(appraisee.Employee.ApplicationUserId, PositionsCS.Hod))
+                            {
+                                // i.e if the appraisee is HOD, then return the appraisal to him as an appraisee and not as HOD
+                                progress.SupervisorReject = true;
+                                progress.FeedbackFromAppraisee = false;
+                                progress.SupervisorSubmit = false;
+                                progress.HODSubmit = false;
+                                rejectTo = PositionsCS.Appraisee;
+                            }
+                            else
+                            {
+                                // i.e return the appraisal back to the HOD
+                                progress.HRReject = true;
+                                progress.HODSubmit = false;
+                                rejectTo = PositionsCS.Hod;
+                            }
                         }
                         else if (model.RejectionType == "supervisor")
                         {
@@ -670,17 +715,30 @@ namespace AprraisalApplication.Repositories
                     {
                         // first get the appraisee
                         Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.Employee)
                                                             .Include(x => x.AppraiseeProgress)
                                                             .Include(x => x.AppraiseeComments)
                                                             .SingleOrDefault();
 
-                        // save the progress
                         AppraiseeProgress progress = appraisee.AppraiseeProgress;
-                        progress.SupervisorSubmit = true;
+
+                        // check if appraisee has HOD role
+                        if(UserManager.IsInRole(appraisee.Employee.ApplicationUserId, PositionsCS.Hod))
+                        {
+                            progress.SupervisorSubmit = true;
+                            progress.HODSubmit = true;
+                            progress.HODReject = false;
+                        }
+                        else
+                        {
+                            // save the progress
+                            progress.SupervisorSubmit = true;
+                        }
 
                         // save the progress
                         AppraiseeComments comments = appraisee.AppraiseeComments;
                         comments.AppraiserComment = model.AppraiserComment;
+                        comments.AppraiserTrainingNeeds = model.AppraiserTrainingNeeds;
                         comments.AppraiserCommentDate = DateTime.Now;
 
 
@@ -720,6 +778,7 @@ namespace AprraisalApplication.Repositories
                         // save the progress
                         AppraiseeComments comments = appraisee.AppraiseeComments;
                         comments.AppraiseeComment = model.AppraiseeComment;
+                        comments.AppraiseeTrainingNeeds = model.AppraiseeTrainingNeeds;
                         comments.AppraiseeCommentDate = DateTime.Now;
 
                         // change the rejection status
@@ -818,12 +877,15 @@ namespace AprraisalApplication.Repositories
                                                 SectionDetailResult detail = context.SectionDetailResults.Find(sectionDetail.SectionDetailResultId);
                                                 if (item.InitiatedSectionDetailBreakdowns != null && item.InitiatedSectionDetailBreakdowns.Count() > 0)
                                                 {
-                                                    foreach (var breakdown in sectionDetail.Breakdowns)
+                                                    if(sectionDetail.Breakdowns != null)
                                                     {
-                                                        ItemBreakdownResult itemBreakdown = context.ItemBreakdownResults.Find(breakdown.BreakdownId);
-                                                        if(itemBreakdown != null)
+                                                        foreach (var breakdown in sectionDetail.Breakdowns)
                                                         {
-                                                            itemBreakdown.Value = breakdown.BreakdownValue;
+                                                            ItemBreakdownResult itemBreakdown = context.ItemBreakdownResults.Find(breakdown.BreakdownId);
+                                                            if(itemBreakdown != null)
+                                                            {
+                                                                itemBreakdown.Value = breakdown.BreakdownValue;
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -903,6 +965,7 @@ namespace AprraisalApplication.Repositories
                         var progress = appraisee.AppraiseeProgress;
                         progress.SupervisorReject = true;
                         progress.SupervisorSubmit = false;
+                        progress.FeedbackFromAppraisee = false;
 
                         context.SaveChanges();
                         dbContextTransaction.Commit();
@@ -959,6 +1022,7 @@ namespace AprraisalApplication.Repositories
                                                 if (result != null)
                                                 {
                                                     result.Value = breakdown.BreakdownValue;
+                                                    result.Score = breakdown.Score;
                                                 }
                                             }
                                         }

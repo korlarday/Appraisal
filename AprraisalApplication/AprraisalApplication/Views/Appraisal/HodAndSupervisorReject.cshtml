@@ -576,6 +576,42 @@
                         }
                     }
 
+                    @if (Model.InitiatedAppraisalTemplate.IncludeBdsTracker)
+                    {
+                        <div class="row mt-5" id="trackerSection">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-vcenter">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Annual Target</th>
+                                            <th class="text-center"><div>Expected RSA</div><span style="font-size:14px">(@Model.NewAppraisal.AppraisalPeriodStartDate.ToString("MMM") - @Model.NewAppraisal.AppraisalPeriodEndDate.ToString("MMM"))</span></th>
+                                            <th class="text-center">RSA Achieved</th>
+                                            <th class="text-center">Funded Pin <span style="font-size:14px">(@Model.NewAppraisal.AppraisalPeriodEndDate.ToString("yyyy") REG)</span></th>
+                                            <th class="text-center">Pre-@Model.NewAppraisal.AppraisalPeriodStartDate.ToString("yyyy") Funded Pins</th>
+                                            <th class="text-center">Cash Volume</th>
+                                            <th class="text-center">% RSA Achieved</th>
+                                            <th class="text-center">% Funding Achieved</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="height:70px"><input value="@Model.BdsTracker.AnnualTarget" type="text" class="form-control annual-target" /></td>
+                                            <td><input value="@Model.BdsTracker.ExpectedRSA" type="text" class="form-control expected-rsa" /></td>
+                                            <td><input value="@Model.BdsTracker.RSAAchieved" type="text" class="form-control rsa-achieved" /></td>
+                                            <td><input value="@Model.BdsTracker.FundedPins" type="text" class="form-control funded-pins" /></td>
+                                            <td><input value="@Model.BdsTracker.PreFundedPins" type="text" class="form-control pre-funded-pins" /></td>
+                                            <td style="width:150px"><input value="@Model.BdsTracker.CashVolume" type="text" class="form-control cash-volume" /></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    }
+
+
                     <div class="row">
                         <div class="offset-2 col-8 p-5 my-5" style="border: 1px solid grey">
                             <div class="row">

@@ -29,11 +29,12 @@ namespace AprraisalApplication.Controllers
             DashboardVM model = new DashboardVM
             {
                 NumberOfEmployees = _unitOfWork.Office.GetAllEmployees().Count(),
-                CompletedAppraisals = _unitOfWork.Office.GetAllCompletedAppraisals(),
-                OngoingAppraisals = _unitOfWork.Office.GetAllOngoingAppraisals(),
-                EmployeesInDept = _unitOfWork.Office.GetAllEmployeesInDepartment(employee.DepartmentId).Count(),
-                MyOngoingAppraisals = _unitOfWork.Appraisal.GetEmployeeOngoingAppraisals(employee.Id).Count(),
-                MySubordinates = _unitOfWork.Appraisal.GetMyAppraisees(userId).Count()
+                CompletedAppraisals = employee == null ? 0 : _unitOfWork.Office.GetAllCompletedAppraisals(),
+                OngoingAppraisals = employee == null ? 0 : _unitOfWork.Office.GetAllOngoingAppraisals(),
+                EmployeesInDept = employee == null ? 0 : _unitOfWork.Office.GetAllEmployeesInDepartment(employee.DepartmentId).Count(),
+                MyOngoingAppraisals = employee == null ? 0 : _unitOfWork.Appraisal.GetEmployeeOngoingAppraisals(employee.Id).Count(),
+                MySubordinates = employee == null ? 0 : _unitOfWork.Appraisal.GetMyAppraisees(userId).Count(),
+                DeactivatedEmployees = _unitOfWork.Office.GetDeactivatedEmployees().Count()
             };
             return View(model);
         }
@@ -49,6 +50,17 @@ namespace AprraisalApplication.Controllers
             };
 
             return PartialView(model);
+        }
+    
+        public ActionResult ShowLinkIfSupervisor()
+        {
+            string userId = User.Identity.GetUserId();
+            int countAppraisees = _unitOfWork.Appraisal.GetMyAppraisees(userId).Count();
+            ShowLinkIfSupervisorVM link = new ShowLinkIfSupervisorVM
+            {
+                IsSupervisor = countAppraisees > 0
+            };
+            return PartialView(link);
         }
     }
 }

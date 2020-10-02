@@ -1,7 +1,7 @@
 ﻿@model AprraisalApplication.Models.ViewModels.SetupEmployeeAppraiserVM
 
 @{
-    ViewBag.Title = "Department Setup";
+    ViewBag.Title = "Set Hod Supervisors";
 }
 
 
@@ -9,12 +9,12 @@
 <div class="bg-body-light">
     <div class="content content-full">
         <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
-            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Setup Employee Appraiser</h1>
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Setup HODs' Appraiser</h1>
             <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">Configurations</li>
                     <li class="breadcrumb-item">Appraisal</li>
-                    <li class="breadcrumb-item active" aria-current="page">Employee Appraiser Setup</li>
+                    <li class="breadcrumb-item active" aria-current="page">HODs Appraiser Setup</li>
                 </ol>
             </nav>
         </div>
@@ -26,7 +26,7 @@
     <!-- Elements -->
     <div class="block block-rounded block-bordered">
         <div class="block-header block-header-default">
-            <h3 class="block-title">Employee Appraiser</h3>
+            <h3 class="block-title">HODs Appraiser</h3>
         </div>
         <div class="block-content">
             <div class="block block-rounded block-bordered">
@@ -38,6 +38,8 @@
                                 <tr>
                                     <th class="text-center" style="width: 50px;">#</th>
                                     <th>Employee</th>
+                                    <th>Department</th>
+                                    <th>Location</th>
                                     <th class="d-none d-sm-table-cell" style="width: 35%;">Appraiser</th>
                                     @*<th>Submission To Team Leader</th>*@
                                 </tr>
@@ -52,12 +54,14 @@
                                             <td class="font-w600">
                                                 @item.Firstname @item.Lastname
                                             </td>
+                                            <td>@item.Department.Name</td>
+                                            <td>@item.State.Description</td>
                                             <td class="text-center">
                                                 <select class="form-control select-appraiser">
                                                     <option value=""></option>
                                                     @foreach (var employee in Model.Supervisors)
                                                     {
-                                                        if(item.ApplicationUserId != employee.ApplicationUserId)
+                                                        if (item.ApplicationUserId != employee.ApplicationUserId)
                                                         {
                                                             <option value="@employee.ApplicationUserId" @(employee.ApplicationUserId == item.DefaultUserAppraiser.AppraiserId ? "selected" : "")>@employee.Firstname @employee.Lastname</option>
 
@@ -66,11 +70,11 @@
                                                 </select>
                                             </td>
                                             @*<td>
-                                                <select class="form-control to-team-leader">
-                                                    <option value="false" @(item.DefaultUserAppraiser.ToTeamLeader? "selected":"")>False</option>
-                                                    <option value="true" @(item.DefaultUserAppraiser.ToTeamLeader? "selected":"")>True</option>
-                                                </select>
-                                            </td>*@
+                                                    <select class="form-control to-team-leader">
+                                                        <option value="false" @(item.DefaultUserAppraiser.ToTeamLeader? "selected":"")>False</option>
+                                                        <option value="true" @(item.DefaultUserAppraiser.ToTeamLeader? "selected":"")>True</option>
+                                                    </select>
+                                                </td>*@
                                         </tr>
                                         ++num;
                                     }
@@ -123,7 +127,7 @@
                 var url = "/api/configurations/PostSetEmployeeAppraiser";
 
                 $.post(url, { items: $usersAndAppraiserId }, function (data) {
-                    Swal.fire("Updated!", "Employees appraiser has been updated.", "success");
+                    Swal.fire("Updated!", "HODs appraiser has been updated.", "success");
                     Dashmix.layout('header_loader_off');
                 });
             })

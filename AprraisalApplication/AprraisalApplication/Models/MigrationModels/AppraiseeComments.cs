@@ -9,7 +9,8 @@ namespace AprraisalApplication.Models.MigrationModels
     {
         public AppraiseeComments()
         {
-            TrainingNeeds = "";
+            AppraiseeTrainingNeeds = "";
+            AppraiserTrainingNeeds = "";
             AppraiseeComment = "";
             AppraiseeCommentDate = DateTime.Now;
             AppraiserComment = "";
@@ -22,7 +23,8 @@ namespace AprraisalApplication.Models.MigrationModels
             MdCommentDate = DateTime.Now;
         }
         public int Id { get; set; }
-        public string TrainingNeeds { get; set; }
+        public string AppraiseeTrainingNeeds { get; set; }
+        public string AppraiserTrainingNeeds { get; set; }
         public string AppraiseeComment { get; set; }
         public DateTime AppraiseeCommentDate { get; set; }
         public string AppraiserComment { get; set; }

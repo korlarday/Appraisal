@@ -10,7 +10,9 @@ namespace AprraisalApplication.Models.ApiParameters
         public int AppraiseeId { get; set; }
         public List<SectionResult> SectionResults { get; set; }
         public string AppraiseeComment { get; set; }
+        public string AppraiseeTrainingNeeds { get; set; }
         public string AppraiserComment { get; set; }
+        public string AppraiserTrainingNeeds { get; set; }
         public string HodComment { get; set; }
         public string HrComment { get; set; }
         public string MdComment { get; set; }
@@ -36,5 +38,6 @@ namespace AprraisalApplication.Models.ApiParameters
         public int BreakdownId { get; set; }
         public string BreakdownValue { get; set; }
         public string BreakdownText { get; set; }
+        public double Score { get; set; }
     }
 }

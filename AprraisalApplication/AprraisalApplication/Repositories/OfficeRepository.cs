@@ -1,22 +1,56 @@
 ﻿using AprraisalApplication.Models;
 using AprraisalApplication.Models.ApiParameters;
+using AprraisalApplication.Models.Constants;
 using AprraisalApplication.Models.MigrationModels;
 using AprraisalApplication.Models.ViewModels;
+using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace AprraisalApplication.Repositories
 {
     public class OfficeRepository
     {
+        private ApplicationSignInManager _signInManager;
+        private ApplicationUserManager _userManager;
         private readonly ApplicationDbContext db;
 
         public OfficeRepository(ApplicationDbContext context)
         {
             db = context;
+        }
+        public OfficeRepository(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        {
+            UserManager = userManager;
+            SignInManager = signInManager;
+        }
+
+        public ApplicationSignInManager SignInManager
+        {
+            get
+            {
+                return _signInManager ?? HttpContext.Current.GetOwinContext().Get<ApplicationSignInManager>();
+            }
+            private set
+            {
+                _signInManager = value;
+            }
+        }
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
         }
 
         internal Employee GetUserEmployeeDetails(int employeeId)
@@ -43,7 +77,7 @@ namespace AprraisalApplication.Repositories
             return db.NewAppraisals.Where(x => x.IsCompleted == false).Count();
         }
 
-        internal void SetEmployeesAppraiser(UserAppraiserParams model)
+        internal async Task<string> SetEmployeesAppraiser(UserAppraiserParams model)
         {
             foreach (var item in model.Items)
             {
@@ -53,15 +87,41 @@ namespace AprraisalApplication.Repositories
                                                         .Where(x => x.AppraiseeId == item.ApplicationUserId)
                                                         .SingleOrDefault();
                     appraiser.AppraiserId = item.AppraiserId;
-                    appraiser.ToTeamLeader = item.ToTeamLeader;
+
+                    // add supervisor role to the user
+                    bool appraiserHasSupervisorRole = await UserManager.IsInRoleAsync(item.AppraiserId, RoleModel.Supervisor);
+                    if (!appraiserHasSupervisorRole)
+                    {
+                        await UserManager.AddToRoleAsync(item.AppraiserId, RoleModel.Supervisor);
+                    }
+                }
+                db.SaveChanges();
+
+            }
+            foreach (var user in model.Items)
+            {
+                //check if the appraisee is not a supervisor
+                int subordinatesCount = db.DefaultUserAppraisers
+                                            .Where(x => x.AppraiserId == user.ApplicationUserId)
+                                            .Count();
+                if (subordinatesCount < 1)
+                {
+                    // check if the user has supervisor role
+                    bool appraiseeHasSupervisorRole = await UserManager.IsInRoleAsync(user.ApplicationUserId, RoleModel.Supervisor);
+                    if (appraiseeHasSupervisorRole)
+                    {
+                        // remove the role
+                        await UserManager.RemoveFromRoleAsync(user.ApplicationUserId, RoleModel.Supervisor);
+                    }
                 }
             }
-            db.SaveChanges();
+            return "complete";
         }
 
         internal List<Employee> SearchEmployeesUsingDeptAndState(List<string> departments, List<string> states)
         {
             List<Employee> employees = db.Employees
+                                            .Where(x => x.AccountDisabled != true)
                                             .Include(x => x.Department)
                                             .Include(x => x.State)
                                             .ToList();
@@ -105,9 +165,64 @@ namespace AprraisalApplication.Repositories
             return empStateFilter;
         }
 
+        internal List<Employee> GetAllHods()
+        {
+            var hodRole = db.Roles.Where(x => x.Name == PositionsCS.Hod).SingleOrDefault();
+            var users = db.Users.Include(x => x.Roles)
+                                .Where(x => x.AccountDisabled == false &&
+                                x.Roles.Select(r => r.RoleId).Contains(hodRole.Id))
+                                .ToList();
+            List<Employee> hods = new List<Employee>();
+            foreach (var user in users)
+            {
+                Employee employee = db.Employees.Where(x => x.Id == user.EmployeeId)
+                                                .Include(x => x.State)
+                                                .Include(x => x.Department)
+                                                .Include(x => x.DefaultUserAppraiser)
+                                                .SingleOrDefault();
+                hods.Add(employee);
+            }
+            return hods;
+        }
+
+        internal List<Employee> GetAllHodsAndHigherRanks()
+        {
+            var hodRole = db.Roles.Where(x => x.Name == PositionsCS.Hod).SingleOrDefault();
+            var hrRole = db.Roles.Where(x => x.Name == PositionsCS.Hr).SingleOrDefault();
+            var mdRole = db.Roles.Where(x => x.Name == PositionsCS.Md).SingleOrDefault();
+
+            var users = db.Users.Include(x => x.Roles)
+                                .Where(x => x.Roles.Select(r => r.RoleId).Contains(hodRole.Id) ||
+                                            x.Roles.Select(r => r.RoleId).Contains(hrRole.Id) ||
+                                            x.Roles.Select(r => r.RoleId).Contains(mdRole.Id))
+                                .ToList();
+
+            List<Employee> hods = new List<Employee>();
+            foreach (var user in users)
+            {
+                Employee employee = db.Employees.Where(x => x.Id == user.EmployeeId)
+                                                .SingleOrDefault();
+                if (!hods.Contains(employee))
+                {
+                    hods.Add(employee);
+                }
+            }
+            return hods;
+        }
+
+        internal List<Employee> GetDeactivatedEmployees()
+        {
+            return db.Employees
+                    .Where(x => x.AccountDisabled == true)
+                    .Include(x => x.Department)
+                    .Include(x => x.State)
+                    .ToList();
+        }
+
         internal List<Employee> GetAllEmployees()
         {
             return db.Employees
+                    .Where(x => x.AccountDisabled != true)
                     .Include(x => x.Department)
                     .Include(x => x.State)
                     .ToList();
@@ -156,6 +271,49 @@ namespace AprraisalApplication.Repositories
                                 .Include(x => x.State)
                                 .Include(x => x.Department)
                                 .ToList();
+        }
+
+        internal async Task<List<Employee>> GetAllEmployeesInDepartmentAndHigherRanks(int departmentId)
+        {
+            List<Employee> employees = new List<Employee>();
+            var departmentEmployees = db.Employees.Where(x => x.DepartmentId == departmentId)
+                                                    .ToList();
+            employees = departmentEmployees;
+
+            var highranks = db.Users.ToList();
+            foreach (var user in highranks)
+            {
+                bool isInRole = await UserManager.IsInRoleAsync(user.Id, "MD");
+                if (isInRole)
+                {
+                    if(!departmentEmployees.Select(x => x.ApplicationUserId).Contains(user.Id))
+                    {
+                        Employee employee = db.Employees.Where(x => x.Id == user.EmployeeId)
+                                                        .SingleOrDefault();
+                        employees.Add(employee);
+                    }
+                }
+            }
+            return employees;
+        }
+
+        internal async Task<List<Employee>> GetAllEmployeesInDepartmentWithoutHod(int departmentId)
+        {
+            List<Employee> EmployeesWithoutHod = new List<Employee>();
+            List<Employee> employees = db.Employees.Where(x => x.DepartmentId == departmentId)
+                                                .Include(x => x.DefaultUserAppraiser)
+                                                .Include(x => x.State)
+                                                .Include(x => x.Department)
+                                                .ToList();
+            foreach (var employee in employees)
+            {
+                var hasHodRole = await UserManager.IsInRoleAsync(employee.ApplicationUserId, RoleModel.Hod);
+                if (!hasHodRole)
+                {
+                    EmployeesWithoutHod.Add(employee);
+                }
+            }
+            return EmployeesWithoutHod;
         }
     }
 }

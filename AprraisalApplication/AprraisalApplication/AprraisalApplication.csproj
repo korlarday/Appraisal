@@ -437,6 +437,14 @@
     <Compile Include="Migrations\202009221103395_AddingAccountDisabledToUser.Designer.cs">
       <DependentUpon>202009221103395_AddingAccountDisabledToUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009281202350_AddingIsScoreToSectionDetail.cs" />
+    <Compile Include="Migrations\202009281202350_AddingIsScoreToSectionDetail.Designer.cs">
+      <DependentUpon>202009281202350_AddingIsScoreToSectionDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202010021121267_AddTrainingNeedsToComments.cs" />
+    <Compile Include="Migrations\202010021121267_AddTrainingNeedsToComments.Designer.cs">
+      <DependentUpon>202010021121267_AddTrainingNeedsToComments.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApiModels\NewBranchVM.cs" />
@@ -531,6 +539,7 @@
     <Compile Include="Models\ViewModels\SetupDepartmentTemplateVM.cs" />
     <Compile Include="Models\ViewModels\SetupEmployeeAppraiserVM.cs" />
     <Compile Include="Models\ViewModels\SetupEmployeeTemplateVM.cs" />
+    <Compile Include="Models\ViewModels\ShowLinkIfSupervisorVM.cs" />
     <Compile Include="Models\ViewModels\UserPartialVM.cs" />
     <Compile Include="Models\ViewModels\ViewAppraisalVM.cs" />
     <Compile Include="Models\ViewModels\ViewEmployeesRoles.cs" />
@@ -4667,6 +4676,11 @@
     <Content Include="Views\DepartmentAppraisal\ViewEmployeesInDepartment.cshtml" />
     <Content Include="Views\DepartmentAppraisal\EmployeesByLocation.cshtml" />
     <Content Include="Views\DepartmentAppraisal\ViewEmployeesInLocation.cshtml" />
+    <Content Include="Views\Home\ShowLinkIfSupervisor.cshtml" />
+    <Content Include="Views\HR\DeactivatedEmployees.cshtml" />
+    <Content Include="Views\MdAppraisal\DeactivatedEmployees.cshtml" />
+    <Content Include="Views\DepartmentAppraisal\DeactivatedEmployees.cshtml" />
+    <Content Include="Views\HR\SetHodSupervisors.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -4940,6 +4954,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009221103395_AddingAccountDisabledToUser.resx">
       <DependentUpon>202009221103395_AddingAccountDisabledToUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009281202350_AddingIsScoreToSectionDetail.resx">
+      <DependentUpon>202009281202350_AddingIsScoreToSectionDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202010021121267_AddTrainingNeedsToComments.resx">
+      <DependentUpon>202010021121267_AddTrainingNeedsToComments.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

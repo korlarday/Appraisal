@@ -10,86 +10,116 @@
 <div class="content content-full">
 
     <!-- Overview -->
-    <h5 class="mt-4 mb-3">Home - Dashboard</h5>
-    <div class="row">
-        <a href="/appraisal/ongoing-appraisals-all" class="col-sm-5 invisible text-muted" data-toggle="appear">
-            <div class="block block-rounded block-fx-pop text-center">
-                <div class="block-content block-content-full">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <i class="fa fa-clipboard font-size-h1 text-primary"></i>
-                            <div class="font-size-h6">My Ongoing Appraisals</div>
+    <div class="">
+        <div class="mx-5">
+            <h5 class="mt-4 mb-3">Home - Dashboard</h5>
+            <div class="row">
+                <a href="/appraisal/ongoing-appraisals-all" class="col-sm-6 invisible text-muted" data-toggle="appear">
+                    <div class="block block-rounded block-fx-pop text-center">
+                        <div class="block-content block-content-full">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <i class="fa fa-clipboard font-size-h1 text-primary"></i>
+                                    <div class="font-size-h6">My Ongoing Appraisals</div>
+                                </div>
+                                <div class="font-size-h3 col-md-4 align-self-center" style="border-left:1px solid #e3e3e3">@Model.MyOngoingAppraisals</div>
+                            </div>
                         </div>
-                        <div class="font-size-h3 col-md-4 align-self-center" style="border-left:1px solid #e3e3e3">@Model.MyOngoingAppraisals</div>
                     </div>
-                </div>
-            </div>
-        </a>
-        <a href="/appraisal/appraisees" class="col-sm-5 offset-1 invisible text-muted" data-toggle="appear">
-            <div class="block block-rounded block-fx-pop text-center">
-                <div class="block-content block-content-full">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <i class="si si-users font-size-h1 text-primary"></i>
-                            <div class="font-size-h6">My Subordinates</div>
+                </a>
+
+                @if (Model.MySubordinates != 0)
+                {
+                    <a href="/appraisal/appraisees" class="col-sm-6 invisible text-muted" data-toggle="appear">
+                        <div class="block block-rounded block-fx-pop text-center">
+                            <div class="block-content block-content-full">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <i class="si si-users font-size-h1 text-primary"></i>
+                                        <div class="font-size-h6">My Subordinates</div>
+                                    </div>
+                                    <div class="font-size-h3 col-md-4 align-self-center" style="border-left:1px solid #e3e3e3">@Model.MySubordinates</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="font-size-h3 col-md-4 align-self-center" style="border-left:1px solid #e3e3e3">@Model.MySubordinates</div>
-                    </div>
-                </div>
-            </div>
-        </a>
-        <a href="/departmentappraisal/employees-in-department" class="col-sm-5 invisible text-muted" data-toggle="appear">
-            <div class="block block-rounded block-fx-pop text-center">
-                <div class="block-content block-content-full">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <i class="fa fa-users font-size-h1 text-primary"></i>
-                            <div class="font-size-h6">Employees in Dept.</div>
+                    </a>
+                }
+                @if (User.IsInRole("HOD"))
+                {
+                    <a href="/departmentappraisal/employees-in-department" class="col-sm-6 invisible text-muted" data-toggle="appear">
+                        <div class="block block-rounded block-fx-pop text-center">
+                            <div class="block-content block-content-full">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <i class="fa fa-users font-size-h1 text-primary"></i>
+                                        <div class="font-size-h6">Employees in Dept.</div>
+                                    </div>
+                                    <div class="font-size-h3 col-md-4 align-self-center" style="border-left:1px solid #e3e3e3">@Model.EmployeesInDept</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="font-size-h3 col-md-6 align-self-center" style="border-left:1px solid #e3e3e3">@Model.EmployeesInDept</div>
-                    </div>
-                </div>
-            </div>
-        </a>
-        <a href="/hr/all-employees" class="col-sm-5 offset-1 invisible text-muted" data-toggle="appear">
-            <div class="block block-rounded block-fx-pop text-center">
-                <div class="block-content block-content-full">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <i class="fa fa-users font-size-h1 text-primary"></i>
-                            <div class="font-size-h6">All Employees</div>
+                    </a>
+                }
+                @if (User.IsInRole("HR") || User.IsInRole("MD"))
+                {
+                    <a href="@(User.IsInRole("HR") ? "/hr/all-employees":"/mdappraisal/all-employees")" class="col-sm-6 invisible text-muted" data-toggle="appear">
+                        <div class="block block-rounded block-fx-pop text-center">
+                            <div class="block-content block-content-full">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <i class="fa fa-users font-size-h1 text-primary"></i>
+                                        <div class="font-size-h6">All Employees</div>
+                                    </div>
+                                    <div class="font-size-h3 col-md-4 align-self-center" style="border-left:1px solid #e3e3e3">@Model.NumberOfEmployees</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="font-size-h3 col-md-6 align-self-center" style="border-left:1px solid #e3e3e3">@Model.NumberOfEmployees</div>
-                    </div>
-                </div>
-            </div>
-        </a>
-        <a href="/appraisal/initiated-appraisals" class="col-sm-5 invisible text-muted" data-toggle="appear">
-            <div class="block block-rounded block-fx-pop text-center">
-                <div class="block-content block-content-full">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <i class="fa fa-book font-size-h1 text-primary"></i>
-                            <div class="font-size-h6">Completed Appraisals</div>
+                    </a>
+                    <a href="@(User.IsInRole("HR") ? "/hr/deactivated-employees":"/mdappraisal/deactivated-employees")" class="col-sm-6 invisible text-muted" data-toggle="appear">
+                        <div class="block block-rounded block-fx-pop text-center">
+                            <div class="block-content block-content-full">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <i class="fa fa-users font-size-h1 text-primary"></i>
+                                        <div class="font-size-h6">Deactivated Employees</div>
+                                    </div>
+                                    <div class="font-size-h3 col-md-4 align-self-center" style="border-left:1px solid #e3e3e3">@Model.DeactivatedEmployees</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="font-size-h3 col-md-4 align-self-center" style="border-left:1px solid #e3e3e3">@Model.CompletedAppraisals</div>
-                    </div>
-                </div>
-            </div>
-        </a>
-        <a href="/appraisal/initiated-appraisals" class="col-sm-5 offset-1 invisible text-muted" data-toggle="appear">
-            <div class="block block-rounded block-fx-pop text-center">
-                <div class="block-content block-content-full">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <i class="si si-book-open font-size-h1 text-primary"></i>
-                            <div class="font-size-h6">Ongoing Appraisals</div>
+                    </a>
+                }
+                @if (User.IsInRole("HR"))
+                {
+                    <a href="/appraisal/initiated-appraisals" class="col-sm-6 invisible text-muted" data-toggle="appear">
+                        <div class="block block-rounded block-fx-pop text-center">
+                            <div class="block-content block-content-full">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <i class="fa fa-book font-size-h1 text-primary"></i>
+                                        <div class="font-size-h6">Completed Appraisals</div>
+                                    </div>
+                                    <div class="font-size-h3 col-md-4 align-self-center" style="border-left:1px solid #e3e3e3">@Model.CompletedAppraisals</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="font-size-h3 col-md-4 align-self-center" style="border-left:1px solid #e3e3e3">@Model.OngoingAppraisals</div>
-                    </div>
-                </div>
+                    </a>
+                    <a href="/appraisal/initiated-appraisals" class="col-sm-6 invisible text-muted" data-toggle="appear">
+                        <div class="block block-rounded block-fx-pop text-center">
+                            <div class="block-content block-content-full">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <i class="si si-book-open font-size-h1 text-primary"></i>
+                                        <div class="font-size-h6">Ongoing Appraisals</div>
+                                    </div>
+                                    <div class="font-size-h3 col-md-4 align-self-center" style="border-left:1px solid #e3e3e3">@Model.OngoingAppraisals</div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                }
             </div>
-        </a>
+        </div>
     </div>
     <!-- END Overview -->
 </div>

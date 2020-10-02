@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Data.Entity;
+using System.Threading.Tasks;
 
 namespace AprraisalApplication.Controllers
 {
@@ -195,7 +196,7 @@ namespace AprraisalApplication.Controllers
         }
 
         [ActionName("department-setup")]
-        public ActionResult DepartmentSetup()
+        public async Task<ActionResult> DepartmentSetup()
         {
             string userId = User.Identity.GetUserId();
             ApplicationUser user = _unitOfWork.Account.GetUserById(userId);
@@ -204,12 +205,13 @@ namespace AprraisalApplication.Controllers
             {
                 return HttpNotFound();
             }
-            List<Employee> employees = _unitOfWork.Office.GetAllEmployeesInDepartment(userEmpDetails.DepartmentId);
-
+            List<Employee> supervisors = await _unitOfWork.Office.GetAllEmployeesInDepartmentAndHigherRanks(userEmpDetails.DepartmentId);
+            List<Employee> employees = await _unitOfWork.Office.GetAllEmployeesInDepartmentWithoutHod(userEmpDetails.DepartmentId);
             SetupEmployeeAppraiserVM model = new SetupEmployeeAppraiserVM
             {
                 UserAppraisers = employees,
-                Employees = employees
+                Employees = employees,
+                Supervisors = supervisors
             };
             return View("DepartmentSetup", model);
         }
@@ -243,7 +245,7 @@ namespace AprraisalApplication.Controllers
                 Employee = _unitOfWork.Account.GetEmployeeByUserId(userId),
                 SelectedRoles = roles != null ? roles.ToList() : null,
                 EmployeeUserId = userId,
-                Roles = db.Roles.ToList()
+                Roles = db.Roles.Where(x => x.Name != "SUPERVISOR").ToList()
             };
             return View("EditEmployeeRoles", model);
         }

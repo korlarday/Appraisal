@@ -70,6 +70,7 @@
             <div class="block block-rounded">
                 <div class="block-content block-content-full">
                     <span style="display:none" id="appraiseeId">@Model.Appraisee.Id</span>
+                    <span style="display:none" id="includeTracker">@Model.InitiatedAppraisalTemplate.IncludeBdsTracker</span>
                     <div class="row">
                         <div class="col-8 text-danger">
                             <div style="font-weight:bold">Your appraisal form was rejected for corrections</div>
@@ -235,8 +236,8 @@
                             var currentResultSection = sectionResult.Where(x => x.InitiatedTemplateSectionId == templateSection.Id).SingleOrDefault();
                             if (templateSection.SectionTypeId == 1)
                             {
-                                <div class="section-item" 
-                                     data-sectionTypeId="1" 
+                                <div class="section-item"
+                                     data-sectionTypeId="1"
                                      data-sectionId="@templateSection.Id"
                                      data-sectionOptional="@templateSection.Optional">
                                     <h5 class="mt-4">Section @templateSection.SetupId</h5>
@@ -246,11 +247,11 @@
                                             <div class="form-group float-right" style="width:250px">
                                                 <label>Include this section?</label>
                                                 <div class="custom-control custom-switch custom-control-lg mb-2">
-                                                    <input type="checkbox" 
-                                                            class="custom-control-input enableSection" 
-                                                            id="section@(templateSection.Id)" 
-                                                            name="section@(templateSection.Id)" 
-                                                           @(currentResultSection.SectionFilled? "checked": "")>
+                                                    <input type="checkbox"
+                                                           class="custom-control-input enableSection"
+                                                           id="section@(templateSection.Id)"
+                                                           name="section@(templateSection.Id)"
+                                                           @(currentResultSection.SectionFilled ? "checked" : "")>
                                                     <label class="custom-control-label" for="section@(templateSection.Id)">Enable section</label>
                                                 </div>
                                             </div>
@@ -287,11 +288,13 @@
                                                             <div class="row p-1">
                                                                 <span class="col-1 count" style="position:relative;top:8px">@sectionDetail.Number.</span>
                                                                 <input type="text" value="@sectionDetail.Title1" class="form-control col-10" style="display:inline !important" />
-                                                                <button class="btn btn-link text-danger col-1 delete-row @(sectionDetail.Number == 1 ? "hide":"")" 
-                                                                        data-toggle="tooltip" 
+                                                                <button class="btn btn-link text-danger col-1 delete-row @(sectionDetail.Number == 1 ? "hide":"")"
+                                                                        data-toggle="tooltip"
                                                                         title="Delete Row"
-                                                                        data-sectionResultDetailId="@sectionDetail.Id"><i class="fa fa-times"></i></button>
-                                                                
+                                                                        data-sectionResultDetailId="@sectionDetail.Id">
+                                                                    <i class="fa fa-times"></i>
+                                                                </button>
+
                                                             </div>
                                                         </td>
                                                         @foreach (var item in Model.DefaultRatings)
@@ -308,8 +311,8 @@
                             }
                             else if (templateSection.SectionTypeId == 2)
                             {
-                                <div class="section-item" 
-                                     data-sectionTypeId="2" 
+                                <div class="section-item"
+                                     data-sectionTypeId="2"
                                      data-sectionId="@templateSection.Id"
                                      data-sectionOptional="@templateSection.Optional">
                                     <h5 class="mt-4">Section @templateSection.SetupId</h5>
@@ -319,11 +322,11 @@
                                             <div class="form-group float-right" style="width:250px">
                                                 <label>Include this section?</label>
                                                 <div class="custom-control custom-switch custom-control-lg mb-2">
-                                                    <input type="checkbox" 
-                                                            class="custom-control-input enableSection" 
-                                                            id="section@(templateSection.Id)" 
-                                                            name="section@(templateSection.Id)" 
-                                                           @(currentResultSection.SectionFilled? "checked": "")>
+                                                    <input type="checkbox"
+                                                           class="custom-control-input enableSection"
+                                                           id="section@(templateSection.Id)"
+                                                           name="section@(templateSection.Id)"
+                                                           @(currentResultSection.SectionFilled ? "checked" : "")>
                                                     <label class="custom-control-label" for="section@(templateSection.Id)">Enable section</label>
                                                 </div>
                                             </div>
@@ -369,10 +372,12 @@
                                                         <td class="pl-4">
                                                             <div class="row">
                                                                 <input type="text" value="@sectionDetail.Title2" class="form-control col-10 resultAchieved" style="display:inline !important" />
-                                                                <button class="btn btn-link text-danger col-1 delete-row @(sectionDetail.Number == 1 ? "hide":"")" 
-                                                                        data-toggle="tooltip" 
+                                                                <button class="btn btn-link text-danger col-1 delete-row @(sectionDetail.Number == 1 ? "hide":"")"
+                                                                        data-toggle="tooltip"
                                                                         title="Delete Row"
-                                                                        data-sectionResultDetailId="@sectionDetail.Id"><i class="fa fa-times"></i></button>
+                                                                        data-sectionResultDetailId="@sectionDetail.Id">
+                                                                    <i class="fa fa-times"></i>
+                                                                </button>
                                                             </div>
                                                         </td>
                                                         @foreach (var item in Model.DefaultRatings)
@@ -389,8 +394,8 @@
                             }
                             else if (templateSection.SectionTypeId == 3)
                             {
-                                <div class="section-item" 
-                                     data-sectionTypeId="3" 
+                                <div class="section-item"
+                                     data-sectionTypeId="3"
                                      data-sectionId="@templateSection.Id"
                                      data-sectionOptional="@templateSection.Optional">
                                     <h5 class="mt-4">Section @templateSection.SetupId</h5>
@@ -400,11 +405,11 @@
                                             <div class="form-group float-right" style="width:250px">
                                                 <label>Include this section?</label>
                                                 <div class="custom-control custom-switch custom-control-lg mb-2">
-                                                    <input type="checkbox" 
-                                                            class="custom-control-input enableSection" 
-                                                            id="section@(templateSection.Id)" 
-                                                            name="section@(templateSection.Id)" 
-                                                           @(currentResultSection.SectionFilled? "checked": "")>
+                                                    <input type="checkbox"
+                                                           class="custom-control-input enableSection"
+                                                           id="section@(templateSection.Id)"
+                                                           name="section@(templateSection.Id)"
+                                                           @(currentResultSection.SectionFilled ? "checked" : "")>
                                                     <label class="custom-control-label" for="section@(templateSection.Id)">Enable section</label>
                                                 </div>
                                             </div>
@@ -475,8 +480,8 @@
                             }
                             else if (templateSection.SectionTypeId == 4)
                             {
-                                <div class="section-item" 
-                                     data-sectionTypeId="4" 
+                                <div class="section-item"
+                                     data-sectionTypeId="4"
                                      data-sectionId="@templateSection.Id"
                                      data-sectionOptional="@templateSection.Optional">
                                     <h5 class="mt-4">Section @templateSection.SetupId</h5>
@@ -486,11 +491,11 @@
                                             <div class="form-group float-right" style="width:250px">
                                                 <label>Include this section?</label>
                                                 <div class="custom-control custom-switch custom-control-lg mb-2">
-                                                    <input type="checkbox" 
-                                                            class="custom-control-input enableSection" 
-                                                            id="section@(templateSection.Id)" 
-                                                            name="section@(templateSection.Id)" 
-                                                           @(currentResultSection.SectionFilled? "checked": "")>
+                                                    <input type="checkbox"
+                                                           class="custom-control-input enableSection"
+                                                           id="section@(templateSection.Id)"
+                                                           name="section@(templateSection.Id)"
+                                                           @(currentResultSection.SectionFilled ? "checked" : "")>
                                                     <label class="custom-control-label" for="section@(templateSection.Id)">Enable section</label>
                                                 </div>
                                             </div>
@@ -547,6 +552,41 @@
                             }
                         }
                     }
+
+                    @if (Model.InitiatedAppraisalTemplate.IncludeBdsTracker)
+                    {
+                    <div class="row" id="trackerSection">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-vcenter">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Annual Target</th>
+                                        <th class="text-center"><div>Expected RSA</div><span style="font-size:14px">(@Model.NewAppraisal.AppraisalPeriodStartDate.ToString("MMM") - @Model.NewAppraisal.AppraisalPeriodEndDate.ToString("MMM"))</span></th>
+                                        <th class="text-center">RSA Achieved</th>
+                                        <th class="text-center">Funded Pin <span style="font-size:14px">(@Model.NewAppraisal.AppraisalPeriodEndDate.ToString("yyyy") REG)</span></th>
+                                        <th class="text-center">Pre-@Model.NewAppraisal.AppraisalPeriodStartDate.ToString("yyyy") Funded Pins</th>
+                                        <th class="text-center">Cash Volume</th>
+                                        <th class="text-center">% RSA Achieved</th>
+                                        <th class="text-center">% Funding Achieved</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="height:70px"><input type="text" value="@Model.BdsTracker.AnnualTarget" class="form-control annual-target" /></td>
+                                        <td><input type="text" value="@Model.BdsTracker.ExpectedRSA" class="form-control expected-rsa" /></td>
+                                        <td><input type="text" value="@Model.BdsTracker.RSAAchieved" class="form-control rsa-achieved" /></td>
+                                        <td><input type="text" value="@Model.BdsTracker.FundedPins" class="form-control funded-pins" /></td>
+                                        <td><input type="text" value="@Model.BdsTracker.PreFundedPins" class="form-control pre-funded-pins" /></td>
+                                        <td><input type="text" value="@Model.BdsTracker.CashVolume" class="form-control cash-volume" /></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    }
+
 
                     <div class="row mt-4">
                         <div style="margin:auto">
@@ -729,6 +769,35 @@
                 var $quatitativeValid = true;
                 var $quatitativeFilledBy = '';
                 var $sectionResults = [];
+                var $bdsTrackerValid = true;
+                var $isTrackerIncluded = $("#includeTracker").text();
+                var trackerObject = {};
+                var $trackerDiv = $("#trackerSection");
+                if ($isTrackerIncluded == "True") {
+                    var $annualTarget = $trackerDiv.find(".annual-target").val();
+                    var $expectedRsa = $trackerDiv.find(".expected-rsa").val();
+                    var $rsaAchieved = $trackerDiv.find(".rsa-achieved").val();
+                    var $fundedPins = $trackerDiv.find(".funded-pins").val();
+                    var $preFundedPins = $trackerDiv.find(".pre-funded-pins").val();
+                    var $cashVolume = $trackerDiv.find(".cash-volume").val();
+                    trackerObject = {
+                        annualTarget: parseInt($annualTarget),
+                        expectedRsa: parseInt($expectedRsa),
+                        rsaAchieved: parseInt($rsaAchieved),
+                        fundedPins: parseInt($fundedPins),
+                        preFundedPins: parseInt($preFundedPins),
+                        cashVolume: parseFloat($cashVolume)
+                    }
+                    if (isNaN($annualTarget) || $annualTarget == '' ||
+                        isNaN($expectedRsa) || $expectedRsa == '' ||
+                        isNaN($rsaAchieved) || $rsaAchieved == '' ||
+                        isNaN($fundedPins) || $fundedPins == '' ||
+                        isNaN($preFundedPins) || $preFundedPins == '' ||
+                        isNaN($cashVolume) || $cashVolume == '') {
+                        $bdsTrackerValid = false;
+                    }
+                }
+
                 $.each($sections, function () {
                     var $sectionTypeId = $(this).attr("data-sectionTypeId");
                     var $sectionId = $(this).attr("data-sectionId");
@@ -869,6 +938,10 @@
                         return;
                     }
                 }
+                if (!$bdsTrackerValid) {
+                    Swal.fire("Error!", "Empty fields detected", "error");
+                    return;
+                }
                 console.log($sectionResults);
                 Swal.fire({
                     title: "Are you sure?",
@@ -883,13 +956,15 @@
                 }).then(function (n) {
                     if (n.value) {
                         Dashmix.layout('header_loader_on');
-                        $this.attr("disabled", true);
+                        //$this.attr("disabled", true);
                         var $appraiseeId = parseInt($("#appraiseeId").text());
                         var url = "/api/Appraisal/PostResubmitAppraisalToSupervisor";
 
+                        console.log($sectionResults)
                         $.post(url, {
                             appraiseeId: $appraiseeId,
-                            sectionResults: $sectionResults
+                            sectionResults: $sectionResults,
+                            bdsTracker: trackerObject
                         }, function (data) {
                                 Dashmix.layout('header_loader_off');
                                 $this.attr("disabled", false);

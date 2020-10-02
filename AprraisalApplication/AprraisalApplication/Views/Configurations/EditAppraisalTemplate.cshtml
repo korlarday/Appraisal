@@ -277,7 +277,7 @@
                                                 <div style="overflow:hidden;" class="">
                                                     <span class="mt-4 font-w700" style="display:block">Item Breakdown</span>
 
-                                                    <div style="overflow:hidden; display:none" class="p-1 item-container">
+                                                    <div style="overflow:hidden; display:none;border-bottom:1px solid grey" class="p-1 item-container mb-2 pb-3">
                                                         <div class="float-left" style="width:50%">
                                                             <input type="text" class="form-control item-breakdown-text" />
                                                         </div>
@@ -290,6 +290,13 @@
                                                         </div>
                                                         <div class="float-left" style="width:9%">
                                                             <button class="btn btn-danger btn-sm ml-4 mt-1 removeItem"><i class="fa fa-times"></i></button>
+                                                        </div>
+                                                        <div class="float-left mt-4" style="width:25%">
+                                                            <input type="checkbox" class="isScore" style="width:17px;height:17px;" checked>
+                                                            <label class="">Is item a score?</label>
+                                                        </div>
+                                                        <div class="float-left mt-3" style="width:25%">
+                                                            <input type="number" class="form-control item-breakdown-text breakdown-score" placeholder="Score" />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -309,7 +316,7 @@
                                                 <div style="overflow:hidden;" class="container1">
                                                     <span class="mt-4 font-w700" style="display:block">Item Breakdown</span>
 
-                                                    <div style="overflow:hidden; display:none" class="p-1 item-container">
+                                                    <div style="overflow:hidden; display:none;border-bottom:1px solid grey" class="p-1 item-container mb-2 pb-3">
                                                         <div class="float-left" style="width:50%">
                                                             <input type="text" class="form-control item-breakdown-text" />
                                                         </div>
@@ -322,6 +329,13 @@
                                                         </div>
                                                         <div class="float-left" style="width:9%">
                                                             <button class="btn btn-danger btn-sm ml-4 mt-1 removeItem"><i class="fa fa-times"></i></button>
+                                                        </div>
+                                                        <div class="float-left mt-4" style="width:25%">
+                                                            <input type="checkbox" class="isScore" style="width:17px;height:17px;" checked>
+                                                            <label class="">Is item a score?</label>
+                                                        </div>
+                                                        <div class="float-left mt-3" style="width:25%">
+                                                            <input type="number" class="form-control item-breakdown-text breakdown-score" placeholder="Score" />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -689,7 +703,7 @@
                                                                 <div style="overflow:hidden;" class="">
                                                                     <span class="mt-4 font-w700" style="display:block">Item Breakdown</span>
 
-                                                                    <div style="overflow:hidden; display:none" class="p-1 item-container">
+                                                                    <div style="overflow:hidden; display:none;border-bottom:1px solid grey;" class="p-1 item-container mb-2 pb-3">
                                                                         <div class="float-left" style="width:50%">
                                                                             <input type="text" class="form-control item-breakdown-text" />
                                                                         </div>
@@ -702,6 +716,13 @@
                                                                         </div>
                                                                         <div class="float-left" style="width:9%">
                                                                             <button class="btn btn-danger btn-sm ml-4 mt-1 removeItem"><i class="fa fa-times"></i></button>
+                                                                        </div>
+                                                                        <div class="float-left mt-4" style="width:25%">
+                                                                            <input type="checkbox" class="isScore" style="width:17px;height:17px;" checked>
+                                                                            <label class="">Is item a score?</label>
+                                                                        </div>
+                                                                        <div class="float-left mt-3" style="width:25%">
+                                                                            <input type="number" class="form-control item-breakdown-text breakdown-score" placeholder="Score" />
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -728,7 +749,7 @@
                                                                             <div style="overflow:hidden;" class="@("container" + num)">
 
                                                                                 <span class="mt-4 font-w700" style="display:block">Item Breakdown</span>
-                                                                                <div style="overflow:hidden;display:none" class="item-container p-1">
+                                                                                <div style="overflow:hidden;display:none;border-bottom:1px solid grey" class="item-container p-1 mb-2 pb-3">
                                                                                     <div class="float-left" style="width:50%">
                                                                                         <input type="text" class="form-control item-breakdown-text" />
                                                                                     </div>
@@ -741,6 +762,13 @@
                                                                                     </div>
                                                                                     <div class="float-left" style="width:9%">
                                                                                         <button class="btn btn-danger btn-sm ml-4 mt-1 removeItem"><i class="fa fa-times"></i></button>
+                                                                                    </div>
+                                                                                    <div class="float-left mt-4" style="width:25%">
+                                                                                        <input type="checkbox" class="isScore" style="width:17px;height:17px;" checked>
+                                                                                        <label class="">Is item a score?</label>
+                                                                                    </div>
+                                                                                    <div class="float-left mt-3" style="width:25%">
+                                                                                        <input type="number" class="form-control item-breakdown-text breakdown-score" placeholder="Score" />
                                                                                     </div>
                                                                                 </div>
                                                                                 @*<div style="overflow:hidden; display:none" class="p-1 item-container">
@@ -763,7 +791,7 @@
                                                                                 {
                                                                                     if (breakdown.IsDeleted == false)
                                                                                     {
-                                                                                        <div style="overflow:hidden;" class="item-container p-1" data-breakdownId="@breakdown.Id">
+                                                                                        <div style="overflow:hidden;border-bottom:1px solid grey;" class="item-container p-1 mb-2 pb-3" data-breakdownId="@breakdown.Id">
                                                                                             <div class="float-left" style="width:50%">
                                                                                                 <input type="text" value="@breakdown.Title" class="form-control item-breakdown-text" />
                                                                                             </div>
@@ -776,6 +804,20 @@
                                                                                             </div>
                                                                                             <div class="float-left" style="width:9%">
                                                                                                 <button class="btn btn-danger btn-sm ml-4 mt-1 removeItem" data-breakdownId="@breakdown.Id"><i class="fa fa-times"></i></button>
+                                                                                            </div>
+                                                                                            <div class="float-left mt-4" style="width:25%">
+                                                                                                <input type="checkbox" class="isScore" style="width:17px;height:17px;" @(breakdown.IsScore? "checked":"")>
+                                                                                                <label class="">Is item a score?</label>
+                                                                                            </div>
+                                                                                            <div class="float-left mt-3" style="width:25%">
+                                                                                                @if (breakdown.IsScore)
+                                                                                                {
+                                                                                                    <input type="number" value="@breakdown.MaxScore" class="form-control item-breakdown-text breakdown-score" placeholder="Score" />
+                                                                                                }
+                                                                                                else
+                                                                                                {
+                                                                                                    <input type="number" value="@breakdown.MaxScore" class="form-control item-breakdown-text breakdown-score" style="display:none" placeholder="Score" />
+                                                                                                }
                                                                                             </div>
                                                                                         </div>
                                                                                     }
@@ -1050,6 +1092,7 @@
                 var $breakdownIsValid = true;
                 var $percentageTotal = 0;
                 var $deriveSectionValid = true;
+                var $isBreakdownScoreValid = true;
 
                 $.each($sections, function () {
                     var $this = $(this);
@@ -1067,6 +1110,7 @@
                     var $derivedSection = $this.find(".derivedSection").val();
                     var $qualitativeDetails = [];
                     var $TotalWeightScore = 0;
+                    
 
                     if ($sectionTypeId == 4 || $sectionTypeId == 3) {
                         var $sectionDetails = $this.find("table tbody tr:not(:first)");
@@ -1075,6 +1119,7 @@
                             var $setupDetailId = parseInt($(this).find(".rowCount").text());
                             var $title = $(this).find(".title").val();
                             var $weight = parseInt($(this).find(".weight").val());
+                            var $breakdownTotal = 0;
                             var $detailId = $(this).attr("data-detailId");
 
                             if ($title == '' || isNaN($weight)) {
@@ -1090,18 +1135,36 @@
                                 $.each($breakdowns, function () {
                                     var $breakdownId = $(this).attr("data-breakdownId");
                                     var $itemText = $(this).find(".item-breakdown-text").val();
+                                    var $isScore = $(this).find(".isScore").prop("checked");
+                                    var $score = parseInt($(this).find(".breakdown-score").val());
                                     var $valueType = $(this).find(".value-type").val();
                                     console.log($itemText, $valueType);
+
+                                    if ($isScore) {
+                                        if ($score == '' || $score == null) {
+                                            $isBreakdownScoreValid = false;
+                                        } else {
+                                            $breakdownTotal += $score;
+                                        }
+                                    }
+
                                     if ($itemText == '' || $valueType == '') {
                                         $breakdownIsValid = false;
                                     }
                                     var object = {
                                         breakdownId: $breakdownId,
                                         itemText: $itemText,
-                                        valueType: $valueType
+                                        valueType: $valueType,
+                                        isScore: $isScore,
+                                        score: $score
                                     };
                                     $itemBreakdowns.push(object);
                                 });
+                            }
+
+                            if ($breakdownTotal != $weight) {
+                                $isBreakdownScoreValid = false;
+                                console.log($breakdownTotal, $weight);
                             }
 
                             var obj = {
@@ -1157,7 +1220,6 @@
 
                 });
 
-
                 if ($isValid == false) {
                     Swal.fire("Oops...", "All required fields must be filed!", "error");
                     return false;
@@ -1186,6 +1248,12 @@
                     return false;
                 }
 
+                if (!$isBreakdownScoreValid) {
+                    Swal.fire("Error...", "In quantitative section, ensure that the total breakdown scores is equal to the weight score");
+                    return false;
+                }
+
+                console.log($appraisalTemplate);
                 var url = "/api/Configurations/PostEditAppraisalTemplate";
                 $.post(url,
                     {
@@ -1410,6 +1478,17 @@
                 $clone.find('td div').addClass('container' + $rowCount);
                 $clone.show();
                 $quantitativeIndicesSection.find('table tbody').append($clone);
+            });
+
+            // when you click on checkbox for isscore?
+            $("#sectionContainer").on("change", ".isScore", function () {
+                var $this = $(this);
+                $breakdownText = $this.closest(".item-container").find(".breakdown-score");
+                if ($this.prop("checked")) {
+                    $breakdownText.show();
+                } else {
+                    $breakdownText.hide();
+                }
             });
         })
     </script>

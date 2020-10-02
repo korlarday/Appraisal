@@ -93,8 +93,7 @@ namespace AprraisalApplication.Controllers
             Appraisee appraisee = _unitOfWork.Appraisal.GetAppraisee(employee.Id, newAppraisal.Id);
             InitiatedAppraisalTemplate InitiatedAppraisalTemplate = _unitOfWork.AppraisalTemplate
                                                     .GetInitiatedAppraisalTemplateById(appraisee.InitiatedAppraisalTemplateId);
-            int hodEmployeeId = (int)appraisee.AppraiseeComments.HodEmployeeId;
-            int hrEmployeeId = (int)appraisee.AppraiseeComments.HrEmployeeId;
+            
             AppraiseStaffVM model = new AppraiseStaffVM
             {
                 DefaultRatings = _unitOfWork.Resources.GetDefaultRatings(),
@@ -102,8 +101,6 @@ namespace AprraisalApplication.Controllers
                 Employee = employee,
                 Appraisee = appraisee,
                 InitiatedAppraisalTemplate = InitiatedAppraisalTemplate,
-                HodEmployee = _unitOfWork.Account.GetEmployeeById(hodEmployeeId),
-                HrEmployee = _unitOfWork.Account.GetEmployeeById(hrEmployeeId),
                 BdsTracker = InitiatedAppraisalTemplate.IncludeBdsTracker ? _unitOfWork.Appraisal.GetBdsTracker(appraisee.BdsPerformanceTrackerId) : null
             };
             return View("MdComments", model);
@@ -230,5 +227,13 @@ namespace AprraisalApplication.Controllers
             return View("ViewProfile", employee);
         }
 
+
+        [ActionName("deactivated-employees-md")]
+        public ActionResult DeactivatedEmployees()
+        {
+            List<Employee> employees = _unitOfWork.Office.GetDeactivatedEmployees();
+            return View("DeactivatedEmployees", employees);
+        }
+    
     }
 }

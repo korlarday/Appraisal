@@ -10,11 +10,13 @@ namespace AprraisalApplication.Models.Constants
         public static string Hod = "HOD";
         public static string Hr = "HR";
         public static string MD = "MD";
+        public static string Supervisor = "SUPERVISOR";
         public static string[] roles = new string[]
         {
             "HOD",
             "HR",
-            "MD"
+            "MD",
+            "SUPERVISOR"
         };
     }
 }

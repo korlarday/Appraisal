@@ -44,5 +44,7 @@ namespace AprraisalApplication.Models.ApiParameters
         public int? BreakdownId { get; set; }
         public string ItemText { get; set; }
         public string ValueType { get; set; }
+        public int Score { get; set; }
+        public bool IsScore { get; set; }
     }
 }

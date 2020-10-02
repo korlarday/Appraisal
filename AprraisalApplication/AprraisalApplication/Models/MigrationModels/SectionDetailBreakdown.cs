@@ -17,7 +17,8 @@ namespace AprraisalApplication.Models.MigrationModels
         {
             AppraisalSectionDetailId = sectionDetailId;
             Title = itemBreakDown.ItemText;
-            MaxScore = 0;
+            MaxScore = itemBreakDown.Score;
+            IsScore = itemBreakDown.IsScore;
             if(itemBreakDown.ValueType == "money")
             {
                 ExpectedValueId = 2;
@@ -34,12 +35,14 @@ namespace AprraisalApplication.Models.MigrationModels
         public int MaxScore { get; set; }
         public ExpectedValue ExpectedValue { get; set; }
         public byte ExpectedValueId { get; set; }
+        public bool IsScore { get; set; }
         public bool IsDeleted { get; set; }
 
         internal void Update(ItemBreakDown itemBreakdown)
         {
             Title = itemBreakdown.ItemText;
-            MaxScore = 0;
+            MaxScore = itemBreakdown.Score;
+            IsScore = itemBreakdown.IsScore;
             if (itemBreakdown.ValueType == "money")
             {
                 ExpectedValueId = 2;

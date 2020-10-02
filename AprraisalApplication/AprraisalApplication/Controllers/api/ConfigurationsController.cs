@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace AprraisalApplication.Controllers.api
@@ -70,9 +71,9 @@ namespace AprraisalApplication.Controllers.api
             return Ok();
         }
 
-        public IHttpActionResult PostSetEmployeeAppraiser([FromBody] UserAppraiserParams model)
+        public async Task<IHttpActionResult> PostSetEmployeeAppraiser([FromBody] UserAppraiserParams model)
         {
-            _unitOfWork.Office.SetEmployeesAppraiser(model);
+            await _unitOfWork.Office.SetEmployeesAppraiser(model);
             return Ok();
         }
 

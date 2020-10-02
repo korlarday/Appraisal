@@ -58,34 +58,41 @@
                                 <span class="nav-main-link-name">Ongoing Appraisals</span>
                             </a>
                         </li>
-                        @*<li class="nav-main-item">
-                    <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "ongoing-appraisal" ? "active" : "")" href="/appraisal/ongoing-appraisal">
-                        <span class="nav-main-link-name">Ongoing Appraisals</span>
-                    </a>
-                </li>*@
                         <li class="nav-main-item">
                             <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "previous-appraisals"
                                 ? "active" : "")" href="/appraisal/previous-appraisals">
                                 <span class="nav-main-link-name">Previous Appraisals</span>
                             </a>
                         </li>
-                        <li class="nav-main-item">
-                            <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "appraise-members" ||
-                                ViewContext.RouteData.Values["Action"].ToString() == "appraise-staff" ||
-                                ViewContext.RouteData.Values["Action"].ToString() == "appraiser-comments" ||
-                                ViewContext.RouteData.Values["Action"].ToString() == "supervisor-makes-corrections"
-                                ? "active" : "")" href="/appraisal/appraise-members">
-                                <span class="nav-main-link-name">Appraise Team Members</span>
-                            </a>
-                        </li>
-                        <li class="nav-main-item">
-                            <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "appraisees"
-                                ? "active" : "")" href="/appraisal/appraisees">
-                                <span class="nav-main-link-name">Appraisees</span>
-                            </a>
-                        </li>
                     </ul>
                 </li>
+                @if (User.IsInRole("SUPERVISOR"))
+                {
+                    <li class="nav-main-item">
+                        <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                            <i class="nav-main-link-icon si si-users"></i>
+                            <span class="nav-main-link-name">Subordinates</span>
+                        </a>
+                        <ul class="nav-main-submenu">
+                            <li class="nav-main-item">
+                                <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "appraise-members" ||
+                                    ViewContext.RouteData.Values["Action"].ToString() == "appraise-staff" ||
+                                    ViewContext.RouteData.Values["Action"].ToString() == "appraiser-comments" ||
+                                    ViewContext.RouteData.Values["Action"].ToString() == "supervisor-makes-corrections"
+                                    ? "active" : "")" href="/appraisal/appraise-members">
+                                    <span class="nav-main-link-name">Appraise Team Members</span>
+                                </a>
+                            </li>
+                            <li class="nav-main-item">
+                                <a class="nav-main-link @(Html.ViewContext.RouteData.Values["Action"].ToString() == "appraisees"
+                                    ? "active" : "")" href="/appraisal/appraisees">
+                                    <span class="nav-main-link-name">Appraisees</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                }
+
 
                 @if (User.IsInRole("HOD"))
                 {
@@ -143,6 +150,12 @@
                                     <span class="nav-main-link-name">Employees By Location</span>
                                 </a>
                             </li>
+                            <li class="nav-main-item">
+                                <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "deactivated-employees-hod"
+                                    ? "active" : "")" href="/departmentAppraisal/deactivated-employees-hod">
+                                    <span class="nav-main-link-name">Deactivated Employees</span>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 }
@@ -156,7 +169,6 @@
                         </a>
                         <ul class="nav-main-submenu">
                             <li class="nav-main-item">
-
                                 <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "initiated-appraisals-md" ||
                                     ViewContext.RouteData.Values["Action"].ToString() == "view-appraisal-md" ||
                                     ViewContext.RouteData.Values["Action"].ToString() == "group-participants-md" ||
@@ -197,6 +209,12 @@
                                     <span class="nav-main-link-name">Employees By Location</span>
                                 </a>
                             </li>
+                            <li class="nav-main-item">
+                                <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "deactivated-employees-md"
+                                    ? "active" : "")" href="/mdappraisal/deactivated-employees-md">
+                                    <span class="nav-main-link-name">Deactivated Employees</span>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 }
@@ -216,7 +234,6 @@
                                 </a>
                             </li>
                             <li class="nav-main-item">
-
                                 <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "initiated-appraisals" ||
                                     ViewContext.RouteData.Values["Action"].ToString() == "view-appraisal" ||
                                     ViewContext.RouteData.Values["Action"].ToString() == "edit-appraisal" ||
@@ -260,7 +277,20 @@
                                     <span class="nav-main-link-name">Employees By Location</span>
                                 </a>
                             </li>
+                            <li class="nav-main-item">
+                                <a class="nav-main-link
+                                   @(ViewContext.RouteData.Values["Action"].ToString() == "deactivated-employees"
+                                    ? "active" : "")" href="/hr/deactivated-employees">
+                                    <span class="nav-main-link-name">Deactivated Employees</span>
+                                </a>
+                            </li>
                         </ul>
+                    </li>
+                    <li class="nav-main-item">
+                        <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "set-hod-supervisors" ? "active" : "")" href="/hr/set-hod-supervisors">
+                            <i class="nav-main-link-icon si si-users"></i>
+                            <span class="nav-main-link-name">Set HODs Supervisor</span>
+                        </a>
                     </li>
                 }
                 @if (User.IsInRole("HOD") || User.IsInRole("HR"))
@@ -328,7 +358,6 @@
                                 <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "manage-roles" ||
                                     ViewContext.RouteData.Values["Action"].ToString() == "edit-employee-roles"
                                     ? "active" : "")" href="/configurations/manage-roles">
-
                                     <span class="nav-main-link-name">Manage User Roles</span>
                                 </a>
                             </li>

@@ -13,5 +13,6 @@ namespace AprraisalApplication.Models.ViewModels
         public int EmployeesInDept { get; set; }
         public int MyOngoingAppraisals { get; set; }
         public int MySubordinates { get; set; }
+        public int DeactivatedEmployees { get; set; }
     }
 }

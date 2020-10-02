@@ -360,7 +360,7 @@ namespace AprraisalApplication.Controllers
             Appraisee appraisee = _unitOfWork.Appraisal.GetAppraisee(employee.Id, newAppraisal.Id);
             InitiatedAppraisalTemplate InitiatedAppraisalTemplate = _unitOfWork.AppraisalTemplate
                                                     .GetInitiatedAppraisalTemplateById(appraisee.InitiatedAppraisalTemplateId);
-            int hodEmployeeId = (int)appraisee.AppraiseeComments.HodEmployeeId;
+            //int hodEmployeeId = (int)appraisee.AppraiseeComments.HodEmployeeId;
             AppraiseStaffVM model = new AppraiseStaffVM
             {
                 DefaultRatings = _unitOfWork.Resources.GetDefaultRatings(),
@@ -368,7 +368,6 @@ namespace AprraisalApplication.Controllers
                 Employee = employee,
                 Appraisee = appraisee,
                 InitiatedAppraisalTemplate = InitiatedAppraisalTemplate,
-                HodEmployee = _unitOfWork.Account.GetEmployeeById(hodEmployeeId),
                 BdsTracker = InitiatedAppraisalTemplate.IncludeBdsTracker ? _unitOfWork.Appraisal.GetBdsTracker(appraisee.BdsPerformanceTrackerId) : null
             };
             return View("HRComments", model);

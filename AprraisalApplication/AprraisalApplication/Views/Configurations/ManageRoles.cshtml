@@ -67,7 +67,10 @@
                                                 {
                                                     foreach (var role in item.Roles)
                                                     {
-                                                        <span>@role,</span>
+                                                        if(role != "SUPERVISOR")
+                                                        {
+                                                            <span>@role,</span>
+                                                        }
                                                     }
                                                 }
                                             </td>
