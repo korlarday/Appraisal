@@ -804,45 +804,7 @@
                 });
             });
 
-            //
-            //$("#rejectAppraisal").on("click", function () {
-            //    $("#rejection-div").show();
-            //});
-            //$("#cancelReject").on("click", function () {
-            //    $("#rejection-div").hide();
-            //});
-
-            //// when you click on submit reject
-            //$("#submitReject").on("click", function () {
-            //    var $appraiseeId = parseInt($("#appraiseeId").text());
-            //    var $rejectionReason = $("#rejectionReasonText").val();
-            //    //check if rejection reason text is not empty
-            //    if ($rejectionReason == '') {
-            //        Swal.fire("Error!", "You need to enter a rejection reason!", "error");
-            //        return;
-            //    }
-
-            //    var url = "/api/Appraisal/PostRejectAppraisalToAppraisee";
-            //    $.post(url, {
-            //        appraiseeId: $appraiseeId,
-            //        rejectionReason: $rejectionReason
-            //    }, function (data) {
-            //        Swal.fire({
-            //            title: "Success",
-            //            text: "This appraisal has been retured back to the appraisee with the rejection reason specified",
-            //            type: "success",
-            //            showCancelButton: 0,
-            //            customClass: { okButton: "btn btn-danger m-1" },
-            //            html: !1,
-            //            preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
-
-            //        }).then(function (n) {
-            //            if (n.value) {
-            //                window.location.href = '/appraisal/appraise-members';
-            //            }
-            //        });
-            //    });
-            //})
+            
         })
         ////////////////////////////////////////////////////////////////////
     </script>

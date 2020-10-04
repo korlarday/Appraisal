@@ -30,12 +30,16 @@ namespace AprraisalApplication.Repositories
 
         internal bool SaveEmployeeDetails(CreateEmployeeProfileVM model)
         {
+            var userId = HttpContext.Current.User.Identity.GetUserId();
+
+            var appUser = db.Users.Find(userId);
+
             // save the employee default appraiser
             DefaultUserAppraiser defaultAppraiser = new DefaultUserAppraiser();
             db.DefaultUserAppraisers.Add(defaultAppraiser);
             db.SaveChanges();
 
-            Employee employee = new Employee(model, defaultAppraiser.Id);
+            Employee employee = new Employee(model, defaultAppraiser.Id, appUser);
             db.Employees.Add(employee);
             db.SaveChanges();
 

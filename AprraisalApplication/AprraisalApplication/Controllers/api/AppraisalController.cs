@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace AprraisalApplication.Controllers.api
@@ -20,9 +21,9 @@ namespace AprraisalApplication.Controllers.api
             _unitOfWork = new UnitOfWork(db);
         }
 
-        public IHttpActionResult PostInitialiseAppraisalExercise([FromBody] NewAppraisalParams model)
+        public async Task<IHttpActionResult> PostInitialiseAppraisalExercise([FromBody] NewAppraisalParams model)
         {
-            _unitOfWork.Appraisal.InitiateNewAppraisal(model);
+            await _unitOfWork.Appraisal.InitiateNewAppraisal(model);
             return Ok();
         }
 
@@ -38,16 +39,16 @@ namespace AprraisalApplication.Controllers.api
             return Ok(response);
         }
 
-        public IHttpActionResult PostSubmitAppraisalToSupervisor([FromBody] SubmitAppraisalParams model)
+        public async Task<IHttpActionResult> PostSubmitAppraisalToSupervisor([FromBody] SubmitAppraisalParams model)
         {
-            _unitOfWork.Appraisal.SubmitAppraisalToSupervisor(model);
-            return Ok();
+            string response = await _unitOfWork.Appraisal.SubmitAppraisalToSupervisor(model);
+            return Ok(response);
         }
 
-        public IHttpActionResult PostScoreAppraisalSections([FromBody] SectionScoresParams model)
+        public async Task<IHttpActionResult> PostScoreAppraisalSections([FromBody] SectionScoresParams model)
         {
-            _unitOfWork.Appraisal.ScoreAppraisalSections(model);
-            return Ok();
+            string response = await _unitOfWork.Appraisal.ScoreAppraisalSections(model);
+            return Ok(response);
         }
 
         public IHttpActionResult PostReScoreAppraisalSections([FromBody] SectionScoresParams model)
@@ -92,16 +93,16 @@ namespace AprraisalApplication.Controllers.api
             return Ok();
         }
 
-        public IHttpActionResult PostEnterAppraiseeComment([FromBody] SubmitAppraisalParams model)
+        public async Task<IHttpActionResult> PostEnterAppraiseeComment([FromBody] SubmitAppraisalParams model)
         {
-            _unitOfWork.Appraisal.SaveAppraiseeComment(model);
-            return Ok();
+            string response = await _unitOfWork.Appraisal.SaveAppraiseeComment(model);
+            return Ok(response);
         }
 
-        public IHttpActionResult PostEnterAppraiserComment([FromBody] SubmitAppraisalParams model)
+        public async Task<IHttpActionResult> PostEnterAppraiserComment([FromBody] SubmitAppraisalParams model)
         {
-            _unitOfWork.Appraisal.SaveAppraiserComment(model);
-            return Ok();
+            string response = await _unitOfWork.Appraisal.SaveAppraiserComment(model);
+            return Ok(response);
         }
 
         public IHttpActionResult PostEnterHodComment([FromBody] SubmitAppraisalParams model)

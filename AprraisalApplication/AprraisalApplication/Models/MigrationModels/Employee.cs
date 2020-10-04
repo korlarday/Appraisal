@@ -50,6 +50,7 @@ namespace AprraisalApplication.Models.MigrationModels
 
         public JobTitle JobTitle { get; set; }
         public int JobTitleId { get; set; }
+        public string Email { get; set; }
 
         [Required]
         public DateTime DateOfEmployment { get; set; }
@@ -81,9 +82,10 @@ namespace AprraisalApplication.Models.MigrationModels
             CareerHistories = new Collection<CareerHistory>();
         }
 
-        public Employee(CreateEmployeeProfileVM model, int defaultUserAppraiserId)
+        public Employee(CreateEmployeeProfileVM model, int defaultUserAppraiserId, ApplicationUser user)
         {
-            ApplicationUserId = HttpContext.Current.User.Identity.GetUserId();
+            Email = user.Email;
+            ApplicationUserId = user.Id;
             DefaultUserAppraiserId = defaultUserAppraiserId;
             Firstname = model.Firstname;
             Lastname = model.Lastname;

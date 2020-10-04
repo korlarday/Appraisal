@@ -445,6 +445,10 @@
     <Compile Include="Migrations\202010021121267_AddTrainingNeedsToComments.Designer.cs">
       <DependentUpon>202010021121267_AddTrainingNeedsToComments.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202010031656261_AddingEmailToEmployee.cs" />
+    <Compile Include="Migrations\202010031656261_AddingEmailToEmployee.Designer.cs">
+      <DependentUpon>202010031656261_AddingEmailToEmployee.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApiModels\NewBranchVM.cs" />
@@ -552,6 +556,7 @@
     <Compile Include="Repositories\ResourcesRepository.cs" />
     <Compile Include="Services\ComposeEmail.cs" />
     <Compile Include="Services\EmailServices.cs" />
+    <Compile Include="Services\EmailTemps.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -4960,6 +4965,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202010021121267_AddTrainingNeedsToComments.resx">
       <DependentUpon>202010021121267_AddTrainingNeedsToComments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202010031656261_AddingEmailToEmployee.resx">
+      <DependentUpon>202010031656261_AddingEmailToEmployee.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

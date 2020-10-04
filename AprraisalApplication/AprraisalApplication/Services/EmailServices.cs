@@ -11,22 +11,12 @@ namespace AprraisalApplication.Services
 {
     public class EmailServices
     {
-        public async static Task<string> SendEmailToken(string email, string content)
+        public async static Task<string> SendEmail(string email, string content)
         {
-            // string path = context.Request.Scheme.Current.Server.MapPath("~/Views/EmailTemplate.html");
-            //string file = System.IO.Path.GetFullPath("Services/EmailTemplate.html");
-            //StreamReader str = new StreamReader(file);
-            //string MailText = str.ReadToEnd();
-            //str.Close();
-
-            //Replace [content] with the content of the mail  
-            //MailText = MailText.Replace("[Content]", content);
-
-
             var apiKey = "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";
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("noreply@notifications.ieianchorpensions.com", "IEI Anchor Pensions");
-            var subject = "Email Verification";
+            var subject = "Appraisal Excercise";
             var to = new EmailAddress(email, "Name");
             var plainTextContent = "content";
             var htmlContent = content;

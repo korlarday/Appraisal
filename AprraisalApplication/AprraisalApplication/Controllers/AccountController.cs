@@ -320,12 +320,6 @@ namespace AprraisalApplication.Controllers
             return View(model);
         }
 
-        [AllowAnonymous]
-        public async Task<ActionResult> TestEmail()
-        {
-            var response = await EmailServices.SendEmailToken("reedwan47@gmail.com", "Helloworld");
-            return RedirectToAction("login");
-        }
 
         //
         // GET: /Account/ForgotPasswordConfirmation
