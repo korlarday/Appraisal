@@ -114,8 +114,8 @@
                 <div class="block-content block-content-full">
                     <span style="display:none" id="appraiseeId">@Model.Appraisee.Id</span>
                     <span style="display:none" id="highestRating">@highestRating.Score</span>
-                    
-                    @if(rejections.Count() > 0)
+
+                    @if (rejections.Count() > 0)
                     {
                         <div class="row">
                             <div class="offset-6 text-danger">
@@ -713,25 +713,36 @@
                     </div>
                     <div class="row mt-5">
                         <div class="offset-1 col-10 pt-4" style="border:1px solid grey;">
-                            <div class="mb-3">
+                            <div class="mb-1">
                                 <span class="font-weight-bolder">Appraisee's Comments </span>
                             </div>
-                            <div class="mb-5 pb-3" style="border-bottom:1px dashed grey;line-height:2em">@Model.Appraisee.AppraiseeComments.AppraiseeComment</div>
+                            <div class="mb-5 pb-1" style="border-bottom:1px dashed grey;line-height:2em">@Model.Appraisee.AppraiseeComments.AppraiseeComment</div>
+
+                            <div class="mb-1">
+                                <span class="font-weight-bolder">Training Needs </span>
+                            </div>
+                            <div class="mb-5 pb-1" style="border-bottom:1px dashed grey;line-height:2em">@Model.Appraisee.AppraiseeComments.AppraiseeTrainingNeeds</div>
+
                             <div class="row pb-0" style="margin-top:70px">
                                 <div class="ml-3 col-2" style="border-top:1px dashed grey;">
                                     <div>Date</div>
                                     <div style="width:100px;position:relative;top:-50px;margin-bottom:0">@Model.Appraisee.AppraiseeComments.AppraiseeCommentDate.ToShortDateString()</div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                     <div class="row mt-5">
                         <div class="offset-1 col-10 pt-4" style="border:1px solid grey;">
-                            <div class="mb-3">
+                            <div class="mb-1">
                                 <span class="font-weight-bolder">Appraiser's Comments </span>
                             </div>
-                            <div class="mb-5 pb-3" style="border-bottom:1px dashed grey;line-height:2em">@Model.Appraisee.AppraiseeComments.AppraiserComment</div>
+                            <div class="mb-5 pb-1" style="border-bottom:1px dashed grey;line-height:2em">@Model.Appraisee.AppraiseeComments.AppraiserComment</div>
+
+                            <div class="mb-1">
+                                <span class="font-weight-bolder">Training Needs </span>
+                            </div>
+                            <div class="mb-5 pb-1" style="border-bottom:1px dashed grey;line-height:2em">@Model.Appraisee.AppraiseeComments.AppraiserTrainingNeeds</div>
+
                             <div class="row pb-0" style="margin-top:70px">
                                 <div class="ml-3 col-2" style="border-top:1px dashed grey;">
                                     <div>Date</div>
@@ -741,6 +752,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="row mt-5">
                         <div class="offset-1 col-10 p-5" style="border:1px solid grey">
                             <div class="mb-2">

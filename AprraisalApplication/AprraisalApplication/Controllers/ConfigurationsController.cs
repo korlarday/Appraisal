@@ -13,10 +13,11 @@ using System.Linq;
 using System.Web;
 using System.Data.Entity;
 using System.Threading.Tasks;
+using AprraisalApplication.Models.Constants;
 
 namespace AprraisalApplication.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "HR")]
     [EmailConfirmation]
     [CompleteYourProfile]
     public class ConfigurationsController : Controller
@@ -81,6 +82,26 @@ namespace AprraisalApplication.Controllers
                 Branches = _unitOfWork.Resources.GetAllBranches()
             };
             return View("SetBranches", model);
+        }
+
+        [ActionName("set-states")]
+        public ActionResult SetStates()
+        {
+            SetBranchVM model = new SetBranchVM
+            {
+                Allstates = _unitOfWork.Resources.GetAllStates()
+            };
+            return View("SetStates", model);
+        }
+
+        [ActionName("set-job-titles")]
+        public ActionResult SetJobTitles()
+        {
+            SetJobTitlesVM model = new SetJobTitlesVM
+            {
+                JobTitles = _unitOfWork.Resources.GetAllJobTitles()
+            };
+            return View("SetJobTitles", model);
         }
 
         [ActionName("appraisal-template-setup")]
@@ -273,7 +294,10 @@ namespace AprraisalApplication.Controllers
                     // check if role exists
                     if (UserManager.IsInRole(user.Id, role.Name))
                     {
-                        UserManager.RemoveFromRole(user.Id, role.Name);
+                        if(role.Name != RoleModel.Supervisor)
+                        {
+                            UserManager.RemoveFromRole(user.Id, role.Name);
+                        }
                     }
                 }
             }

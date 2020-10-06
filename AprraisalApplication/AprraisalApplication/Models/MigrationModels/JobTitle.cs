@@ -8,10 +8,21 @@ namespace AprraisalApplication.Models.MigrationModels
 {
     public class JobTitle
     {
+
         public int Id { get; set; }
         [Required]
         [MaxLength(255)]
         public string Name { get; set; }
         public bool IsDeleted { get; set; }
+
+        public JobTitle()
+        {
+
+        }
+        public JobTitle(string name)
+        {
+            Name = name;
+            IsDeleted = false;
+        }
     }
 }

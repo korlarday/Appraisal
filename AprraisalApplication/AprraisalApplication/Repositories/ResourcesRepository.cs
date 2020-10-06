@@ -158,5 +158,72 @@ namespace AprraisalApplication.Repositories
             return db.TemplateSummaryRatings.Where(x => x.AppraisalTemplateId == appraisalTemplateId)
                                             .OrderBy(x => x.Score).ToList();
         }
+
+        internal State GetStateByName(string stateName)
+        {
+            return db.States.Where(x => x.IsDeleted == false && x.Description == stateName).FirstOrDefault();
+        }
+
+        internal void AddNewState(State newState)
+        {
+            db.States.Add(newState);
+            db.SaveChanges();
+        }
+
+        internal bool IsStateNameExists(int id, string stateName)
+        {
+            return db.States.Where(x => x.Id != id).Any(x => x.Description == stateName);
+        }
+
+        internal State UpdateState(int id, string stateName)
+        {
+            State state = db.States.Find(id);
+            state.Description = stateName;
+            db.SaveChanges();
+            return state;
+        }
+
+        internal void DeleteState(int id)
+        {
+            State state = db.States.Find(id);
+            state.IsDeleted = true;
+            db.SaveChanges();
+        }
+
+        internal JobTitle GetJobTitleByName(string jobtitleName)
+        {
+            return db.JobTitles.Where(x => x.IsDeleted == false && x.Name == jobtitleName).FirstOrDefault();
+        }
+
+        internal void AddNewJobTitle(JobTitle newJobTitle)
+        {
+            db.JobTitles.Add(newJobTitle);
+            db.SaveChanges();
+        }
+
+        internal JobTitle GetJobTitleById(int id)
+        {
+            return db.JobTitles.Where(x => x.IsDeleted == false && x.Id == id).SingleOrDefault();
+        }
+
+        internal bool IsJobTitleNameExists(int id, string jobtitleName)
+        {
+            return db.JobTitles.Where(x => x.Id != id).Any(x => x.Name == jobtitleName);
+        }
+
+        internal JobTitle UpdateJobTitle(int id, string jobtitleName)
+        {
+            JobTitle jobTitle = db.JobTitles.Find(id);
+            jobTitle.Name = jobtitleName;
+            db.SaveChanges();
+            return jobTitle;
+        }
+
+        internal void DeleteJobTitle(int id)
+        {
+            JobTitle jobtitle = db.JobTitles.Find(id);
+            jobtitle.IsDeleted = true;
+            db.SaveChanges();
+        }
     }
 }

@@ -12,6 +12,9 @@ namespace AprraisalApplication.Models.ViewModels
         public List<Branch> Branches { get; set; }
         public Branch CreateBranch { get; set; }
 
+        public List<State> Allstates { get; set; }
+        public State CreateState { get; set; }
+
         // For loading the school types
         public IEnumerable<SelectListItem> States { get; set; }
     }

@@ -13,6 +13,7 @@ using System.Web.Http;
 
 namespace AprraisalApplication.Controllers.api
 {
+    [Authorize]
     public class EmployeesController : ApiController
     {
         public readonly ApplicationDbContext db;

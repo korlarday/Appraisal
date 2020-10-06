@@ -454,6 +454,8 @@
     <Compile Include="Models\ApiModels\NewBranchVM.cs" />
     <Compile Include="Models\ApiModels\NewDepartmentVM.cs" />
     <Compile Include="Models\ApiModels\NewHistoryApiVM.cs" />
+    <Compile Include="Models\ApiModels\NewJobTitleVM.cs" />
+    <Compile Include="Models\ApiModels\NewStateVM.cs" />
     <Compile Include="Models\ApiParameters\AppraisalDepartmentParams.cs" />
     <Compile Include="Models\ApiParameters\AppraisalTemplateParams.cs" />
     <Compile Include="Models\ApiParameters\AppraisalUserParams.cs" />
@@ -461,11 +463,13 @@
     <Compile Include="Models\ApiParameters\BranchParams.cs" />
     <Compile Include="Models\ApiParameters\CareerHistoryParams.cs" />
     <Compile Include="Models\ApiParameters\DeactivateUserParams.cs" />
+    <Compile Include="Models\ApiParameters\JobTitleParams.cs" />
     <Compile Include="Models\ApiParameters\NewAppraisalParams.cs" />
     <Compile Include="Models\ApiParameters\NewDepartmentParams.cs" />
     <Compile Include="Models\ApiParameters\SectionResultParams.cs" />
     <Compile Include="Models\ApiParameters\SectionScoresParams.cs" />
     <Compile Include="Models\ApiParameters\StartEmployeeAppraisalParams.cs" />
+    <Compile Include="Models\ApiParameters\StateParams.cs" />
     <Compile Include="Models\ApiParameters\SubmitAppraisalParams.cs" />
     <Compile Include="Models\ApiParameters\UserAppraiserParams.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -540,6 +544,7 @@
     <Compile Include="Models\ViewModels\OngoingAppraisalVM.cs" />
     <Compile Include="Models\ViewModels\SetBranchVM.cs" />
     <Compile Include="Models\ViewModels\SetDepartmentVM.cs" />
+    <Compile Include="Models\ViewModels\SetJobTitlesVM.cs" />
     <Compile Include="Models\ViewModels\SetupDepartmentTemplateVM.cs" />
     <Compile Include="Models\ViewModels\SetupEmployeeAppraiserVM.cs" />
     <Compile Include="Models\ViewModels\SetupEmployeeTemplateVM.cs" />
@@ -4686,6 +4691,8 @@
     <Content Include="Views\MdAppraisal\DeactivatedEmployees.cshtml" />
     <Content Include="Views\DepartmentAppraisal\DeactivatedEmployees.cshtml" />
     <Content Include="Views\HR\SetHodSupervisors.cshtml" />
+    <Content Include="Views\Configurations\SetStates.cshtml" />
+    <Content Include="Views\Configurations\SetJobTitles.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

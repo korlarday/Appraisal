@@ -380,6 +380,26 @@
                                     <span class="nav-main-link-name">Set Branches</span>
                                 </a>
                             </li>
+                            <li class="nav-main-item">
+                                <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "set-states" ? "active" : "")" href="/configurations/set-states">
+                                    <span class="nav-main-link-name">Set States</span>
+                                </a>
+                            </li>
+                            <li class="nav-main-item">
+                                <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "set-job-titles" ? "active" : "")" href="/configurations/set-job-titles">
+                                    <span class="nav-main-link-name">Set Job Titles</span>
+                                </a>
+                            </li>
+                            <li class="nav-main-item">
+                                <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "set-grades" ? "active" : "")" href="/configurations/set-grades">
+                                    <span class="nav-main-link-name">Set Grades</span>
+                                </a>
+                            </li>
+                            <li class="nav-main-item">
+                                <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "set-qualifications" ? "active" : "")" href="/configurations/set-qualifications">
+                                    <span class="nav-main-link-name">Set Qualifications</span>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 }

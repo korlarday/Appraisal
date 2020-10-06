@@ -12,6 +12,9 @@ using System.Web.Mvc;
 
 namespace AprraisalApplication.Controllers
 {
+    [Authorize(Roles = "MD")]
+    [EmailConfirmation]
+    [CompleteYourProfile]
     public class MdAppraisalController : Controller
     {
         public readonly ApplicationDbContext db;

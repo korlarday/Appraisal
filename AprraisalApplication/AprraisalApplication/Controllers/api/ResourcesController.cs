@@ -12,6 +12,7 @@ using System.Web.Http;
 
 namespace AprraisalApplication.Controllers.api
 {
+    [Authorize]
     public class ResourcesController : ApiController
     {
         public readonly ApplicationDbContext db;
@@ -27,7 +28,7 @@ namespace AprraisalApplication.Controllers.api
             NewDepartmentVM viewModel = new NewDepartmentVM();
 
             // check if department name is not empty
-            if (viewModel.DepartmentName == "")
+            if (model.departmentName == "")
             {
                 viewModel.Feedback = "required";
                 return Ok(viewModel);
@@ -180,6 +181,155 @@ namespace AprraisalApplication.Controllers.api
         public IHttpActionResult PostDeleteBranch([FromBody] NewDepartmentParams model)
         {
             _unitOfWork.Resources.DeleteBranch(model.id);
+            return Ok();
+        }
+
+
+        public IHttpActionResult PostAddState([FromBody] StateParams model)
+        {
+            NewStateVM viewModel = new NewStateVM();
+
+            // check if state name is not empty
+            if (model.stateName == "" || model.stateName == null)
+            {
+                viewModel.Feedback = "required";
+                return Ok(viewModel);
+            }
+
+            // check if state name is unique
+            if ((_unitOfWork.Resources.GetStateByName(model.stateName)) != null)
+            {
+                viewModel.Feedback = "taken";
+                return Ok(viewModel);
+            }
+
+            // Store the new department
+            State newState = new State(model.stateName);
+
+            _unitOfWork.Resources.AddNewState(newState);
+
+            // Construct the model
+            viewModel.Id = newState.Id;
+            viewModel.StateName = model.stateName;
+            viewModel.Feedback = "success";
+            viewModel.Index = _unitOfWork.Resources.GetAllStates().Count();
+
+            return Ok(viewModel);
+        }
+
+        public IHttpActionResult PostEditState([FromBody] StateParams model)
+        {
+            NewStateVM viewModel = new NewStateVM();
+
+            // check if state exist
+            if ((_unitOfWork.Resources.GetStateById(model.id)) == null)
+            {
+                viewModel.Feedback = "notfound";
+            }
+
+            // check if statename is not empty
+            if (model.stateName == "")
+            {
+                viewModel.Feedback = "required";
+                return Ok(viewModel);
+            }
+
+            // check if statename is unique
+            if (_unitOfWork.Resources.IsStateNameExists(model.id, model.stateName))
+            {
+                viewModel.Feedback = "taken";
+                return Ok(viewModel);
+            }
+
+            // Update the state
+            State state = _unitOfWork.Resources.UpdateState(model.id, model.stateName);
+
+            // Construct the model
+
+            viewModel.Id = state.Id;
+            viewModel.StateName = state.Description;
+            viewModel.Feedback = "success";
+            viewModel.Index = 3;
+
+            return Ok(viewModel);
+        }
+
+        public IHttpActionResult PostDeleteState([FromBody] StateParams model)
+        {
+            _unitOfWork.Resources.DeleteState(model.id);
+            return Ok();
+        }
+
+
+        public IHttpActionResult PostAddJobTitle([FromBody] JobTitleParams model)
+        {
+            NewJobTitleVM viewModel = new NewJobTitleVM();
+
+            // check if jobtitle name is not empty
+            if (model.JobtitleName == "" || model.JobtitleName == null)
+            {
+                viewModel.Feedback = "required";
+                return Ok(viewModel);
+            }
+
+            // check if jobtitle name is unique
+            if ((_unitOfWork.Resources.GetJobTitleByName(model.JobtitleName)) != null)
+            {
+                viewModel.Feedback = "taken";
+                return Ok(viewModel);
+            }
+
+            // Store the new jobtitle
+            JobTitle newJobTitle = new JobTitle(model.JobtitleName);
+
+            _unitOfWork.Resources.AddNewJobTitle(newJobTitle);
+
+            // Construct the model
+            viewModel.Id = newJobTitle.Id;
+            viewModel.JobtitleName = model.JobtitleName;
+            viewModel.Feedback = "success";
+            viewModel.Index = _unitOfWork.Resources.GetAllJobTitles().Count();
+
+            return Ok(viewModel);
+        }
+        public IHttpActionResult PostEditJobTitle([FromBody] JobTitleParams model)
+        {
+            NewJobTitleVM viewModel = new NewJobTitleVM();
+
+            // check if jobtitle exist
+            if ((_unitOfWork.Resources.GetJobTitleById(model.Id)) == null)
+            {
+                viewModel.Feedback = "notfound";
+            }
+
+            // check if jobtitle name is not empty
+            if (model.JobtitleName == "")
+            {
+                viewModel.Feedback = "required";
+                return Ok(viewModel);
+            }
+
+            // check if jobtitle name is unique
+            if (_unitOfWork.Resources.IsJobTitleNameExists(model.Id, model.JobtitleName))
+            {
+                viewModel.Feedback = "taken";
+                return Ok(viewModel);
+            }
+
+            // Update the jobtitle
+            JobTitle jobtitle = _unitOfWork.Resources.UpdateJobTitle(model.Id, model.JobtitleName);
+
+            // Construct the model
+            viewModel.Id = jobtitle.Id;
+            viewModel.JobtitleName = jobtitle.Name;
+            viewModel.Feedback = "success";
+            viewModel.Index = 3;
+
+            return Ok(viewModel);
+        }
+        public IHttpActionResult PostDeleteJobTitle([FromBody] StateParams model)
+        {
+            _unitOfWork.Resources.DeleteJobTitle(model.id);
             return Ok();
         }
 

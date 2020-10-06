@@ -11,6 +11,7 @@ using System.Web.Http;
 
 namespace AprraisalApplication.Controllers.api
 {
+    [Authorize]
     public class AppraisalController : ApiController
     {
         public readonly ApplicationDbContext db;
@@ -57,28 +58,28 @@ namespace AprraisalApplication.Controllers.api
             return Ok();
         }
 
-        public IHttpActionResult PostRejectAppraisalToAppraisee([FromBody] SectionScoresParams model)
+        public async Task<IHttpActionResult> PostRejectAppraisalToAppraisee([FromBody] SectionScoresParams model)
         {
-            _unitOfWork.Appraisal.RejectAppraisalToAppraisee(model);
-            return Ok();
+            var response = await _unitOfWork.Appraisal.RejectAppraisalToAppraisee(model);
+            return Ok(response);
         }
         
-        public IHttpActionResult PostRejectAppraisalCommentsToAppraisee([FromBody] SectionScoresParams model)
+        public async Task<IHttpActionResult> PostRejectAppraisalCommentsToAppraisee([FromBody] SectionScoresParams model)
         {
-            _unitOfWork.Appraisal.RejectAppraisalCommentToAppraisee(model);
-            return Ok();
+            var response = await _unitOfWork.Appraisal.RejectAppraisalCommentToAppraisee(model);
+            return Ok(response);
         }
         //
-        public IHttpActionResult PostRejectAppraisalToSupervisor([FromBody] SectionScoresParams model)
+        public async Task<IHttpActionResult> PostRejectAppraisalToSupervisor([FromBody] SectionScoresParams model)
         {
-            _unitOfWork.Appraisal.RejectAppraisalToSupervisor(model);
-            return Ok();
+            var response = await _unitOfWork.Appraisal.RejectAppraisalToSupervisor(model);
+            return Ok(response);
         }
 
-        public IHttpActionResult PostRejectAppraisalToHod([FromBody] SectionScoresParams model)
+        public async Task<IHttpActionResult> PostRejectAppraisalToHod([FromBody] SectionScoresParams model)
         {
-            _unitOfWork.Appraisal.RejectAppraisalToHod(model);
-            return Ok();
+            var response = await _unitOfWork.Appraisal.RejectAppraisalToHod(model);
+            return Ok(response);
         }
 
         public IHttpActionResult PostRemoveSectionResultDetail([FromBody] SectionResultParams model)
@@ -87,10 +88,10 @@ namespace AprraisalApplication.Controllers.api
             return Ok();
         }
 
-        public IHttpActionResult PostResubmitAppraisalToSupervisor([FromBody] SubmitAppraisalParams model)
+        public async Task<IHttpActionResult> PostResubmitAppraisalToSupervisor([FromBody] SubmitAppraisalParams model)
         {
-            _unitOfWork.Appraisal.ResubmitAppraisalToSupervisor(model);
-            return Ok();
+            var response = await _unitOfWork.Appraisal.ResubmitAppraisalToSupervisor(model);
+            return Ok(response);
         }
 
         public async Task<IHttpActionResult> PostEnterAppraiseeComment([FromBody] SubmitAppraisalParams model)
@@ -105,21 +106,21 @@ namespace AprraisalApplication.Controllers.api
             return Ok(response);
         }
 
-        public IHttpActionResult PostEnterHodComment([FromBody] SubmitAppraisalParams model)
+        public async Task<IHttpActionResult> PostEnterHodComment([FromBody] SubmitAppraisalParams model)
         {
-            _unitOfWork.Appraisal.SaveHodComment(model);
-            return Ok();
+            var response = await _unitOfWork.Appraisal.SaveHodComment(model);
+            return Ok(response);
         }
-        public IHttpActionResult PostEnterHRComment([FromBody] SubmitAppraisalParams model)
+        public async Task<IHttpActionResult> PostEnterHRComment([FromBody] SubmitAppraisalParams model)
         {
-            _unitOfWork.Appraisal.SaveHrComment(model);
-            return Ok();
+            var response = await _unitOfWork.Appraisal.SaveHrComment(model);
+            return Ok(response);
         }
 
-        public IHttpActionResult PostEnterMdComment([FromBody] SubmitAppraisalParams model)
+        public async Task<IHttpActionResult> PostEnterMdComment([FromBody] SubmitAppraisalParams model)
         {
-            _unitOfWork.Appraisal.SaveMdComment(model);
-            return Ok();
+            var response = await _unitOfWork.Appraisal.SaveMdComment(model);
+            return Ok(response);
         }
     }
 }

@@ -26,6 +26,7 @@ namespace AprraisalApplication.Controllers
             _unitOfWork = new UnitOfWork(db);
         }
 
+        [Authorize(Roles = "HR")]
         [ActionName("new-appraisal")]
         public ActionResult NewAppraisal()
         {
@@ -43,6 +44,7 @@ namespace AprraisalApplication.Controllers
             return View("NewAppraisal", model);
         }
 
+        [Authorize(Roles = "HR")]
         [ActionName("new-appraisal")]
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult NewAppraisal(NewAppraisalVM model)
@@ -80,7 +82,8 @@ namespace AprraisalApplication.Controllers
 
             return View("NewAppraisal", model);
         }
-    
+
+        [Authorize(Roles = "HR")]
         [ActionName("initiated-appraisals")]
         public ActionResult InitiatedAppraisals()
         {
@@ -88,6 +91,7 @@ namespace AprraisalApplication.Controllers
             return View("InitiatedAppraisals", model);
         }
 
+        [Authorize(Roles = "HR")]
         [ActionName("view-appraisal")]
         public ActionResult ViewAppraisal(string slug)
         {
@@ -104,6 +108,7 @@ namespace AprraisalApplication.Controllers
             return View("ViewAppraisal", model);
         }
 
+        [Authorize(Roles = "HR")]
         [ActionName("edit-appraisal")]
         public ActionResult EditAppraisal(string slug)
         {
@@ -310,7 +315,8 @@ namespace AprraisalApplication.Controllers
             };
             return View("SupervisorMakesCorrections", model);
         }
-        
+
+        [Authorize(Roles = "HR")]
         [ActionName("group-participants")]
         public ActionResult GroupParticipants(string slug)
         {
@@ -327,7 +333,8 @@ namespace AprraisalApplication.Controllers
             };
             return View("GroupParticipants", model);
         }
-        
+
+        [Authorize(Roles = "HR")]
         [ActionName("view-participants-hr")]
         public ActionResult ViewParticipants(int d, string s)
         {
@@ -345,7 +352,8 @@ namespace AprraisalApplication.Controllers
             };
             return View("ViewParticipants", model);
         }
-        
+
+        [Authorize(Roles = "HR")]
         [ActionName("hr-comments")]
         public ActionResult HRComments(string slug, string n)
         {
@@ -372,7 +380,7 @@ namespace AprraisalApplication.Controllers
             };
             return View("HRComments", model);
         }
-    
+        
         [ActionName("view-previous-appraisal")]
         public ActionResult ViewPreviousAppraisal(string slug)
         {
@@ -406,6 +414,7 @@ namespace AprraisalApplication.Controllers
             };
         }
 
+        [Authorize(Roles = "HR")]
         [ActionName("view-appraisal-pdf")]
         public ActionResult ViewAppraisalPDF(string u, string s)
         {

@@ -8,6 +8,7 @@ namespace AprraisalApplication.Models.MigrationModels
 {
     public class State
     {
+
         public int Id { get; set; }
 
         [MaxLength(255)]
@@ -20,5 +21,17 @@ namespace AprraisalApplication.Models.MigrationModels
         public string ZoneCode { get; set; }
         public int TransId { get; set; }
         public bool IsDeleted { get; set; }
+
+        public State()
+        {
+
+        }
+        public State(string stateName)
+        {
+            Code = "";
+            Description = stateName;
+            IsDeleted = false;
+            TransId = 0;
+        }
     }
 }

@@ -13,6 +13,7 @@ namespace AprraisalApplication.Controllers
 {
     [Authorize]
     [EmailConfirmation]
+    [CompleteYourProfile]
     public class ManageController : Controller
     {
         private ApplicationSignInManager _signInManager;

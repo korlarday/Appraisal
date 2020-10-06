@@ -195,7 +195,7 @@ namespace AprraisalApplication.Repositories
             return db.NewAppraisals.Where(x => x.AppraisalTitle == appraisalTitle).FirstOrDefault();
         }
 
-        internal void RejectAppraisalToHod(SectionScoresParams model)
+        internal async Task<string> RejectAppraisalToHod(SectionScoresParams model)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -205,6 +205,8 @@ namespace AprraisalApplication.Repositories
                     {
                         // first get the appraisee
                         Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.AppraiseePersonalData.Employee)
+                                                            .Include(x => x.AppraiserPersonalData.Appraiser)
                                                             .Include(x => x.AppraiseeProgress)
                                                             .SingleOrDefault();
                         string userId = HttpContext.Current.User.Identity.GetUserId();
@@ -218,7 +220,7 @@ namespace AprraisalApplication.Repositories
                         var progress = appraisee.AppraiseeProgress;
                         if (model.RejectionType == "hod")
                         {
-                            if(UserManager.IsInRole(appraisee.Employee.ApplicationUserId, PositionsCS.Hod))
+                            if(UserManager.IsInRole(appraisee.Employee.ApplicationUserId, RoleModel.Hod))
                             {
                                 // i.e if the appraisee is HOD, then return the appraisal to him as an appraisee and not as HOD
                                 progress.SupervisorReject = true;
@@ -254,9 +256,103 @@ namespace AprraisalApplication.Repositories
 
                         AppraiseeRejection rejection = new AppraiseeRejection(model.AppraiseeId, model.RejectionReason, employee.Id, PositionsCS.Hr, rejectTo);
                         context.AppraiseeRejections.Add(rejection);
+                        context.SaveChanges();
+
+                        // get the hod
+                        int departmentId = appraisee.AppraiseePersonalData.Employee.DepartmentId;
+                        Employee hodEmp = new Employee();
+
+                        var deptList = db.Employees.Where(x => x.AccountDisabled == false && x.DepartmentId == departmentId)
+                                                    .ToList();
+                        var hodRole = db.Roles.Where(x => x.Name == RoleModel.Hod).SingleOrDefault();
+                        foreach (var emp in deptList)
+                        {
+                            if (UserManager.IsInRole(employee.ApplicationUserId, RoleModel.Hod))
+                            {
+                                hodEmp = emp;
+                                break;
+                            }
+                        }
+                        // send email notifications
+                        if (model.RejectionType == "hod")
+                        {
+                            if (UserManager.IsInRole(appraisee.Employee.ApplicationUserId, RoleModel.Hod))
+                            {
+                                // i.e if the appraisee is HOD, then return the appraisal to him as an appraisee and not as HOD
+                                // send notification to appraisee
+                                string appraiseeEmail = appraisee.AppraiseePersonalData.Employee.Email;
+                                string msg = EmailTemps.HRRejectsAppraisalToAppraisee(model.RejectionReason);
+                                string content = EmailTemps.Body(msg);
+                                await EmailServices.SendEmail(appraiseeEmail, content);
+                            }
+                            else
+                            {
+                                // i.e return the appraisal back to the HOD
+                                // send notification to the hod
+                                if (hodEmp != null)
+                                {
+                                    // send the email notification to the HOD
+                                    string appraiseeName = appraisee.AppraiseePersonalData.Employee.Firstname + " " + appraisee.AppraiseePersonalData.Employee.Lastname;
+
+                                    string hodEmail = hodEmp.Email;
+                                    string hodMsg = EmailTemps.HRRejectsAppraisalToHod(appraiseeName, model.RejectionReason);
+                                    string hodContent = EmailTemps.Body(hodMsg);
+                                    await EmailServices.SendEmail(hodEmail, hodContent);
+                                }
+
+                            }
+                        }
+                        else if (model.RejectionType == "supervisor")
+                        {
+                            // send notification to the supervisor
+                            string appraiseeName = appraisee.AppraiseePersonalData.Employee.Firstname + " " + appraisee.AppraiseePersonalData.Employee.Lastname;
+                            
+                            string supervisorEmail = appraisee.AppraiserPersonalData.Appraiser.Email;
+                            string supervisorMsg = EmailTemps.HRRejectsAppraisalToSupervisor(appraiseeName, model.RejectionReason);
+                            string supervisorContent = EmailTemps.Body(supervisorMsg);
+                            await EmailServices.SendEmail(supervisorEmail, supervisorContent);
+
+
+                            // send notification to the hod
+                            if (hodEmp != null)
+                            {
+                                // send the email notification to the HOD
+                                string hodEmail = hodEmp.Email;
+                                string hodMsg = EmailTemps.NotifyHodAboutHRRejectsAppraisalToSupervisor(appraiseeName, model.RejectionReason);
+                                string hodContent = EmailTemps.Body(hodMsg);
+                                await EmailServices.SendEmail(hodEmail, hodContent);
+                            }
+                        }
+                        else
+                        {
+                            // if rejection is to appraisee
+
+                            // send notification to appraisee
+                            string appraiseeEmail = appraisee.AppraiseePersonalData.Employee.Email;
+                            string msg = EmailTemps.HRRejectsAppraisalToAppraisee(model.RejectionReason);
+                            string content = EmailTemps.Body(msg);
+                            await EmailServices.SendEmail(appraiseeEmail, content);
+
+                            // send notification to the supervisor
+                            string appraiseeName = appraisee.AppraiseePersonalData.Employee.Firstname + " " + appraisee.AppraiseePersonalData.Employee.Lastname;
+                            string supervisorEmail = appraisee.AppraiserPersonalData.Appraiser.Email;
+                            string supervisorMsg = EmailTemps.NotifySupervisorAboutHRRejectsAppraisalToAppraisee(appraiseeName, model.RejectionReason);
+                            string supervisorContent = EmailTemps.Body(supervisorMsg);
+                            await EmailServices.SendEmail(supervisorEmail, supervisorContent);
+
+
+                            // send notification to the hod
+                            if (hodEmp != null)
+                            {
+                                // send the email notification to the HOD
+                                string hodEmail = hodEmp.Email;
+                                await EmailServices.SendEmail(hodEmail, supervisorContent);
+                            }
+                        }
 
                         context.SaveChanges();
                         dbContextTransaction.Commit();
+                        return "success";
                     }
                     catch (Exception e)
                     {
@@ -268,7 +364,7 @@ namespace AprraisalApplication.Repositories
 
         }
 
-        internal void SaveMdComment(SubmitAppraisalParams model)
+        internal async Task<string> SaveMdComment(SubmitAppraisalParams model)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -282,6 +378,7 @@ namespace AprraisalApplication.Repositories
 
                         // first get the appraisee
                         Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.AppraiseePersonalData.Employee.Department)
                                                             .Include(x => x.AppraiseeProgress)
                                                             .Include(x => x.AppraiseeComments)
                                                             .SingleOrDefault();
@@ -290,15 +387,33 @@ namespace AprraisalApplication.Repositories
                         AppraiseeProgress progress = appraisee.AppraiseeProgress;
                         progress.MDAcknowledgement = true;
 
-                        // save the progress
+                        // save the comment
                         AppraiseeComments comments = appraisee.AppraiseeComments;
                         comments.MdComment = model.MdComment;
                         comments.MdCommentDate = DateTime.Now;
                         comments.MdEmployeeId = employeeId;
+                        context.SaveChanges();
+                        // send notifications to HR
+                        var hrRole = db.Roles.Where(x => x.Name == PositionsCS.Hr).SingleOrDefault();
 
-                        
+                        var hr = context.Users.Include(x => x.Roles)
+                            .Where(x => x.AccountDisabled == false &&
+                            x.Roles.Select(r => r.RoleId).Contains(hrRole.Id))
+                            .FirstOrDefault();
+
+                        if (hr != null)
+                        {
+                            string hrEmail = hr.Email;
+                            string appraiseeName = appraisee.AppraiseePersonalData.Employee.Firstname + " " + appraisee.AppraiseePersonalData.Employee.Lastname;
+                            string department = appraisee.AppraiseePersonalData.Employee.Department.Name;
+                            string msg = EmailTemps.MdCommentsOnAppraisal(appraiseeName, department);
+                            string content = EmailTemps.Body(msg);
+                            await EmailServices.SendEmail(hrEmail, content);
+                        }
+
                         context.SaveChanges();
                         dbContextTransaction.Commit();
+                        return "success";
                     }
                     catch (Exception e)
                     {
@@ -328,7 +443,7 @@ namespace AprraisalApplication.Repositories
             return newAppraisals;
         }
 
-        internal void SaveHrComment(SubmitAppraisalParams model)
+        internal async Task<string> SaveHrComment(SubmitAppraisalParams model)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -336,12 +451,13 @@ namespace AprraisalApplication.Repositories
                 {
                     try
                     {
-                        // get the hod userId
+                        // get the hr userId
                         string userId = HttpContext.Current.User.Identity.GetUserId();
                         int employeeId = context.Employees.Where(x => x.ApplicationUserId == userId).SingleOrDefault().Id;
 
                         // first get the appraisee
                         Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.AppraiseePersonalData.Employee.Department)
                                                             .Include(x => x.AppraiseeProgress)
                                                             .Include(x => x.AppraiseeComments)
                                                             .SingleOrDefault();
@@ -384,8 +500,30 @@ namespace AprraisalApplication.Repositories
                             newAppraisal.IsCompleted = true;
                         }
 
+                        // send mail to the MD
+                        // send the email notification to the MD
+
+                        // first get the MD
+                        var mdRole = db.Roles.Where(x => x.Name == RoleModel.MD).SingleOrDefault();
+                        
+                        var md = context.Users.Include(x => x.Roles)
+                            .Where(x => x.AccountDisabled == false &&
+                            x.Roles.Select(r => r.RoleId).Contains(mdRole.Id))
+                            .FirstOrDefault();
+
+                        if(md != null)
+                        {
+                            string mdEmail = md.Email;
+                            string appraiseeName = appraisee.AppraiseePersonalData.Employee.Firstname + " " + appraisee.AppraiseePersonalData.Employee.Lastname;
+                            string department = appraisee.AppraiseePersonalData.Employee.Department.Name;
+                            string msg = EmailTemps.HrSubmitsCommentsToMd(appraiseeName, department);
+                            string content = EmailTemps.Body(msg);
+                            await EmailServices.SendEmail(mdEmail, content);
+                        }
+
                         context.SaveChanges();
                         dbContextTransaction.Commit();
+                        return "success";
                     }
                     catch (Exception e)
                     {
@@ -462,7 +600,7 @@ namespace AprraisalApplication.Repositories
 
         }
 
-        internal void RejectAppraisalToSupervisor(SectionScoresParams model)
+        internal async Task<string> RejectAppraisalToSupervisor(SectionScoresParams model)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -472,6 +610,8 @@ namespace AprraisalApplication.Repositories
                     {
                         // first get the appraisee
                         Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.AppraiseePersonalData.Employee)
+                                                            .Include(x => x.AppraiserPersonalData.Appraiser)
                                                             .Include(x => x.AppraiseeProgress)
                                                             .SingleOrDefault();
                         string userId = HttpContext.Current.User.Identity.GetUserId();
@@ -500,9 +640,30 @@ namespace AprraisalApplication.Repositories
 
                         AppraiseeRejection rejection = new AppraiseeRejection(model.AppraiseeId, model.RejectionReason, employee.Id, PositionsCS.Hod, rejectTo);
                         context.AppraiseeRejections.Add(rejection);
+                        context.SaveChanges();
+
+                        // send email notification
+                        if (model.RejectionType == "supervisor")
+                        {
+                            // send email notification to supervisor
+                            string appraiserEmail = appraisee.AppraiserPersonalData.Appraiser.Email;
+                            string appraiseeName = appraisee.AppraiseePersonalData.Employee.Firstname + " " + appraisee.AppraiseePersonalData.Employee.Lastname;
+                            string msg = EmailTemps.HodRejectsAppraisalToSupervisor(appraiseeName, model.RejectionReason);
+                            string content = EmailTemps.Body(msg);
+                            await EmailServices.SendEmail(appraiserEmail, content);
+                        }
+                        else
+                        {
+                            // send email notification to appraisee
+                            string appraiseeEmail = appraisee.AppraiseePersonalData.Employee.Email;
+                            string msg = EmailTemps.HodRejectsAppraisalToAppraisee(model.RejectionReason);
+                            string content = EmailTemps.Body(msg);
+                            await EmailServices.SendEmail(appraiseeEmail, content);
+                        }
 
                         context.SaveChanges();
                         dbContextTransaction.Commit();
+                        return "success";
                     }
                     catch (Exception e)
                     {
@@ -514,7 +675,7 @@ namespace AprraisalApplication.Repositories
 
         }
 
-        internal void RejectAppraisalCommentToAppraisee(SectionScoresParams model)
+        internal async Task<string> RejectAppraisalCommentToAppraisee(SectionScoresParams model)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -524,6 +685,7 @@ namespace AprraisalApplication.Repositories
                     {
                         // first get the appraisee
                         Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.AppraiseePersonalData.Employee)
                                                             .Include(x => x.AppraiseeProgress)
                                                             .SingleOrDefault();
                         string userId = HttpContext.Current.User.Identity.GetUserId();
@@ -552,8 +714,15 @@ namespace AprraisalApplication.Repositories
                             progress.HODReject = false;
                         }
 
+                        // send email notification to appraisee
+                        string appraiseeEmail = appraisee.AppraiseePersonalData.Employee.Email;
+                        string msg = EmailTemps.SupervisorRejectsAppraisalToAppraisee(model.RejectionReason);
+                        string content = EmailTemps.Body(msg);
+                        await EmailServices.SendEmail(appraiseeEmail, content);
+
                         context.SaveChanges();
                         dbContextTransaction.Commit();
+                        return "success";
                     }
                     catch (Exception e)
                     {
@@ -564,7 +733,7 @@ namespace AprraisalApplication.Repositories
             }
 
         }
-        internal void SaveHodComment(SubmitAppraisalParams model)
+        internal async Task<string> SaveHodComment(SubmitAppraisalParams model)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -574,10 +743,11 @@ namespace AprraisalApplication.Repositories
                     {
                         // get the hod userId
                         string userId = HttpContext.Current.User.Identity.GetUserId();
-                        int employeeId = context.Employees.Where(x => x.ApplicationUserId == userId).SingleOrDefault().Id;
+                        var employee = context.Employees.Where(x => x.ApplicationUserId == userId).SingleOrDefault();
 
                         // first get the appraisee
                         Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.AppraiseePersonalData.Employee.Department)
                                                             .Include(x => x.AppraiseeProgress)
                                                             .Include(x => x.AppraiseeComments)
                                                             .Include(x => x.AppraiseeRejections)
@@ -592,7 +762,7 @@ namespace AprraisalApplication.Repositories
                         AppraiseeComments comments = appraisee.AppraiseeComments;
                         comments.HodComment = model.HodComment;
                         comments.HodCommentDate = DateTime.Now;
-                        comments.HodEmployeeId = employeeId;
+                        comments.HodEmployeeId = employee.Id;
 
                         // change the rejection status
                         List<AppraiseeRejection> rejections = appraisee.AppraiseeRejections.Where(x => x.New == true).ToList();
@@ -604,8 +774,28 @@ namespace AprraisalApplication.Repositories
                             }
                         }
 
+                        // send notifications to HR
+                        var hrRole = db.Roles.Where(x => x.Name == RoleModel.Hr).SingleOrDefault();
+
+                        var hr = context.Users.Include(x => x.Roles)
+                            .Where(x => x.AccountDisabled == false &&
+                            x.Roles.Select(r => r.RoleId).Contains(hrRole.Id))
+                            .FirstOrDefault();
+
+                        if (hr != null)
+                        {
+                            string hodName = employee.Firstname + " " + employee.Lastname;
+                            string hrEmail = hr.Email;
+                            string appraiseeName = appraisee.AppraiseePersonalData.Employee.Firstname + " " + appraisee.AppraiseePersonalData.Employee.Lastname;
+                            string department = appraisee.AppraiseePersonalData.Employee.Department.Name;
+                            string msg = EmailTemps.HODCommentsOnAppraisal(appraiseeName, department, hodName);
+                            string content = EmailTemps.Body(msg);
+                            await EmailServices.SendEmail(hrEmail, content);
+                        }
+
                         context.SaveChanges();
                         dbContextTransaction.Commit();
+                        return "success";
                     }
                     catch (Exception e)
                     {
@@ -615,7 +805,6 @@ namespace AprraisalApplication.Repositories
                 }
             }
         }
-
 
         internal List<DepartmentAndParticipants> GetAppraisalDeptAndParticipants(int newAppraisalId)
         {
@@ -739,7 +928,7 @@ namespace AprraisalApplication.Repositories
                         AppraiseeProgress progress = appraisee.AppraiseeProgress;
                         bool submitToHod = true;
                         // check if appraisee has HOD role
-                        if(UserManager.IsInRole(appraisee.Employee.ApplicationUserId, PositionsCS.Hod))
+                        if(UserManager.IsInRole(appraisee.Employee.ApplicationUserId, RoleModel.Hod))
                         {
                             progress.SupervisorSubmit = true;
                             progress.HODSubmit = true;
@@ -767,10 +956,10 @@ namespace AprraisalApplication.Repositories
 
                             var deptList = db.Employees.Where(x => x.AccountDisabled == false && x.DepartmentId == departmentId)
                                                         .ToList();
-                            var hodRole = db.Roles.Where(x => x.Name == PositionsCS.Hod).SingleOrDefault();
+                            var hodRole = db.Roles.Where(x => x.Name == RoleModel.Hod).SingleOrDefault();
                             foreach (var employee in deptList)
                             {
-                                if (UserManager.IsInRole(employee.ApplicationUserId, PositionsCS.Hod))
+                                if (UserManager.IsInRole(employee.ApplicationUserId, RoleModel.Hod))
                                 {
                                     hodEmp = employee;
                                     break;
@@ -784,12 +973,12 @@ namespace AprraisalApplication.Repositories
                                 string appraiseeName = appraisee.AppraiseePersonalData.Employee.Firstname + " " + appraisee.AppraiseePersonalData.Employee.Lastname;
                                 string msg = EmailTemps.SupervisorSubmitsToHod(appraiseeName);
                                 string content = EmailTemps.Body(msg);
-                                await EmailServices.SendEmail(appraiseeName, content);
+                                await EmailServices.SendEmail(hodEmail, content);
                             }
                         }
                         else
                         {
-                            var hrRole = db.Roles.Where(x => x.Name == PositionsCS.Hr).SingleOrDefault();
+                            var hrRole = db.Roles.Where(x => x.Name == RoleModel.Hr).SingleOrDefault();
                             // send nofication to HR
                             var hr = context.Users.Include(x => x.Roles)
                                 .Where(x => x.AccountDisabled == false &&
@@ -802,7 +991,7 @@ namespace AprraisalApplication.Repositories
                                 string appraiseeName = appraisee.AppraiseePersonalData.Employee.Firstname + " " + appraisee.AppraiseePersonalData.Employee.Lastname;
                                 string msg = EmailTemps.SupervisorSubmitsToHr(appraiseeName);
                                 string content = EmailTemps.Body(msg);
-                                await EmailServices.SendEmail(appraiseeName, content);
+                                await EmailServices.SendEmail(hrEmail, content);
                             }
                         }
                         context.SaveChanges();
@@ -878,7 +1067,7 @@ namespace AprraisalApplication.Repositories
 
         }
 
-        internal void ResubmitAppraisalToSupervisor(SubmitAppraisalParams model)
+        internal async Task<string> ResubmitAppraisalToSupervisor(SubmitAppraisalParams model)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -888,6 +1077,8 @@ namespace AprraisalApplication.Repositories
                     {
                         // first get the appraisee
                         Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.AppraiseePersonalData.Employee)
+                                                            .Include(x => x.AppraiserPersonalData.Appraiser)
                                                             .Include(x => x.InitiatedAppraisalTemplate.InitiatedTemplateSections
                                                                             .Select(s => s.InitiatedSectionDetails
                                                                             .Select(b => b.InitiatedSectionDetailBreakdowns)))
@@ -997,9 +1188,16 @@ namespace AprraisalApplication.Repositories
                             item.New = false;
                         }
 
+                        // send the supervisor an email
+                        string appraiseeName = appraisee.AppraiseePersonalData.Employee.Firstname + " " + appraisee.AppraiseePersonalData.Employee.Lastname;
+                        string supervisorEmail = appraisee.AppraiserPersonalData.Appraiser.Email;
+                        string emailMsg = EmailTemps.AppraiseeResubmitsToSupervisor(appraiseeName);
+                        string content = EmailTemps.Body(emailMsg);
+                        await EmailServices.SendEmail(supervisorEmail, content);
 
                         context.SaveChanges();
                         dbContextTransaction.Commit();
+                        return "success";
                     }
                     catch (Exception e)
                     {
@@ -1018,7 +1216,7 @@ namespace AprraisalApplication.Repositories
             db.SaveChanges();
         }
 
-        internal void RejectAppraisalToAppraisee(SectionScoresParams model)
+        internal async Task<string> RejectAppraisalToAppraisee(SectionScoresParams model)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -1028,6 +1226,7 @@ namespace AprraisalApplication.Repositories
                     {
                         // first get the appraisee
                         Appraisee appraisee = context.Appraisees.Where(x => x.Id == model.AppraiseeId)
+                                                            .Include(x => x.AppraiseePersonalData.Employee)
                                                             .Include(x => x.AppraiseeProgress)
                                                             .SingleOrDefault();
                         string userId = HttpContext.Current.User.Identity.GetUserId();
@@ -1042,8 +1241,15 @@ namespace AprraisalApplication.Repositories
                         progress.SupervisorSubmit = false;
                         progress.FeedbackFromAppraisee = false;
 
+                        // send email notification to appraisee
+                        string appraiseeEmail = appraisee.AppraiseePersonalData.Employee.Email;
+                        string msg = EmailTemps.SupervisorRejectsAppraisalToAppraisee(model.RejectionReason);
+                        string content = EmailTemps.Body(msg);
+                        await EmailServices.SendEmail(appraiseeEmail, content);
+
                         context.SaveChanges();
                         dbContextTransaction.Commit();
+                        return "success";
                     }
                     catch (Exception e)
                     {

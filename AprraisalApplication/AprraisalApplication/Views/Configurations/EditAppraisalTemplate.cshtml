@@ -1160,12 +1160,12 @@
                                     };
                                     $itemBreakdowns.push(object);
                                 });
+                                if ($breakdownTotal != $weight) {
+                                    $isBreakdownScoreValid = false;
+                                    console.log($breakdownTotal, $weight);
+                                }
                             }
 
-                            if ($breakdownTotal != $weight) {
-                                $isBreakdownScoreValid = false;
-                                console.log($breakdownTotal, $weight);
-                            }
 
                             var obj = {
                                 detailId: $detailId,
