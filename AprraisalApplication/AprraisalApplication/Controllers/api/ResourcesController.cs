@@ -333,5 +333,152 @@ namespace AprraisalApplication.Controllers.api
             return Ok();
         }
 
+        //
+        public IHttpActionResult PostAddGrade([FromBody] GradeParams model)
+        {
+            NewGradeVM viewModel = new NewGradeVM();
+
+            // check if grade name is not empty
+            if (model.GradeName == "" || model.GradeName == null)
+            {
+                viewModel.Feedback = "required";
+                return Ok(viewModel);
+            }
+
+            // check if grade name is unique
+            if ((_unitOfWork.Resources.GetGradeByName(model.GradeName)) != null)
+            {
+                viewModel.Feedback = "taken";
+                return Ok(viewModel);
+            }
+
+            // Store the new grade
+            Grade newGrade = new Grade(model.GradeName);
+
+            _unitOfWork.Resources.AddNewGrade(newGrade);
+
+            // Construct the model
+            viewModel.Id = newGrade.Id;
+            viewModel.GradeName = model.GradeName;
+            viewModel.Feedback = "success";
+            viewModel.Index = _unitOfWork.Resources.GetGrades().Count();
+
+            return Ok(viewModel);
+        }
+        public IHttpActionResult PostEditGrade([FromBody] GradeParams model)
+        {
+            NewGradeVM viewModel = new NewGradeVM();
+
+            // check if grade exist
+            if ((_unitOfWork.Resources.GetGradeById(model.Id)) == null)
+            {
+                viewModel.Feedback = "notfound";
+            }
+
+            // check if name name is not empty
+            if (model.GradeName == "")
+            {
+                viewModel.Feedback = "required";
+                return Ok(viewModel);
+            }
+
+            // check if grade name is unique
+            if (_unitOfWork.Resources.IsGradeNameExists(model.Id, model.GradeName))
+            {
+                viewModel.Feedback = "taken";
+                return Ok(viewModel);
+            }
+
+            // Update the grade name
+            Grade grade = _unitOfWork.Resources.UpdateGrade(model.Id, model.GradeName);
+
+            // Construct the model
+            viewModel.Id = grade.Id;
+            viewModel.GradeName = grade.Name;
+            viewModel.Feedback = "success";
+            viewModel.Index = 3;
+
+            return Ok(viewModel);
+        }
+        public IHttpActionResult PostDeleteGrade([FromBody] GradeParams model)
+        {
+            _unitOfWork.Resources.DeleteGrade(model.Id);
+            return Ok();
+        }
+
+
+        //
+        public IHttpActionResult PostAddQualification([FromBody] QualificationParams model)
+        {
+            NewQualificationVM viewModel = new NewQualificationVM();
+
+            // check if qualification name is not empty
+            if (model.QualificationName == "" || model.QualificationName == null)
+            {
+                viewModel.Feedback = "required";
+                return Ok(viewModel);
+            }
+
+            // check if qualification name is unique
+            if ((_unitOfWork.Resources.GetQualificationByName(model.QualificationName)) != null)
+            {
+                viewModel.Feedback = "taken";
+                return Ok(viewModel);
+            }
+
+            // Store the new qualification
+            Qualification newQualification = new Qualification(model.QualificationName);
+
+            _unitOfWork.Resources.AddNewQualification(newQualification);
+
+            // Construct the model
+            viewModel.Id = newQualification.Id;
+            viewModel.QualificationName = model.QualificationName;
+            viewModel.Feedback = "success";
+            viewModel.Index = _unitOfWork.Resources.GetAllQualifications().Count();
+
+            return Ok(viewModel);
+        }
+        public IHttpActionResult PostEditQualification([FromBody] QualificationParams model)
+        {
+            NewQualificationVM viewModel = new NewQualificationVM();
+
+            // check if qualification exist
+            if ((_unitOfWork.Resources.GetQualificationById(model.Id)) == null)
+            {
+                viewModel.Feedback = "notfound";
+            }
+
+            // check if qualification name is not empty
+            if (model.QualificationName == "")
+            {
+                viewModel.Feedback = "required";
+                return Ok(viewModel);
+            }
+
+            // check if qualification name is unique
+            if (_unitOfWork.Resources.IsQualificationNameExists(model.Id, model.QualificationName))
+            {
+                viewModel.Feedback = "taken";
+                return Ok(viewModel);
+            }
+
+            // Update the qualification name
+            Qualification qualification = _unitOfWork.Resources.UpdateQualification(model.Id, model.QualificationName);
+
+            // Construct the model
+            viewModel.Id = qualification.Id;
+            viewModel.QualificationName = qualification.Name;
+            viewModel.Feedback = "success";
+            viewModel.Index = 3;
+
+            return Ok(viewModel);
+        }
+        public IHttpActionResult PostDeleteQualification([FromBody] QualificationParams model)
+        {
+            _unitOfWork.Resources.DeleteQualification(model.Id);
+            return Ok();
+        }
+
     }
 }

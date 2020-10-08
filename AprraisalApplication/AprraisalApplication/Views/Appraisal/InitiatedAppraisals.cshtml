@@ -58,7 +58,7 @@
                                                 @item.DateInitiated.ToString("dd-MMM-yyyy")
                                             </td>
                                             <td class="text-center">
-                                                <a href="/appraisal/group-participants/@item.Slug" class="btn btn-sm btn-alt-dark" data-toggle="tooltip" title="View Participants">@item.AppraisalStaffs.Count()</a>
+                                                <a href="/appraisal/all-participants-hr/@item.Slug" class="btn btn-sm btn-alt-dark" data-toggle="tooltip" title="View Participants">@item.AppraisalStaffs.Count()</a>
                                             </td>
                                             <td class="">
                                                 @if (!item.IsCompleted)
@@ -72,11 +72,17 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="btn-group">
-                                                    <a href="/appraisal/view-appraisal/@item.Slug" class="btn btn-sm btn-primary" data-toggle="tooltip" title="View">
+                                                    <a href="/appraisal/view-appraisal/@item.Slug" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="View Appraisal Details">
                                                         <i class="fa fa-eye"></i>
                                                     </a>
-                                                    <a href="/appraisal/edit-appraisal/@item.Slug" class="btn btn-sm btn-outline-secondary" data-toggle="tooltip" title="Edit">
+                                                    <a href="/appraisal/edit-appraisal/@item.Slug" class="btn btn-sm btn-outline-secondary" data-toggle="tooltip" title="Edit Appraisal">
                                                         <i class="fa fa-pencil-alt"></i>
+                                                    </a>
+                                                    <a href="/appraisal/all-participants-hr/@item.Slug" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="All Participants">
+                                                        <i class="fa fa-list"></i>
+                                                    </a>
+                                                    <a href="/appraisal/group-participants/@item.Slug" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="Group participants by department">
+                                                        <i class="fa fa-border-all"></i>
                                                     </a>
                                                     @*<button type="button" class="btn btn-sm btn-danger delete_template" data-templateId="@item.Id" data-toggle="tooltip" title="Delete">
                                                         <i class="fa fa-times"></i>

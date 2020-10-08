@@ -131,6 +131,7 @@
             <h3 class="block-title">Enter Comments</h3>
             <span style="display:none" id="slug">@Model.NewAppraisal.Slug</span>
             <span style="display:none" id="departmentId">@Model.Employee.DepartmentId</span>
+            <span style="display:none" id="fromAllParticipants">@Model.FromAllParticipants</span>
         </div>
         <div class="block-content">
             <div class="block block-rounded">
@@ -514,7 +515,7 @@
                                                                             <li class="mt-1 row">
                                                                                 <div class="col-10">
                                                                                     <span class="breakdown-title">@breakdown.Title</span>
-                                                                                    <input type="number" data-breakdownId="@breakdown.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;display:inline;" disabled />
+                                                                                    <input type="number" data-breakdownId="@breakdown.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;@(breakdown.ExpectedValueId == 3 ? "display:none":"display:inline;")" disabled />
 
                                                                                 </div>
                                                                                 <div class="col-2">
@@ -826,6 +827,7 @@
     <script>
         $(function () {
             var $texts = $(".capitalize-text");
+            var $fromAllParticipants = $("#fromAllParticipants").text();
             $.each($texts, function () {
                 $(this).text(capitalize($(this).text()));
             })
@@ -878,7 +880,11 @@
                                 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/mdappraisal/view-participants-md?d=' + $departmentId + '&s=' + $slug;
+                                    if ($fromAllParticipants == "True") {
+                                        window.location.href = '/mdappraisal/all-participants-md/' + $slug;
+                                    } else {
+                                        window.location.href = '/mdappraisal/view-participants-md?d=' + $departmentId + '&s=' + $slug;
+                                    }
                                 }
                             });
                         });

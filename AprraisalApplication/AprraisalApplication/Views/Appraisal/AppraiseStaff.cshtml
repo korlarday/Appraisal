@@ -498,16 +498,16 @@
                                                                         @foreach (var breakdown in detail.InitiatedSectionDetailBreakdowns)
                                                                         {
                                                                             var result = detailResult.ItemBreakdownResults.Where(x => x.InitiatedSectionDetailBreakdownId == breakdown.Id).SingleOrDefault();
-                                                                            <li class="mt-1" style="overflow:hidden;" data-isScore="@breakdown.IsScore">
+                                                                            <li class="mt-1" style="overflow:hidden;" data-isScore="@breakdown.IsScore" data-expectedValue="@breakdown.ExpectedValueId">
                                                                                 <div style="float:left;width:70%;overflow-wrap:normal">
                                                                                     <span class="breakdown-title">@breakdown.Title</span>
                                                                                     @if (templateSection.Optional)
                                                                                     {
-                                                                                        <input type="number" data-breakdownId="@result.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;display:inline;" @(currentResultSection.SectionFilled == false ? "disabled" : "") />
+                                                                                        <input type="number" data-breakdownId="@result.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;@(breakdown.ExpectedValueId == 3 ? "display:none":"display:inline;")" @(currentResultSection.SectionFilled == false ? "disabled" : "") />
                                                                                     }
                                                                                     else
                                                                                     {
-                                                                                        <input type="number" data-breakdownId="@result.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;display:inline;" />
+                                                                                        <input type="number" data-breakdownId="@result.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;@(breakdown.ExpectedValueId == 3 ? "display:none":"display:inline;")" />
                                                                                     }
                                                                                 </div>
                                                                                 @if (breakdown.IsScore)
@@ -1082,16 +1082,18 @@
                             var $sectionDetailId = parseInt($(this).attr("data-sectionResultDetailId"));
                             var $breakdownTotalScore = parseFloat($(this).find(".enter-score").text());
 
-                            // test start
+                            // 
                             var $breakdowns = $(this).find("input.input-breakdown");
                             var $breakdownArray = [];
                             $.each($breakdowns, function () {
-                                var $breakdownValue = parseInt($(this).val());
+                                var $breakdownValue = $(this).val();
                                 var $text = $(this).closest("li").find(".breakdown-title").text();
                                 var $score = parseFloat($(this).closest("li").find(".breakdown-score").val());
                                 var $isScore = $(this).closest("li").attr("data-isScore");
+                                var $expectedValueType = $(this).closest("li").attr("data-expectedValue");
+
                                 if ($isScore == 'True') {
-                                    if ($score == '' || isNaN($score)) {
+                                    if (isNaN($score)) {
                                         $breakdownValid = false;
                                     }
                                 }
@@ -1104,15 +1106,18 @@
                                 }
                                 $breakdownArray.push(obj);
                                 if ($validateSection) {
-                                    if ($breakdownValue == '' || $breakdownValue == null || isNaN($breakdownValue)) {
-                                        $quantitativeValid = false;
+                                    // if expected value type is not equal to "no value" i.e type 3, then check for validation
+                                    if ($expectedValueType != 3) {
+                                        if (isNaN($breakdownValue)) {
+                                            $quantitativeValid = false;
+                                        }
                                     }
                                 }
                             });
-                            // test end
+                            // 
 
                             if ($validateSection) {
-                                if ($breakdownTotalScore == null || isNaN($breakdownTotalScore)) {
+                                if (isNaN($breakdownTotalScore)) {
                                     $ratingsValid = false;
                                 }
                             }
@@ -1360,6 +1365,7 @@
                                 var $breakdownValue = parseInt($(this).val());
                                 var $text = $(this).closest("li").find(".breakdown-title").text();
                                 var $breakdownId = parseInt($(this).attr("data-breakdownId"));
+                                var $expectedValueType = $(this).closest("li").attr("data-expectedValue");
                                 var obj = {
                                     breakdownValue: $breakdownValue,
                                     breakdownText: $text,
@@ -1367,8 +1373,10 @@
                                 }
                                 $breakdownArray.push(obj);
                                 if ($validateSection) {
-                                    if ($breakdownValue == '' || $breakdownValue == null || isNaN($breakdownValue)) {
-                                        $quantitativeValid = false;
+                                    if ($expectedValueType != 3) {
+                                        if (isNaN($breakdownValue)) {
+                                            $quantitativeValid = false;
+                                        }
                                     }
                                 }
                             });

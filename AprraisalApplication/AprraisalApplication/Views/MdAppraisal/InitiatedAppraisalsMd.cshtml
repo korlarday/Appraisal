@@ -57,7 +57,7 @@
                                                 @item.DateInitiated.ToString("dd-MMM-yyyy")
                                             </td>
                                             <td class="text-center">
-                                                <a href="/mdappraisal/group-participants-md/@item.Slug" class="btn btn-sm btn-alt-dark" data-toggle="tooltip" title="View Participants">@item.AppraisalStaffs.Count()</a>
+                                                <a href="/mdappraisal/all-participants-md/@item.Slug" class="btn btn-sm btn-alt-dark" data-toggle="tooltip" title="View Participants">@item.AppraisalStaffs.Count()</a>
                                             </td>
                                             <td class="">
                                                 @if (!item.IsCompleted)
@@ -71,11 +71,14 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="btn-group">
-                                                    <a href="/mdappraisal/view-appraisal-md/@item.Slug" class="btn btn-sm btn-outline-secondary" data-toggle="tooltip" title="View">
-                                                        details
+                                                    <a href="/mdappraisal/view-appraisal-md/@item.Slug" class="btn btn-sm btn-outline-secondary" data-toggle="tooltip" title="View Appraisal Details">
+                                                        <i class="fa fa-eye"></i>
                                                     </a>
-                                                    <a href="/mdappraisal/group-participants-md/@item.Slug" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="Participants">
-                                                        participants
+                                                    <a href="/mdappraisal/all-participants-md/@item.Slug" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="All Participants">
+                                                        <i class="fa fa-list"></i>
+                                                    </a>
+                                                    <a href="/mdappraisal/group-participants-md/@item.Slug" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="Group participants by department">
+                                                        <i class="fa fa-border-all"></i>
                                                     </a>
                                                 </div>
                                             </td>

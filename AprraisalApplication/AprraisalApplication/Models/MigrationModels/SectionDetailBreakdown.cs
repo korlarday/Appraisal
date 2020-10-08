@@ -19,7 +19,11 @@ namespace AprraisalApplication.Models.MigrationModels
             Title = itemBreakDown.ItemText;
             MaxScore = itemBreakDown.Score;
             IsScore = itemBreakDown.IsScore;
-            if(itemBreakDown.ValueType == "money")
+            if(itemBreakDown.ValueType == "no")
+            {
+                ExpectedValueId = 3;
+            }
+            else if(itemBreakDown.ValueType == "money")
             {
                 ExpectedValueId = 2;
             }
@@ -43,6 +47,10 @@ namespace AprraisalApplication.Models.MigrationModels
             Title = itemBreakdown.ItemText;
             MaxScore = itemBreakdown.Score;
             IsScore = itemBreakdown.IsScore;
+            if(itemBreakdown.ValueType == "no")
+            {
+                ExpectedValueId = 3;
+            }
             if (itemBreakdown.ValueType == "money")
             {
                 ExpectedValueId = 2;

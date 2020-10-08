@@ -15,5 +15,14 @@ namespace AprraisalApplication.Models.MigrationModels
         public string Name { get; set; }
 
         public bool IsDeleted { get; set; }
+        public Grade()
+        {
+
+        }
+        public Grade(string gradeName)
+        {
+            Name = gradeName;
+            IsDeleted = false;
+        }
     }
 }

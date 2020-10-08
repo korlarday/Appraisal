@@ -104,6 +104,27 @@ namespace AprraisalApplication.Controllers
             return View("SetJobTitles", model);
         }
 
+        [ActionName("set-grades")]
+        public ActionResult SetGrades()
+        {
+            SetGradesVM model = new SetGradesVM
+            {
+                Grades = _unitOfWork.Resources.GetGrades()
+            };
+            return View("SetGrades", model);
+        }
+
+        [ActionName("set-qualifications")]
+        public ActionResult SetQualifications()
+        {
+            SetQualificationsVM model = new SetQualificationsVM
+            {
+                Qualifications = _unitOfWork.Resources.GetAllQualifications()
+            };
+            return View("SetQualifications", model);
+        }
+
+
         [ActionName("appraisal-template-setup")]
         public ActionResult AppraisalTemplateSetup()
         {

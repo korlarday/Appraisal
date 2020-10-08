@@ -92,12 +92,12 @@
                                     <hr />
                                     <div class="row text-center">
                                         @if (item.AppraiseeProgress.AppraiseeSubmit &&
-                                            !item.AppraiseeProgress.SupervisorSubmit &&
-                                            !item.AppraiseeProgress.SupervisorReject &&
-                                            !item.AppraiseeProgress.SupervisorAskForFeedback &&
-                                            !item.AppraiseeProgress.FeedbackFromAppraisee)
+                                                        !item.AppraiseeProgress.SupervisorSubmit &&
+                                                        !item.AppraiseeProgress.SupervisorReject &&
+                                                        !item.AppraiseeProgress.SupervisorAskForFeedback &&
+                                                        !item.AppraiseeProgress.FeedbackFromAppraisee)
                                         {
-                                            <a href="/appraisal/appraise-staff?u=@item.Employee.ApplicationUserId&s=@item.NewAppraisal.Slug" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Appraise Staff</a>
+                                            <div style="margin:auto">@Html.ActionLink("Appraise Staff", "appraise-staff", "appraisal", new { u = item.Employee.ApplicationUserId, s = item.NewAppraisal.Slug }, new { @class = "btn btn-primary btn-sm", style = "display:block;margin:10px auto;" })</div>
                                         }
                                         else if (item.AppraiseeProgress.AppraiseeSubmit &&
                                             !item.AppraiseeProgress.SupervisorSubmit &&
@@ -106,15 +106,24 @@
                                             item.AppraiseeProgress.FeedbackFromAppraisee &&
                                             !item.AppraiseeProgress.HODReject)
                                         {
-                                            <a href="/appraisal/appraiser-comments?u=@item.Employee.ApplicationUserId&s=@item.NewAppraisal.Slug" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Enter Comments</a>
+                                            <div style="margin:auto">
+                                                @Html.ActionLink("Enter Comments", "appraiser-comments", "appraisal", new { u = item.Employee.ApplicationUserId, s = item.NewAppraisal.Slug }, new { @class = "btn btn-primary btn-sm", style = "display:block;margin:10px auto" });
+                                            </div>
+                                            @*<a href="/appraisal/appraiser-comments?u=@item.Employee.ApplicationUserId&s=@item.NewAppraisal.Slug" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Enter Comments</a>*@
                                         }
                                         else if (item.AppraiseeProgress.HODReject && item.AppraiseeProgress.SupervisorSubmit)
                                         {
-                                            <a href="/appraisal/supervisor-makes-corrections?u=@item.Employee.ApplicationUserId&s=@item.NewAppraisal.Slug" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Make Corrections</a>
+                                            <div style="margin:auto">
+                                                @Html.ActionLink("Make Corrections", "supervisor-makes-corrections", "appraisal", new { u = item.Employee.ApplicationUserId, s = item.NewAppraisal.Slug }, new { @class = "btn btn-primary btn-sm", style = "display:block;margin:10px auto" });
+                                            </div>
+                                            @*<a href="/appraisal/supervisor-makes-corrections?u=@item.Employee.ApplicationUserId&s=@item.NewAppraisal.Slug" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Make Corrections</a>*@
                                         }
                                         else if (item.AppraiseeProgress.HODReject && !item.AppraiseeProgress.SupervisorSubmit && !item.AppraiseeProgress.SupervisorReject)
                                         {
-                                            <a href="/appraisal/supervisor-makes-corrections?u=@item.Employee.ApplicationUserId&s=@item.NewAppraisal.Slug" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Make Corrections</a>
+                                            <div style="margin:auto">
+                                                @Html.ActionLink("Make Corrections", "supervisor-makes-corrections", "appraisal", new { u = item.Employee.ApplicationUserId, s = item.NewAppraisal.Slug }, new { @class = "btn btn-primary btn-sm", style = "display:block;margin:10px auto" });
+                                            </div>
+                                            @*<a href="/appraisal/supervisor-makes-corrections?u=@item.Employee.ApplicationUserId&s=@item.NewAppraisal.Slug" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Make Corrections</a>*@
                                         }
                                         else if (!item.AppraiseeProgress.AppraiseeSubmit)
                                         {

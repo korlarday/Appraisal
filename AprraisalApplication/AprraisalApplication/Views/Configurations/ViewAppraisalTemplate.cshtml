@@ -178,13 +178,16 @@
                                                         <ul>
                                                             @foreach (var breakdown in detail.SectionDetailBreakdowns)
                                                             {
-                                                                <li class="mt-1">
-                                                                    @breakdown.Title
-                                                                    @if (breakdown.IsScore)
-                                                                    {
-                                                                        <span class="font-size-sm ml-5 font-w700" style="font-size:x-small">weight: </span><span class="font-w700">@breakdown.MaxScore</span>
-                                                                    }
-                                                                </li>
+                                                                if (!breakdown.IsDeleted)
+                                                                {
+                                                                    <li class="mt-1">
+                                                                        @breakdown.Title
+                                                                        @if (breakdown.IsScore)
+                                                                        {
+                                                                            <span class="font-size-sm ml-5" style="font-size:x-small">w: </span><span>@breakdown.MaxScore</span>
+                                                                        }
+                                                                    </li>
+                                                                }
                                                             }
                                                         </ul>
                                                     </div>

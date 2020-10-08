@@ -480,7 +480,7 @@
                                                                             <li class="mt-1 row">
                                                                                 <div class="col-10">
                                                                                     <span class="breakdown-title">@breakdown.Title</span>
-                                                                                    <input type="number" data-breakdownId="@breakdown.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;display:inline;" disabled />
+                                                                                    <input type="number" data-breakdownId="@breakdown.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;@(breakdown.ExpectedValueId == 3 ? "display:none":"display:inline;")" disabled />
 
                                                                                 </div>
                                                                                 <div class="col-2">

@@ -8,10 +8,20 @@ namespace AprraisalApplication.Models.MigrationModels
 {
     public class Qualification
     {
+
         public int Id { get; set; }
         [Required]
         [MaxLength(255)]
         public string Name { get; set; }
         public bool IsDeleted { get; set; }
+
+        public Qualification()
+        {
+        }
+        public Qualification(string qualificationName)
+        {
+            Name = qualificationName;
+            IsDeleted = false;
+        }
     }
 }

@@ -225,5 +225,77 @@ namespace AprraisalApplication.Repositories
             jobtitle.IsDeleted = true;
             db.SaveChanges();
         }
+
+        internal void AddNewGrade(Grade newGrade)
+        {
+            db.Grades.Add(newGrade);
+            db.SaveChanges();
+        }
+
+        internal Grade GetGradeByName(string gradeName)
+        {
+            return db.Grades.Where(x => x.IsDeleted == false && x.Name == gradeName).FirstOrDefault();
+        }
+
+        internal Grade GetGradeById(int id)
+        {
+            return db.Grades.Find(id);
+        }
+
+        internal Grade UpdateGrade(int id, string gradeName)
+        {
+            Grade grade = db.Grades.Find(id);
+            grade.Name = gradeName;
+            db.SaveChanges();
+            return grade;
+        }
+
+        internal bool IsGradeNameExists(int id, string gradeName)
+        {
+            return db.Grades.Where(x => x.Id != id).Any(x => x.Name == gradeName);
+        }
+
+        internal void DeleteGrade(int id)
+        {
+            Grade grade = db.Grades.Find(id);
+            grade.IsDeleted = true;
+            db.SaveChanges();
+        }
+
+        internal Qualification GetQualificationByName(string qualificationName)
+        {
+            return db.Qualifications.Where(x => x.Name == qualificationName).FirstOrDefault();
+        }
+
+        internal void AddNewQualification(Qualification newQualification)
+        {
+            db.Qualifications.Add(newQualification);
+            db.SaveChanges();
+        }
+
+        internal Qualification GetQualificationById(int id)
+        {
+            return db.Qualifications.Where(x => x.Id == id).SingleOrDefault();
+        }
+
+        internal bool IsQualificationNameExists(int id, string qualificationName)
+        {
+            return db.Qualifications.Where(x => x.Id != id).Any(x => x.Name == qualificationName);
+        }
+
+        internal Qualification UpdateQualification(int id, string qualificationName)
+        {
+            Qualification qualification = db.Qualifications.Find(id);
+            qualification.Name = qualificationName;
+            db.SaveChanges();
+            return qualification;
+        }
+
+        internal void DeleteQualification(int id)
+        {
+            Qualification qualification = db.Qualifications.Find(id);
+            db.Qualifications.Remove(qualification);
+            db.SaveChanges();
+        }
     }
 }

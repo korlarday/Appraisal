@@ -453,7 +453,7 @@
                                                                                 <span class="breakdown-title">@breakdown.Title</span>
                                                                                 @if (templateSection.BreakdownValueBy == "appraisee")
                                                                                 {
-                                                                                    <input type="number" data-breakdownId="@result.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:200px;display:inline;" />
+                                                                            <input type="number" data-breakdownId="@result.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:200px;@(breakdown.ExpectedValueId == 3 ? "display:none":"display:inline;")" />
                                                                                 }
                                                                             </li>
                                                                         }

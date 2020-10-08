@@ -484,7 +484,8 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/ongoing-appraisals-all';
+                                    window.location.href = '@Url.Action("ongoing-appraisals-all", "appraisal")';
+                                    //window.location.href = '/appraisal/ongoing-appraisals-all';
                                 }
                             });
                         }
@@ -506,7 +507,8 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/ongoing-appraisals-all';
+                                    //window.location.href = '/appraisal/ongoing-appraisals-all';
+                                    window.location.href = '@Url.Action("ongoing-appraisals-all", "appraisal")';
                                 }
                             });
                         }
@@ -522,7 +524,8 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/ongoing-appraisals-all';
+                                    //window.location.href = '/appraisal/ongoing-appraisals-all';
+                                    window.location.href = '@Url.Action("ongoing-appraisals-all", "appraisal")';
                                 }
                             });
                         }
@@ -530,7 +533,7 @@
                     });
             });
 
-            
+
         })
                     ////////////////////////////////////////////////////////////////////
     </script>

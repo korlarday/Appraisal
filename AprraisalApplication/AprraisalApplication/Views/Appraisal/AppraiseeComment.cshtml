@@ -498,7 +498,7 @@
                                                                             <li class="mt-1 row">
                                                                                 <div class="col-10">
                                                                                     <span class="breakdown-title">@breakdown.Title</span>
-                                                                                    <input type="number" data-breakdownId="@breakdown.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;display:inline;" disabled />
+                                                                                    <input type="number" data-breakdownId="@breakdown.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;@(breakdown.ExpectedValueId == 3 ? "display:none":"display:inline;")" disabled />
                                                                                 </div>
                                                                                 <div class="col-2">
                                                                                     @if (breakdown.IsScore)
@@ -512,8 +512,8 @@
                                                                 </div>
                                                             </td>
                                                             <td class="text-center max-score">@detail.MaxScore</td>
-                                                            <td>
-                                                                <input type="number" class="form-control enter-score" value="@detailResult.Score" disabled />
+                                                            <td class="text-center font-size-h4 font-w700">
+                                                                @detailResult.Score
                                                             </td>
                                                         </tr>
                                                         ++count;
@@ -793,7 +793,8 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/ongoing-appraisals-all';
+                                    //window.location.href = '/appraisal/ongoing-appraisals-all';
+                                    window.location.href = '@Url.Action("ongoing-appraisals-all", "appraisal")';
                                 }
                             });
                         });
@@ -804,7 +805,7 @@
                 });
             });
 
-            
+
         })
         ////////////////////////////////////////////////////////////////////
     </script>

@@ -364,6 +364,26 @@ namespace AprraisalApplication.Repositories
 
         }
 
+        internal List<AppraiseeAndProgress> GetAllAppraisees(NewAppraisal appraisal)
+        {
+            List<AppraiseeAndProgress> appraiseeAndProgresses = new List<AppraiseeAndProgress>();
+            var appraisalStaffs = appraisal.AppraisalStaffs;
+            foreach (var staff in appraisalStaffs)
+            {
+                Appraisee appraisee = db.Appraisees.Where(x => x.NewAppraisalId == appraisal.Id
+                                                            && x.EmployeeId == staff.EmployeeId)
+                                                    .Include(x => x.AppraiseeProgress)
+                                                    .SingleOrDefault();
+                AppraiseeAndProgress appraiseeAndProgress = new AppraiseeAndProgress
+                {
+                    Employee = staff.Employee,
+                    AppraiseeProgress = appraisee == null ? null : appraisee.AppraiseeProgress
+                };
+                appraiseeAndProgresses.Add(appraiseeAndProgress);
+            }
+            return appraiseeAndProgresses;
+        }
+
         internal async Task<string> SaveMdComment(SubmitAppraisalParams model)
         {
             using (var context = new ApplicationDbContext())
@@ -856,7 +876,7 @@ namespace AprraisalApplication.Repositories
             }
             return appraiseeAndProgresses;
         }
-
+        
         internal List<AppraiseeAndProgress> GetAppraiseesAndProgressInDepartment(Department department, NewAppraisal appraisal)
         {
             List<AppraiseeAndProgress> appraiseeAndProgresses = new List<AppraiseeAndProgress>();

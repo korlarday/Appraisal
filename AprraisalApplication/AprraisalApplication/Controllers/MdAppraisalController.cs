@@ -81,9 +81,28 @@ namespace AprraisalApplication.Controllers
             };
             return View("ViewParticipantsMd", model);
         }
-    
+        
+        [ActionName("all-participants-md")]
+        public ActionResult AllParticipantsMd(string slug)
+        {
+            NewAppraisal appraisal = _unitOfWork.Appraisal.GetAppraisalBySlug(slug);
+            if (appraisal == null)
+            {
+                return HttpNotFound();
+            }
+
+            AppraiseMembersVM model = new AppraiseMembersVM()
+            {
+                AppraiseeAndProgresses = _unitOfWork.Appraisal.GetAllAppraisees(appraisal),
+                NewAppraisal = appraisal
+            };
+
+            return View("AllParticipantsMd", model);
+        }
+
+
         [ActionName("md-comments")]
-        public ActionResult MdComments(string slug, string n)
+        public ActionResult MdComments(string slug, string n, string a)
         {
             string appraiseeUserId = slug;
             Employee employee = _unitOfWork.Account.GetEmployeeByUserId(appraiseeUserId);
@@ -104,7 +123,8 @@ namespace AprraisalApplication.Controllers
                 Employee = employee,
                 Appraisee = appraisee,
                 InitiatedAppraisalTemplate = InitiatedAppraisalTemplate,
-                BdsTracker = InitiatedAppraisalTemplate.IncludeBdsTracker ? _unitOfWork.Appraisal.GetBdsTracker(appraisee.BdsPerformanceTrackerId) : null
+                BdsTracker = InitiatedAppraisalTemplate.IncludeBdsTracker ? _unitOfWork.Appraisal.GetBdsTracker(appraisee.BdsPerformanceTrackerId) : null,
+                FromAllParticipants = a != String.Empty
             };
             return View("MdComments", model);
         }
@@ -156,8 +176,8 @@ namespace AprraisalApplication.Controllers
             return new ViewAsPdf("ViewAppraisalMdPDF", model)
             {
                 PageOrientation = Rotativa.Options.Orientation.Portrait,
-                PageSize = Rotativa.Options.Size.A4
-
+                PageSize = Rotativa.Options.Size.A4,
+                FileName = employee.Firstname + " " + employee.Lastname + ".pdf"
             };
         }
 

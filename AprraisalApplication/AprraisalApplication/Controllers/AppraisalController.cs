@@ -354,8 +354,26 @@ namespace AprraisalApplication.Controllers
         }
 
         [Authorize(Roles = "HR")]
+        [ActionName("all-participants-hr")]
+        public ActionResult AllParticipants(string slug)
+        {
+            NewAppraisal appraisal = _unitOfWork.Appraisal.GetAppraisalBySlug(slug);
+            if(appraisal == null)
+            {
+                return HttpNotFound();
+            }
+
+            AppraiseMembersVM model = new AppraiseMembersVM()
+            {
+                AppraiseeAndProgresses = _unitOfWork.Appraisal.GetAllAppraisees(appraisal),
+                NewAppraisal = appraisal
+            };
+            return View("AllParticipants", model);
+        }
+
+        [Authorize(Roles = "HR")]
         [ActionName("hr-comments")]
-        public ActionResult HRComments(string slug, string n)
+        public ActionResult HRComments(string slug, string n, string a)
         {
             string appraiseeUserId = slug;
             string newAppraisalSlug = n;
@@ -376,7 +394,8 @@ namespace AprraisalApplication.Controllers
                 Employee = employee,
                 Appraisee = appraisee,
                 InitiatedAppraisalTemplate = InitiatedAppraisalTemplate,
-                BdsTracker = InitiatedAppraisalTemplate.IncludeBdsTracker ? _unitOfWork.Appraisal.GetBdsTracker(appraisee.BdsPerformanceTrackerId) : null
+                BdsTracker = InitiatedAppraisalTemplate.IncludeBdsTracker ? _unitOfWork.Appraisal.GetBdsTracker(appraisee.BdsPerformanceTrackerId) : null,
+                FromAllParticipants = a != String.Empty
             };
             return View("HRComments", model);
         }

@@ -89,7 +89,7 @@
                 </div>
                 <div class="col-8 offset-2">
                     <div class="form-group">
-                        <button class="btn btn-primary bg-primary" id="dropdown-default-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-plus"></i> Add Section</button>
+                        <button class="btn btn-outline-primary" id="dropdown-default-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-plus"></i> Add Section</button>
                         <div class="dropdown-menu" id="sectionTypeOptions" aria-labelledby="dropdown-default-primary">
                             @foreach (var item in Model.SectionTypes)
                             {
@@ -284,6 +284,7 @@
                                                         <div class="float-left pl-3" style="width:35%">
                                                             <select class="value-type form-control">
                                                                 <option value="">Select Value Type</option>
+                                                                <option value="no">No Value</option>
                                                                 <option value="number">Number Value</option>
                                                                 <option value="money">Money Value</option>
                                                             </select>
@@ -323,6 +324,7 @@
                                                         <div class="float-left pl-3" style="width:35%">
                                                             <select class="value-type form-control">
                                                                 <option value="">Select Value Type</option>
+                                                                <option value="no">No Value</option>
                                                                 <option value="number">Number Value</option>
                                                                 <option value="money">Money Value</option>
                                                             </select>
@@ -710,6 +712,7 @@
                                                                         <div class="float-left pl-3" style="width:35%">
                                                                             <select class="value-type form-control">
                                                                                 <option value="">Select Value Type</option>
+                                                                                <option value="no">No Value</option>
                                                                                 <option value="number">Number Value</option>
                                                                                 <option value="money">Money Value</option>
                                                                             </select>
@@ -756,6 +759,7 @@
                                                                                     <div class="float-left pl-3" style="width:35%">
                                                                                         <select class="value-type form-control">
                                                                                             <option value="">Select Value Type</option>
+                                                                                            <option value="no">No Value</option>
                                                                                             <option value="number">Number Value</option>
                                                                                             <option value="money">Money Value</option>
                                                                                         </select>
@@ -798,6 +802,7 @@
                                                                                             <div class="float-left pl-3" style="width:35%">
                                                                                                 <select class="value-type form-control">
                                                                                                     <option value="">Select Value Type</option>
+                                                                                                    <option value="no" @(breakdown.ExpectedValueId == 3 ? "selected" : "")>No Value</option>
                                                                                                     <option value="number" @(breakdown.ExpectedValueId == 1 ? "selected" : "")>Number Value</option>
                                                                                                     <option value="money" @(breakdown.ExpectedValueId == 2 ? "selected" : "")>Money Value</option>
                                                                                                 </select>

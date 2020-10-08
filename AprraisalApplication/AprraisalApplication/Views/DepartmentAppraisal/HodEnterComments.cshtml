@@ -511,7 +511,7 @@
                                                                             var result = detailResult.ItemBreakdownResults.Where(x => x.InitiatedSectionDetailBreakdownId == breakdown.Id).SingleOrDefault();
                                                                             <li class="mt-1">
                                                                                 <span class="breakdown-title">@breakdown.Title</span>
-                                                                                <input type="number" data-breakdownId="@breakdown.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;display:inline;" disabled />
+                                                                                <input type="number" data-breakdownId="@breakdown.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;@(breakdown.ExpectedValueId == 3 ? "display:none":"display:inline;")" disabled />
                                                                                 @if (breakdown.IsScore)
                                                                                 {
                                                                                     <span class="ml-3">score - <b>@result.Score</b>/@breakdown.MaxScore</span>
@@ -522,8 +522,8 @@
                                                                 </div>
                                                             </td>
                                                             <td class="text-center max-score">@detail.MaxScore</td>
-                                                            <td>
-                                                                <input type="number" class="form-control enter-score" value="@detailResult.Score" disabled />
+                                                            <td class="text-center font-size-h4 font-w700">
+                                                                @detailResult.Score
                                                             </td>
                                                         </tr>
                                                         ++count;

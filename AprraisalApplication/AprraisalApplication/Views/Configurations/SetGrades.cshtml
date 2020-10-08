@@ -1,0 +1,338 @@
+﻿@model AprraisalApplication.Models.ViewModels.SetGradesVM
+
+@{
+    ViewBag.Title = "Set Grades";
+}
+
+
+
+<!-- Hero -->
+<div class="bg-body-light">
+    <div class="content content-full">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Set Grades</h1>
+            <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Configurations</li>
+                    <li class="breadcrumb-item">Resourses</li>
+                    <li class="breadcrumb-item active" aria-current="page">Set Grades</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
+<!-- Page Content -->
+<div class="content">
+    <!-- Elements -->
+    <div class="block block-rounded block-bordered">
+        <div class="block-header block-header-default">
+            <h3 class="block-title">Set Grades</h3>
+        </div>
+        <div class="block-content">
+            <div class="block block-rounded block-bordered">
+                <div class="block-content block-content-full">
+                    <div>
+                        <button type="button" class="btn btn-outline-primary push" data-toggle="modal" data-target="#new_grade_modal"><i class="fa fa-plus-circle"></i> Add New Grade</button>
+                        <button type="button" style="display:none" data-toggle="modal" id="show_edit_modal" data-target="#edit_grade_modal">Edit Grade</button>
+                    </div>
+                    <!-- DataTables init on table by adding .js-dataTable-buttons class, functionality is initialized in js/pages/be_tables_datatables.min.js which was auto compiled from _es6/pages/be_tables_datatables.js -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-vcenter js-dataTable-full-pagination" data-page-length='10' id="table">
+                            <thead>
+                                <tr>
+                                    <th style="display:none">Id</th>
+                                    <th class="text-center">#</th>
+                                    <th>State</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table_body">
+                                @{
+                                    int num = 1;
+                                    foreach (var item in Model.Grades)
+                                    {
+                                        <tr id="@item.Id">
+                                            <td class="id" style="display: none">@item.Id</td>
+                                            <td class="text-center count-item">@num</td>
+                                            <td class="gradename">
+                                                @item.Name
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="btn-group">
+                                                    <a href="#" class="btn btn-sm btn-outline-primary edit_grade" data-toggle="tooltip" title="Edit">
+                                                        <i class="fa fa-pencil-alt"></i>
+                                                    </a>
+                                                    <a href="#" class="btn btn-sm btn-outline-danger delete_grade" data-toggle="tooltip" title="Delete">
+                                                        <i class="fa fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        ++num;
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Elements -->
+</div>
+<!-- END Page Content -->
+<!-- New Subject Modal -->
+<div class="modal fade" id="new_grade_modal" tabindex="-1" role="dialog" aria-labelledby="new_grade_modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-popout" role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title">Create New Grade</h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="fa fa-fw fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
+                    <div class="row push">
+                        <div class="col-md-8 offset-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.CreateGrade.Name)
+                                @Html.EditorFor(model => model.CreateGrade.Name, new { htmlAttributes = new { @class = "form-control", id = "grade_name" } })
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" id="submit_grade" class="btn btn-primary mt-3">Create Grade</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="block-content block-content-full text-right bg-light">
+                    <button type="button" class="btn btn-sm btn-light close_modal" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END  -->
+<!-- Edit Subject Modal -->
+<div class="modal fade" id="edit_grade_modal" tabindex="-1" role="dialog" aria-labelledby="edit_grade_modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-popout" role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title">Edit Grade</h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="fa fa-fw fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
+                    <div class="row push">
+                        <div class="col-md-8 offset-md-2">
+                            <input type="hidden" id="edit_id" />
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.CreateGrade.Name)
+                                @Html.EditorFor(model => model.CreateGrade.Name, new { htmlAttributes = new { @class = "form-control", id = "edit_grade_name" } })
+                            </div>
+
+                            <div class="form-group">
+                                <button type="button" id="update_grade" class="btn btn-primary mt-3">Update Grade</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="block-content block-content-full text-right bg-light">
+                    <button type="button" class="btn btn-sm btn-light close_modal" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END  -->
+
+@section Scripts {
+
+    <script>
+        $(function () {
+
+            // NEW Subject START
+            var submitGradeButton = $("#submit_grade");
+            var gradeNameSt = $("#grade_name");
+            var table = $("#table");
+
+
+            // SUBMITTING NEW Subject
+            submitGradeButton.click(function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                $this.attr("disabled", true);
+                var $gradeName = gradeNameSt.val();
+                if ($gradeName.length < 1) {
+                    Swal.fire("Oops...", "The grade name field is required!", "error");
+                    $this.attr("disabled", false);
+                    return false;
+                }
+
+                $.ajax({
+                    url: '/api/resources/PostAddGrade',
+                    data: {
+                        gradeName: $gradeName
+                    },
+                    method: 'POST',
+                    success: function (data) {
+                        if (data.feedback == "taken") {
+                            Swal.fire("Oops...", "The grade name exists!", "error");
+                            $this.attr("disabled", false);
+                            return false;
+                        }
+                        else if (data.feedback == 'required') {
+                            Swal.fire("Oops...", "All fields are required!", "error");
+                            $this.attr("disabled", false);
+                            return false;
+                        }
+                        else {
+                            if (!$("table#table").length) {
+                                location.reload();
+                            } else {
+                                $this.attr("disabled", false);
+                                $(".close_modal").click();
+                                Swal.fire("Success...", "Grade created successfully", "success");
+
+                                gradeNameSt.val("");
+                                var toAppend = $("table#table tbody tr:last").clone();
+                                toAppend.attr("id", data.id);
+                                toAppend.children(".id").text(data.id);
+                                toAppend.children(".count-item").text(data.index);
+                                toAppend.children(".gradename").text(data.gradeName);
+
+                                table.append($(toAppend).hide().fadeIn(1200));
+
+                            }
+                        }
+                    },
+                    error: function () {
+                        console.log('Something went wrong');
+                    }
+                });
+            })
+            // END
+
+            // For show edit
+            $("#table").on("click", ".edit_grade", function (e) {
+                e.preventDefault();
+
+                $this = $(this);
+                var id = $this.closest('tr').children(".id").text();
+                var gradename = $this.closest('tr').children(".gradename").text();
+
+                $("#edit_grade_name").val(gradename.trim());
+                $("#edit_id").val(id);
+
+
+                $("#show_edit_modal").click();
+            });
+            // END
+
+            // submit edit
+            var submitEdit = $("#update_grade");
+            submitEdit.click(function (e) {
+                e.preventDefault();
+                $this = $(this);
+                $this.attr("disabled", true);
+
+                var editId = $("#edit_id").val();
+                var gradeName = $("#edit_grade_name").val();
+
+                if (gradeName.length < 1) {
+                    Swal.fire("Oops...", "All fields are required!", "error");
+                    $this.attr("disabled", false);
+                    return false;
+                }
+
+                var url = "/api/Resources/PostEditGrade";
+
+                $.post(url,
+                    { id: editId, gradeName: gradeName },
+                    function (data) {
+                        console.log(data)
+
+                        if (data.feedback == "taken") {
+                            Swal.fire("Oops...", "The grade name is exists!", "error");
+                            $this.attr("disabled", false);
+                            return false;
+                        }
+                        else if (data.feedback == 'required') {
+                            Swal.fire("Oops...", "All fields are required!", "error");
+                            $this.attr("disabled", false);
+                            return false;
+                        }
+                        else {
+                            $this.attr("disabled", false);
+                            $(".close_modal").click();
+                            Swal.fire("Success...", "Grade updated successfully", "success");
+
+                            $("#edit_grade_name").val('')
+
+
+                            $("#table_body").children("#" + data.id).hide().fadeIn(1000);
+                            $("#table_body").children("#" + data.id).children(".gradename").text(data.gradeName);
+
+                        }
+
+
+
+                    });
+            })
+            //END
+
+            /*
+             * Delete Subject js
+             */
+            $("#table").on("click", ".delete_grade", function (e) {
+                var $this = $(this);
+                e.preventDefault();
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to rever this!",
+                    type: "warning",
+                    showCancelButton: !0,
+                    customClass: { confirmButton: "btn btn-danger m-1", cancelButton: "btn btn-secondary m-1" },
+                    confirmButtonText: "Yes, delete it!",
+                    html: !1,
+                    preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
+
+                }).then(function (n) {
+                    if (n.value) {
+                        Swal.fire("Deleted!", "Grade has been deleted.", "success");
+                        var id = $this.closest('tr').children(".id").text();
+                        var url = "/api/Resources/PostDeleteGrade";
+
+                        $.post(url, { id: id }, function (data) {
+                                $this.closest('tr').fadeOut("slow", function () {
+                                    $(this).remove();
+                                })
+                        })
+                    }
+                    else {
+                        "cancel" === n.dismiss && Swal.fire("Cancelled", "Cancelled", "error")
+                    }
+
+                })
+                //if (!confirm("Are you sure you want to delete")) return false;
+                //var $this = $(this);
+                //var id = $this.parent().parent().children(".id").text();
+
+            })
+        })
+                    ////////////////////////////////////////////////////////////////////
+    </script>
+}
+
+

@@ -122,6 +122,23 @@
             width: 60px;
             float: left;
         }
+        table, tr, td, th, tbody, thead, tfoot {
+            page-break-inside: avoid !important;
+        }
+        thead {
+            display: table-header-group !important;
+        }
+
+        tfoot {
+            display: table-row-group !important;
+        }
+
+        tr {
+            page-break-inside: avoid !important;
+        }
+        .breakhere {
+            page-break-after: always;
+        }
     </style>
 </head>
 <body>
@@ -329,7 +346,7 @@
                     </table>
                 </div>
             </div>
-
+            <div class="breakhere"></div>
             @foreach (var templateSection in Model.InitiatedAppraisalTemplate.InitiatedTemplateSections.OrderBy(x => x.SetupId))
             {
                 if (templateSection.IsDeleted == false)
