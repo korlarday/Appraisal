@@ -38,7 +38,7 @@
             }
             
         <div class="mb-2 p-0" style="overflow:hidden">
-            <a href="/users/user-profile" class="btn btn-light">
+            <a href="@Url.Action("user-profile", "users")" class="btn btn-light">
                 <i class="fa fa-arrow-left mr-1"></i> Profile
             </a>
             <button class="btn btn-hero-info float-right" data-toggle="modal" data-target="#new_history_modal">
@@ -263,7 +263,8 @@
 
             $this.attr("disabled", true);
 
-            var url = '/api/employees/PostSaveCareerHistory';
+            //var url = '/api/employees/PostSaveCareerHistory';
+            var url = '@Url.Action("PostSaveCareerHistory", "employees", new { httproute = "DefaultApi" })';
             $.post(url,
                 { date: isoDate.format(), departmentId: $departmentId, gradeId: $gradeId, training: $training },
                 function (data) {
@@ -313,7 +314,8 @@
                 if (n.value) {
                     var id = $this.closest('tr').attr("data-careerHistoryId");
                     console.log(id);
-                    var url = "/api/Employees/PostDeleteBranch";
+                    //var url = "/api/Employees/PostDeleteBranch";
+                    var url = '@Url.Action("PostDeleteBranch", "Employees", new { httproute = "DefaultApi" })';
 
                     $.post(url, { id: id }, function (data) {
                         Swal.fire("Deleted!", "Career history has been deleted.", "success");
@@ -381,7 +383,8 @@
             }
 
             var isoDate = moment($date, "DD-MM-YYYY");
-            var url = "/api/Employees/PostEditCareerHistory";
+            //var url = "/api/Employees/PostEditCareerHistory";
+            var url = '@Url.Action("PostEditCareerHistory", "Employees", new { httproute = "DefaultApi" })';
 
             $.post(url,
                 { id: $id, date: isoDate.format(), departmentId: $departmentId, gradeId: $gradeId, training: $training },

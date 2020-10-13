@@ -24,7 +24,7 @@
 <!-- Page Content -->
 <div class="content">
     <!-- Elements -->
-    <a href="/appraisal/initiated-appraisals" class="btn btn-link"><i class="fa fa-arrow-left"></i> Back</a>
+    <a href="@Url.Action("initiated-appraisal","appraisal")" class="btn btn-link"><i class="fa fa-arrow-left"></i> Back</a>
     <div class="block block-rounded block-bordered">
         <div class="block-header block-header-default">
             <h3 class="block-title">@Model.Appraisal.AppraisalTitle</h3>
@@ -46,7 +46,7 @@
                                     
                                     <div class="col-sm-4 invisible pt-3 pb-3" data-toggle="appear">
                                         <a class="block block-rounded block-bordered block-link-shadow"
-                                           href="/appraisal/view-participants-hr?d=@item.Department.Id&s=@Model.Appraisal.Slug">
+                                           href="@Url.Action("view-participants-hr","appraisal", new { d = item.Department.Id, s = Model.Appraisal.Slug })">
                                             <div class="block-content block-content-full text-center bg-body-light" data-toggle="appear">
                                                 <div class="mt-2">
                                                     <p class="font-w600 mb-0">

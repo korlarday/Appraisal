@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace AprraisalApplication.Models.Attributes
 {
@@ -25,15 +26,25 @@ namespace AprraisalApplication.Models.Attributes
 
             if (user != null && user.EmployeeId == null)
             {
-                string profileURL = "/Users/user-profile";
+                //string profileURL = "/Users/user-profile";
 
-                filterContext.Result = new RedirectResult(profileURL);
+                //filterContext.Result = new RedirectResult(profileURL);
+                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary()
+                {
+                    { "controller", "Users" },
+                    { "action", "user-profile" }
+                });
             }
             // for account disabling
             if(user != null && user.AccountDisabled)
             {
                 AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-                filterContext.Result = new RedirectResult("/account/login");
+                //filterContext.Result = new RedirectResult("/account/login");
+                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary()
+                {
+                    { "controller", "account" },
+                    { "action", "login" }
+                });
             }
             base.OnActionExecuting(filterContext);
         }

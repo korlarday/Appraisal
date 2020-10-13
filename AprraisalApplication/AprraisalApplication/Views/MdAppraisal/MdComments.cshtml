@@ -861,7 +861,8 @@
                     if (n.value) {
                         Dashmix.layout('header_loader_on');
                         $this.attr("disabled", true);
-                        var url = "/api/Appraisal/PostEnterMdComment";
+                        //var url = "/api/Appraisal/PostEnterMdComment";
+                        var url = '@Url.Action("PostEnterMdComment", "Appraisal", new { httproute = "DefaultApi" })';
 
                         $.post(url, {
                             appraiseeId: $appraiseeId,
@@ -877,13 +878,17 @@
                                 customClass: { okButton: "btn btn-danger m-1" },
                                 html: !1,
                                 preConfirm: function (e) { return new Promise(function (e) { setTimeout(function () { e() }, 50) }) }
-                                
+
                             }).then(function (n) {
                                 if (n.value) {
                                     if ($fromAllParticipants == "True") {
-                                        window.location.href = '/mdappraisal/all-participants-md/' + $slug;
+                                        //window.location.href = '/mdappraisal/all-participants-md/' + $slug;
+                                        var link = '@Url.Action("all-participants-md", "mdappraisal", new { slug = "_slug_" })';
+                                        window.location.href = link.replace("_slug_", $slug);
                                     } else {
-                                        window.location.href = '/mdappraisal/view-participants-md?d=' + $departmentId + '&s=' + $slug;
+                                        //window.location.href = '/mdappraisal/view-participants-md?d=' + $departmentId + '&s=' + $slug;
+                                        var link = '@Url.Action("view-participants-md", "mdappraisal", new { d = "_d_", s = "_s_" })';
+                                        window.location.href = link.replace("_d_", $departmentId).replace("_s_", $slug);
                                     }
                                 }
                             });
@@ -895,7 +900,7 @@
                 });
             });
 
-            
+
         })
         ////////////////////////////////////////////////////////////////////
     </script>

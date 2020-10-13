@@ -14,7 +14,6 @@ namespace AprraisalApplication.Controllers
 {
     [Authorize]
     [EmailConfirmation]
-    [CompleteYourProfile]
     public class HomeController : Controller
     {
         public readonly ApplicationDbContext db;

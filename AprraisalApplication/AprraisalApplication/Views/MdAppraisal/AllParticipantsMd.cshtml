@@ -35,7 +35,7 @@
 <!-- END Hero -->
 <!-- Page Content -->
 <div class="content">
-    <a href="/mdappraisal/initiated-appraisals-md" class="btn btn-link btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
+    <a href="@Url.Action("initiated-appraisals-md", "mdappraisal")" class="btn btn-link btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
     <!-- Elements -->
     <div class="block block-rounded block-bordered">
         <div class="block-header block-header-default">
@@ -97,7 +97,7 @@
                                                 }
                                                 else if (item.AppraiseeProgress.HRSubmit && !item.AppraiseeProgress.MDAcknowledgement)
                                                 {
-                                                    <a href="/mdappraisal/md-comments?slug=@item.Employee.ApplicationUserId&n=@Model.NewAppraisal.Slug&a=t" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Enter Comments</a>
+                                                    <a href="@Url.Action("md-comments", "mdappraisal", new { slug = item.Employee.ApplicationUserId, n = Model.NewAppraisal.Slug, a = "t" })" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Enter Comments</a>
                                                 }
                                                 else if (!item.AppraiseeProgress.HRSubmit)
                                                 {
@@ -115,7 +115,7 @@
                                                     {
                                                         <div class="text-center">
                                                             <div>
-                                                                <a href="/mdappraisal/view-appraisal-md-pdf?u=@item.Employee.ApplicationUserId&s=@Model.NewAppraisal.Slug" target="_blank" class="btn btn-link"> <i class="fa fa-file-pdf"></i> View pdf</a>
+                                                                <a href="@Url.Action("view-appraisal-md-pdf", "mdappraisal", new { u = item.Employee.ApplicationUserId, s = Model.NewAppraisal.Slug })" target="_blank" class="btn btn-link"> <i class="fa fa-file-pdf"></i> View pdf</a>
                                                             </div>
                                                         </div>
                                                     }

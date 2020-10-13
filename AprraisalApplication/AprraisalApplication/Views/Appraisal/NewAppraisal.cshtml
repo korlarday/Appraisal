@@ -263,7 +263,8 @@
                 $this.attr("disabled", true);
                 Dashmix.layout('header_loader_on');
 
-                var url = '/api/appraisal/PostInitialiseAppraisalExercise';
+                //var url = '/api/appraisal/PostInitialiseAppraisalExercise';
+                var url = '@Url.Action("PostInitialiseAppraisalExercise", "appraisal", new { httproute = "DefaultApi" })';
                 $.post(url,
                     {
                         appraisalTitle: $appraisalTitle,
@@ -289,7 +290,8 @@
 
                         }).then(function (n) {
                             if (n.value) {
-                                window.location.href = '/appraisal/initiated-appraisals';
+                                //window.location.href = '/appraisal/initiated-appraisals';
+                                window.location.href = '@Url.Action("initiated-appraisals", "appraisal")';
                             }
                         });
                     });

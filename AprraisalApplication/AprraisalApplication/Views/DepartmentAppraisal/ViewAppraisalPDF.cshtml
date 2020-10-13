@@ -42,7 +42,7 @@
 
 
     @Styles.Render("~/Content/css")
-    <style>
+<style>
         #content-body {
             max-width: 1000px;
             margin: 20px auto;
@@ -72,7 +72,7 @@
         }
 
         .check {
-            background: url("../../Images/checkmark.png") center center no-repeat;
+            background: url('@Url.Content("~/Images/checkmark.png")') center center no-repeat;
             background-size: 25px;
         }
 
@@ -111,7 +111,26 @@
             width: 60px;
             float: left;
         }
-    </style>
+        table, tr, td, th, tbody, thead, tfoot {
+            page-break-inside: avoid !important;
+        }
+
+        thead {
+            display: table-header-group !important;
+        }
+
+        tfoot {
+            display: table-row-group !important;
+        }
+
+        tr {
+            page-break-inside: avoid !important;
+        }
+
+        .table-responsive {
+            overflow-x: visible !important;
+        }
+</style>
 </head>
 <body>
     <div id="content-body">
@@ -572,7 +591,7 @@
                                                         </div>
                                                     </td>
                                                     <td class="text-center max-score">@detail.MaxScore</td>
-                                                    <td>
+                                                    <td class="text-center font-size-h4 font-w700">
                                                         @detailResult.Score
                                                     </td>
                                                 </tr>
@@ -584,7 +603,7 @@
                                         <tr>
                                             <td class="text-right font-w700" colspan="2">Mark Obtainable</td>
                                             <td class="text-center font-w700">@templateSection.TotalMarkObtainable</td>
-                                            <td colspan="@ratingsCount" class="text-center font-w700"></td>
+                                            <td colspan="@ratingsCount" class="text-center font-w700">@currentResultSection.TotalScore</td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -676,7 +695,7 @@
                                         <tr>
                                             <td class="text-right font-w700">Mark Obtainable</td>
                                             <td class="text-center font-w700">@templateSection.TotalMarkObtainable</td>
-                                            <td colspan="@ratingsCount" class="text-center font-w700"></td>
+                                            <td colspan="@ratingsCount" class="text-center font-w700">@currentResultSection.TotalScore</td>
                                         </tr>
                                     </tfoot>
                                 </table>

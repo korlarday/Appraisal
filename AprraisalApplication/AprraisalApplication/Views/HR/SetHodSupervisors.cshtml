@@ -124,7 +124,8 @@
                 console.log($usersAndAppraiserId);
                 Dashmix.layout('header_loader_on');
 
-                var url = "/api/configurations/PostSetEmployeeAppraiser";
+                //var url = "/api/configurations/PostSetEmployeeAppraiser";
+                var url = '@Url.Action("PostSetEmployeeAppraiser", "configurations", new { httproute = "DefaultApi" })';
 
                 $.post(url, { items: $usersAndAppraiserId }, function (data) {
                     Swal.fire("Updated!", "HODs appraiser has been updated.", "success");

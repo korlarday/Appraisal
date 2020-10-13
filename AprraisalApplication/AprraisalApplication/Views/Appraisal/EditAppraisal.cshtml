@@ -22,7 +22,7 @@
 <!-- END Hero -->
 <!-- Page Content -->
 <div class="content">
-    <a href="/appraisal/initiated-appraisals" class="btn btn-primary btn-sm mb-1"><i class="fa fa-arrow-left"></i> Back</a>
+    <a href="@Url.Action("initiated-appraisals", "appraisal")" class="btn btn-primary btn-sm mb-1"><i class="fa fa-arrow-left"></i> Back</a>
     <!-- Elements -->
     <div class="block block-rounded block-bordered">
         <div class="block-header block-header-default">
@@ -317,7 +317,8 @@
                     if (n.value) {
                         $this.attr("disabled", true);
                         Dashmix.layout('header_loader_on');
-                        var url = '/api/appraisal/PostUpdateAppraisalExercise';
+                        //var url = '/api/appraisal/PostUpdateAppraisalExercise';
+                        var url = '@Url.Action("PostUpdateAppraisalExercise", "appraisal", new { httproute = "DefaultApi" })';
                         $.post(url,
                             {
                                 appraisalId: $appraisalId,
@@ -346,7 +347,8 @@
 
                                     }).then(function (n) {
                                         if (n.value) {
-                                            window.location.href = '/appraisal/initiated-appraisals';
+                                            //window.location.href = '/appraisal/initiated-appraisals';
+                                            window.location.href = '@Url.Action("initiated-appraisals","appraisal")';
                                         }
                                     });
                                 }

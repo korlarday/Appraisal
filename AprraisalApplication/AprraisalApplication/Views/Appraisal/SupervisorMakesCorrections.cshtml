@@ -886,7 +886,8 @@
 
                 }).then(function (n) {
                     if (n.value) {
-                        var url = "/api/Appraisal/PostReScoreAppraisalSections";
+                        //var url = "/api/Appraisal/PostReScoreAppraisalSections";
+                        var url = '@Url.Action("PostReScoreAppraisalSections", "appraisal", new { httproute = "DefaultApi" })';
 
                         $.post(url, {
                             appraiseeId: $appraiseeId,
@@ -904,7 +905,8 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/appraise-members';
+                                    //window.location.href = '/appraisal/appraise-members';
+                                    window.location.href = '@Url.Action("appraise-members", "appraisal")';
                                 }
                             });
                         });
@@ -938,7 +940,8 @@
                     return;
                 }
 
-                var url = "/api/Appraisal/PostRejectAppraisalCommentsToAppraisee";
+                //var url = "/api/Appraisal/PostRejectAppraisalCommentsToAppraisee";
+                var url = '@Url.Action("PostRejectAppraisalCommentsToAppraisee", "appraisal", new { httproute = "DefaultApi" })';
                 $.post(url, {
                     appraiseeId: $appraiseeId,
                     rejectionReason: $rejectionReason,
@@ -955,7 +958,8 @@
 
                     }).then(function (n) {
                         if (n.value) {
-                            window.location.href = '/appraisal/appraise-members';
+                            //window.location.href = '/appraisal/appraise-members';
+                            window.location.href = '@Url.Action("appraise-members", "appraisal")';
                         }
                     });
                 });

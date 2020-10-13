@@ -773,7 +773,8 @@
                     if (n.value) {
                         Dashmix.layout('header_loader_on');
                         $this.attr("disabled", true);
-                        var url = "/api/Appraisal/PostEnterAppraiseeComment";
+                        //var url = "/api/Appraisal/PostEnterAppraiseeComment";
+                        var url = '@Url.Action("PostEnterAppraiseeComment", "appraisal", new { httproute = "DefaultApi" })';
 
                         $.post(url, {
                             appraiseeId: $appraiseeId,

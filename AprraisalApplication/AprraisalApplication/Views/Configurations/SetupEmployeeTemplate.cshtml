@@ -107,7 +107,8 @@
                 console.log($usersAndTemplateId);
                 Dashmix.layout('header_loader_on');
 
-                var url = "/api/configurations/PostUpdateEmployeeAppraisal";
+                //var url = "/api/configurations/PostUpdateEmployeeAppraisal";
+                var url = '@Url.Action("PostUpdateEmployeeAppraisal", "configurations", new { httproute = "DefaultApi" })';
 
                 $.post(url, { items: $usersAndTemplateId }, function (data) {
                     Swal.fire("Updated!", "User templates has been updated.", "success");

@@ -24,7 +24,7 @@
 <!-- Page Content -->
 <div class="content">
     <!-- Elements -->
-    <a href="/configurations/appraisal-templates" class="btn btn-link"><i class="fa fa-arrow-left"></i> Back</a>
+    <a href="@Url.Action("appraisal-templates", "configurations")" class="btn btn-link"><i class="fa fa-arrow-left"></i> Back</a>
     <div class="block block-rounded block-bordered">
         <div class="block-header block-header-default">
             <h3 class="block-title">Edit Appraisal Template</h3>
@@ -1115,7 +1115,7 @@
                     var $derivedSection = $this.find(".derivedSection").val();
                     var $qualitativeDetails = [];
                     var $TotalWeightScore = 0;
-                    
+
 
                     if ($sectionTypeId == 4 || $sectionTypeId == 3) {
                         var $sectionDetails = $this.find("table tbody tr:not(:first)");
@@ -1134,7 +1134,7 @@
 
                             if ($sectionTypeId == 3) {
                                 var $breakdowns = $(this).find("td div.container" + $setupDetailId + " .item-container").splice(1);
-                                
+
                                 //var $breakdowns = holds.children(".item-container");
                                 var $itemBreakdowns = [];
                                 $.each($breakdowns, function () {
@@ -1259,7 +1259,8 @@
                 }
 
                 console.log($appraisalTemplate);
-                var url = "/api/Configurations/PostEditAppraisalTemplate";
+                //var url = "/api/Configurations/PostEditAppraisalTemplate";
+                var url = '@Url.Action("PostEditAppraisalTemplate", "Configurations", new { httproute = "DefaultApi" })';
                 $.post(url,
                     {
                         templateId: $templateId,
@@ -1281,7 +1282,8 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/configurations/appraisal-templates';
+                                    //window.location.href = '/configurations/appraisal-templates';
+                                    window.location.href = '@Url.Action("appraisal-templates", "configurations")';
                                 }
                             });
                         }
@@ -1426,7 +1428,7 @@
 
             // when you click on remove item
             $("#sectionContainer").on("click", "table td .removeItem", function () {
-                
+
                 //
                 var $this = $(this);
                 var $breakdownId = $this.attr("data-breakdownId");

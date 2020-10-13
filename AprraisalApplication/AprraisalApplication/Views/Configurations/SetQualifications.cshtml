@@ -178,9 +178,9 @@
                     $this.attr("disabled", false);
                     return false;
                 }
-
+                var url = '@Url.Action("PostAddQualification", "Resources", new { httproute = "DefaultApi" })';
                 $.ajax({
-                    url: '/api/resources/PostAddQualification',
+                    url: url,
                     data: {
                         qualificationName: $qualificationNameText
                     },
@@ -255,7 +255,8 @@
                     return false;
                 }
 
-                var url = "/api/Resources/PostEditQualification";
+                //var url = "/api/Resources/PostEditQualification";
+                var url = '@Url.Action("PostEditQualification", "Resources", new { httproute = "DefaultApi" })';
 
                 $.post(url,
                     { id: editId, qualificationName: qualificationName },
@@ -308,7 +309,8 @@
                     if (n.value) {
                         Swal.fire("Deleted!", "Qualification has been deleted.", "success");
                         var id = $this.closest('tr').children(".id").text();
-                        var url = "/api/Resources/PostDeleteQualification";
+                        //var url = "/api/Resources/PostDeleteQualification";
+                        var url = '@Url.Action("PostDeleteQualification", "Resources", new { httproute = "DefaultApi" })';
 
                         $.post(url, { id: id }, function (data) {
                                 $this.closest('tr').fadeOut("slow", function () {

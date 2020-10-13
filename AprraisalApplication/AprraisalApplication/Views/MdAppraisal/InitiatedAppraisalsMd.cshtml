@@ -51,13 +51,13 @@
                                         <tr>
                                             <th class="text-center" scope="row">@num</th>
                                             <td class="font-w600">
-                                                <a href="/appraisal/view-appraisal/@item.Slug">@item.AppraisalTitle</a>
+                                                <a href="@Url.Action("view-appraisal", "appraisal", new { slug = item.Slug })">@item.AppraisalTitle</a>
                                             </td>
                                             <td class="text-sm-left">
                                                 @item.DateInitiated.ToString("dd-MMM-yyyy")
                                             </td>
                                             <td class="text-center">
-                                                <a href="/mdappraisal/all-participants-md/@item.Slug" class="btn btn-sm btn-alt-dark" data-toggle="tooltip" title="View Participants">@item.AppraisalStaffs.Count()</a>
+                                                <a href="@Url.Action("all-participants-md", "mdappraisal", new { slug = item.Slug })" class="btn btn-sm btn-alt-dark" data-toggle="tooltip" title="View Participants">@item.AppraisalStaffs.Count()</a>
                                             </td>
                                             <td class="">
                                                 @if (!item.IsCompleted)
@@ -71,13 +71,13 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="btn-group">
-                                                    <a href="/mdappraisal/view-appraisal-md/@item.Slug" class="btn btn-sm btn-outline-secondary" data-toggle="tooltip" title="View Appraisal Details">
+                                                    <a href="@Url.Action("view-appraisal-md", "mdappraisal", new { slug = item.Slug })" class="btn btn-sm btn-outline-secondary" data-toggle="tooltip" title="View Appraisal Details">
                                                         <i class="fa fa-eye"></i>
                                                     </a>
-                                                    <a href="/mdappraisal/all-participants-md/@item.Slug" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="All Participants">
+                                                    <a href="@Url.Action("all-participants-md", "mdappraisal", new { slug = item.Slug })" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="All Participants">
                                                         <i class="fa fa-list"></i>
                                                     </a>
-                                                    <a href="/mdappraisal/group-participants-md/@item.Slug" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="Group participants by department">
+                                                    <a href="@Url.Action("group-participants-md", "mdappraisal", new { slug = item.Slug })" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="Group participants by department">
                                                         <i class="fa fa-border-all"></i>
                                                     </a>
                                                 </div>

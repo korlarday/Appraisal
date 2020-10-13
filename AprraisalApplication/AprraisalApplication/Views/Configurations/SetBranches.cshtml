@@ -32,7 +32,7 @@
             <div class="block block-rounded block-bordered">
                 <div class="block-content block-content-full">
                     <div>
-                        <button type="button" class="btn btn-primary push" data-toggle="modal" data-target="#new_branch_modal">New Branch</button>
+                        <button type="button" class="btn btn-outline-primary push" data-toggle="modal" data-target="#new_branch_modal"><i class="fa fa-plus-circle"></i> New Branch</button>
                         <button type="button" style="display:none" data-toggle="modal" id="show_edit_modal" data-target="#edit_branch_modal">Edit Branch</button>
                     </div>
                     <!-- DataTables init on table by adding .js-dataTable-buttons class, functionality is initialized in js/pages/be_tables_datatables.min.js which was auto compiled from _es6/pages/be_tables_datatables.js -->
@@ -65,10 +65,10 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="btn-group">
-                                                    <a href="#" class="btn btn-sm btn-primary edit_branch" data-toggle="tooltip" title="Edit">
+                                                    <a href="#" class="btn btn-sm btn-outline-primary edit_branch" data-toggle="tooltip" title="Edit">
                                                         <i class="fa fa-pencil-alt"></i>
                                                     </a>
-                                                    <a href="#" class="btn btn-sm btn-danger delete_branch" data-toggle="tooltip" title="Delete">
+                                                    <a href="#" class="btn btn-sm btn-outline-danger delete_branch" data-toggle="tooltip" title="Delete">
                                                         <i class="fa fa-trash"></i>
                                                     </a>
                                                 </div>
@@ -195,7 +195,8 @@
                     return false;
                 }
 
-                var url = "/api/Resources/PostAddBranch";
+                //var url = "/api/Resources/PostAddBranch";
+                var url = '@Url.Action("PostAddBranch", "Resources", new { httproute = "DefaultApi" })';
 
                 $.post(url,
                     { branchName: newBranchName, stateId: newStateType },
@@ -274,7 +275,8 @@
                     return false;
                 }
 
-                var url = "/api/Resources/PostEditBranch";
+                //var url = "/api/Resources/PostEditBranch";
+                var url = '@Url.Action("PostEditBranch", "Resources", new { httproute = "DefaultApi" })';
 
                 $.post(url,
                     { id: editId, branchName: branchname, stateId: stateId },
@@ -331,7 +333,8 @@
                 }).then(function (n) {
                     if (n.value) {
                         var id = $this.closest('tr').children(".id").text();
-                        var url = "/api/Resources/PostDeleteBranch";
+                        //var url = "/api/Resources/PostDeleteBranch";
+                        var url = '@Url.Action("PostDeleteBranch", "Resources", new { httproute = "DefaultApi" })';
 
                         $.post(url, { id: id }, function (data) {
                             Swal.fire("Deleted!", "Branch has been deleted.", "success");

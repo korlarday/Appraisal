@@ -872,7 +872,8 @@
                     if (n.value) {
                         Dashmix.layout('header_loader_on');
                         $this.attr("disabled", true);
-                        var url = "/api/Appraisal/PostEnterHRComment";
+                        //var url = "/api/Appraisal/PostEnterHRComment";
+                        var url = '@Url.Action("PostEnterHRComment", "appraisal", new { httproute = "DefaultApi" })';
 
                         $.post(url, {
                             appraiseeId: $appraiseeId,
@@ -892,9 +893,13 @@
                             }).then(function (n) {
                                 if (n.value) {
                                     if ($fromAllParticipants == "True") {
-                                        window.location.href = '/appraisal/all-participants-hr/' + $slug;
+                                        //window.location.href = '/appraisal/all-participants-hr/' + $slug;
+                                        var url = '@Url.Action("all-participants-hr", "appraisal", new { slug = "_slug_" })';
+                                        window.location.href = url.replace("_slug_", $slug);
                                     } else {
-                                        window.location.href = '/appraisal/view-participants-hr?d=' + $departmentId + '&s=' + $slug;
+                                        var url = '@Url.Action("all-participants-hr", "appraisal", new { d = "_d_", s = "_s_" })';
+                                        //window.location.href = '/appraisal/view-participants-hr?d=' + $departmentId + '&s=' + $slug;
+                                        window.location.href = url.replace("_d_", $departmentId).replace("_s_", $slug);
                                     }
                                 }
                             });
@@ -935,7 +940,8 @@
 
                 Dashmix.layout('header_loader_on');
                 $this.attr("disabled", true);
-                var url = "/api/Appraisal/PostRejectAppraisalToHod";
+                //var url = "/api/Appraisal/PostRejectAppraisalToHod";
+                var url = '@Url.Action("PostRejectAppraisalToHod", "appraisal", new { httproute = "DefaultApi" })';
                 $.post(url, {
                     appraiseeId: $appraiseeId,
                     rejectionReason: $rejectionReason,
@@ -955,9 +961,13 @@
                     }).then(function (n) {
                         if (n.value) {
                             if ($fromAllParticipants == "True") {
-                                window.location.href = '/appraisal/all-participants-hr/' + $slug;
+                                //window.location.href = '/appraisal/all-participants-hr/' + $slug;
+                                var url = '@Url.Action("all-participants-hr", "appraisal", new { slug = "_slug_" })';
+                                window.location.href = url.replace("_slug_", $slug);
                             } else {
-                                window.location.href = '/appraisal/view-participants-hr?d=' + $departmentId + '&s=' + $slug;
+                                var url = '@Url.Action("all-participants-hr", "appraisal", new { d = "_d_", s = "_s_" })';
+                                //window.location.href = '/appraisal/view-participants-hr?d=' + $departmentId + '&s=' + $slug;
+                                window.location.href = url.replace("_d_", $departmentId).replace("_s_", $slug);
                             }
                         }
                     });

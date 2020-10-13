@@ -179,9 +179,9 @@
                     $this.attr("disabled", false);
                     return false;
                 }
-
+                var url = '@Url.Action("PostAddGrade", "Resources", new { httproute = "DefaultApi" })';
                 $.ajax({
-                    url: '/api/resources/PostAddGrade',
+                    url: url,
                     data: {
                         gradeName: $gradeName
                     },
@@ -256,7 +256,8 @@
                     return false;
                 }
 
-                var url = "/api/Resources/PostEditGrade";
+                //var url = "/api/Resources/PostEditGrade";
+                var url = '@Url.Action("PostEditGrade", "Resources", new { httproute = "DefaultApi" })';
 
                 $.post(url,
                     { id: editId, gradeName: gradeName },
@@ -312,7 +313,8 @@
                     if (n.value) {
                         Swal.fire("Deleted!", "Grade has been deleted.", "success");
                         var id = $this.closest('tr').children(".id").text();
-                        var url = "/api/Resources/PostDeleteGrade";
+                        //var url = "/api/Resources/PostDeleteGrade";
+                        var url = '@Url.Action("PostDeleteGrade", "Resources", new { httproute = "DefaultApi" })';
 
                         $.post(url, { id: id }, function (data) {
                                 $this.closest('tr').fadeOut("slow", function () {

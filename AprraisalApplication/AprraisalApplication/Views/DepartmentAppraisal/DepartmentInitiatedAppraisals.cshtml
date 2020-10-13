@@ -51,7 +51,7 @@
                                         <tr>
                                             <th class="text-center" scope="row">@num</th>
                                             <td class="font-w600">
-                                                <a href="/appraisal/view-appraisal/@item.NewAppraisal.Slug">@item.NewAppraisal.AppraisalTitle</a>
+                                                <a href="@Url.Action("view-appraisal", "appraisal", new { slug = item.NewAppraisal.Slug })">@item.NewAppraisal.AppraisalTitle</a>
                                             </td>
                                             <td class="text-sm-left">
                                                 @item.NewAppraisal.DateInitiated.ToString("dd-MMM-yyyy")
@@ -71,10 +71,10 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="btn-group">
-                                                    <a href="/departmentAppraisal/appraisal-details/@item.NewAppraisal.Slug" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="View Details">
+                                                    <a href="@Url.Action("appraisal-details", "departmentAppraisal", new { slug = item.NewAppraisal.Slug })" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="View Details">
                                                         View
                                                     </a>
-                                                    <a href="/departmentAppraisal/view-participants/@item.NewAppraisal.Slug" class="btn btn-sm btn-outline-secondary" data-toggle="tooltip" title="View Participants">
+                                                    <a href="@Url.Action("view-participants", "departmentAppraisal", new { slug = item.NewAppraisal.Slug })" class="btn btn-sm btn-outline-secondary" data-toggle="tooltip" title="View Participants">
                                                         Participants
                                                     </a>
                                                 </div>

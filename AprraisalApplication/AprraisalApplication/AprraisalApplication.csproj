@@ -4569,6 +4569,7 @@
     <Content Include="Content\Template\js\plugins\summernote\summernote.js.map" />
     <Content Include="Content\Template\js\plugins\summernote\summernote.min.js.map" />
     <Content Include="App_Browsers\qt.browser" />
+    <None Include="Properties\PublishProfiles\AppraisalProfile.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />

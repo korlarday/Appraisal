@@ -463,7 +463,8 @@
                 $this.attr("disabled", true);
                 Dashmix.layout('header_loader_on');
 
-                var url = '/api/appraisal/PostStartEmployeeAppraisal';
+                //var url = '/api/appraisal/PostStartEmployeeAppraisal';
+                var url = '@Url.Action("PostStartEmployeeAppraisal", "appraisal", new { httproute = "DefaultApi" })';
                 $.post(url,
                     {
                         employeeId: $employeeId,

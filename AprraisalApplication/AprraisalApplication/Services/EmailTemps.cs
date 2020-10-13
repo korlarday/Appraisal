@@ -10,7 +10,7 @@ namespace AprraisalApplication.Services
         public static string Body(string mail)
         {
             string mailbody = "";
-            mailbody += "<p>Hello</p>";
+            mailbody += "<p>Good day,</p>";
             mailbody += mail;
             mailbody += "<p>Thank you</p>";
             mailbody += "<p>Please do not reply to this mail</p>";

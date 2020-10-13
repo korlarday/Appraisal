@@ -61,7 +61,7 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="btn-group">
-                                                    <a href="/appraisal/view-previous-appraisal/@item.Slug" target="_blank" class="btn btn-sm btn-primary" data-toggle="tooltip" title="View Form">
+                                                    <a href="@Url.Action("view-previous-appraisal", "appraisal", new { slug = item.Slug })" target="_blank" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="View Form">
                                                         <i class="fa fa-eye"></i> View
                                                     </a>
                                                 </div>

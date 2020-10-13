@@ -23,7 +23,7 @@
 <!-- Page Content -->
 <div class="content">
     <!-- Elements -->
-    <a href="/mdappraisal/initiated-appraisals-md" class="btn btn-link btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
+    <a href="@Url.Action("initiated-appraisals-md", "mdappraisal")" class="btn btn-link btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
     <div class="block block-rounded block-bordered">
         <div class="block-header block-header-default">
             <h3 class="block-title">Appraisal</h3>
@@ -99,7 +99,7 @@
                                             <td>
                                                 @if (item.AppraisalTemplate != null)
                                                 {
-                                                    <a href="/configurations/view-appraisal-template/@item.AppraisalTemplate.Slug" target="_blank">@item.AppraisalTemplate.TemplateName</a>
+                                                    <a href="@Url.Action("view-appraisal-template", "configurations", new { slug = item.AppraisalTemplate.Slug })" target="_blank">@item.AppraisalTemplate.TemplateName</a>
                                                 }
                                             </td>
                                         </tr>

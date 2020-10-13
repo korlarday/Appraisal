@@ -17,6 +17,7 @@ using SendGrid.Helpers.Mail;
 using System.Net;
 using SendGrid;
 using System.Configuration;
+using System.Net.Mail;
 
 namespace AprraisalApplication
 {
@@ -25,7 +26,8 @@ namespace AprraisalApplication
         public Task SendAsync(IdentityMessage message)
         {
             // Plug in your email service here to send an email.
-            return configSendGridasync(message);
+            //return configSendGridasync(message);
+            return EmailSend(message);
         }
 
         //void sendMail(IdentityMessage message)
@@ -50,6 +52,41 @@ namespace AprraisalApplication
         //    smtpClient.EnableSsl = true;
         //    smtpClient.Send(msg);
         //}
+
+        public async static Task<string> EmailSend(IdentityMessage message)
+        {
+            string status = "failed";
+            try
+            {
+                string HostAddress = ConfigurationManager.AppSettings["Host"].ToString();
+                string FormEmailId = ConfigurationManager.AppSettings["MailFrom"].ToString();
+                string Password = ConfigurationManager.AppSettings["Password"].ToString();
+                string Port = ConfigurationManager.AppSettings["Port"].ToString();
+                MailMessage mailMessage = new MailMessage();
+                mailMessage.From = new MailAddress(FormEmailId);
+                mailMessage.Subject = "Appraisal Exercise";
+                mailMessage.Body = message.Body;
+                mailMessage.IsBodyHtml = true;
+                mailMessage.To.Add(new MailAddress(message.Destination));
+                SmtpClient smtp = new SmtpClient();
+                smtp.Host = HostAddress;
+                smtp.EnableSsl = true;
+                NetworkCredential networkCredential = new NetworkCredential();
+                networkCredential.UserName = mailMessage.From.Address;
+                networkCredential.Password = Password;
+                smtp.UseDefaultCredentials = true;
+                smtp.Credentials = networkCredential;
+                smtp.Port = Convert.ToInt32(Port);
+                await smtp.SendMailAsync(mailMessage);
+                status = "sent";
+                return status;
+            }
+            catch (Exception e)
+            {
+                return status;
+            }
+        }
+
         private Task configSendGridasync(IdentityMessage message)
         {
 

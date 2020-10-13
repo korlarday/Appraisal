@@ -14,7 +14,7 @@
         <div class="mx-5">
             <h5 class="mt-4 mb-3">Home - Dashboard</h5>
             <div class="row">
-                <a href="/appraisal/ongoing-appraisals-all" class="col-sm-6 invisible text-muted" data-toggle="appear">
+                <a href="@Url.Action("ongoing-appraisals-all", "appraisal")" class="col-sm-6 invisible text-muted" data-toggle="appear">
                     <div class="block block-rounded block-fx-pop text-center">
                         <div class="block-content block-content-full">
                             <div class="row">
@@ -30,7 +30,7 @@
 
                 @if (Model.MySubordinates != 0)
                 {
-                    <a href="/appraisal/appraisees" class="col-sm-6 invisible text-muted" data-toggle="appear">
+                    <a href="@Url.Action("appraisees", "appraisal")" class="col-sm-6 invisible text-muted" data-toggle="appear">
                         <div class="block block-rounded block-fx-pop text-center">
                             <div class="block-content block-content-full">
                                 <div class="row">
@@ -46,7 +46,7 @@
                 }
                 @if (User.IsInRole("HOD"))
                 {
-                    <a href="/departmentappraisal/employees-in-department" class="col-sm-6 invisible text-muted" data-toggle="appear">
+                    <a href="@Url.Action("employees-in-department", "departmentappraisal")" class="col-sm-6 invisible text-muted" data-toggle="appear">
                         <div class="block block-rounded block-fx-pop text-center">
                             <div class="block-content block-content-full">
                                 <div class="row">
@@ -62,7 +62,7 @@
                 }
                 @if (User.IsInRole("HR") || User.IsInRole("MD"))
                 {
-                    <a href="@(User.IsInRole("HR") ? "/hr/all-employees":"/mdappraisal/all-employees")" class="col-sm-6 invisible text-muted" data-toggle="appear">
+                    <a href="@(User.IsInRole("HR") ? Url.Action("all-employees", "hr"): Url.Action("all-employees", "mdappraisal"))" class="col-sm-6 invisible text-muted" data-toggle="appear">
                         <div class="block block-rounded block-fx-pop text-center">
                             <div class="block-content block-content-full">
                                 <div class="row">
@@ -75,7 +75,7 @@
                             </div>
                         </div>
                     </a>
-                    <a href="@(User.IsInRole("HR") ? "/hr/deactivated-employees":"/mdappraisal/deactivated-employees")" class="col-sm-6 invisible text-muted" data-toggle="appear">
+                    <a href="@(User.IsInRole("HR") ? Url.Action("deactivated-employees", "hr"): Url.Action("deactivated-employees", "mdappraisal"))" class="col-sm-6 invisible text-muted" data-toggle="appear">
                         <div class="block block-rounded block-fx-pop text-center">
                             <div class="block-content block-content-full">
                                 <div class="row">
@@ -91,7 +91,7 @@
                 }
                 @if (User.IsInRole("HR"))
                 {
-                    <a href="/appraisal/initiated-appraisals" class="col-sm-6 invisible text-muted" data-toggle="appear">
+                    <a href="@Url.Action("initiated-appraisals", "appraisal")" class="col-sm-6 invisible text-muted" data-toggle="appear">
                         <div class="block block-rounded block-fx-pop text-center">
                             <div class="block-content block-content-full">
                                 <div class="row">
@@ -104,7 +104,7 @@
                             </div>
                         </div>
                     </a>
-                    <a href="/appraisal/initiated-appraisals" class="col-sm-6 invisible text-muted" data-toggle="appear">
+                    <a href="@Url.Action("initiated-appraisals", "appraisal")" class="col-sm-6 invisible text-muted" data-toggle="appear">
                         <div class="block block-rounded block-fx-pop text-center">
                             <div class="block-content block-content-full">
                                 <div class="row">

@@ -56,7 +56,7 @@
             background-color: antiquewhite;
         }
         td.check{
-            background: url("../../Images/checkmark.png") center center no-repeat;
+            background: url('@Url.Content("~/Images/checkmark.png")') center center no-repeat;
             background-size: 25px;
         }
         .score{
@@ -89,7 +89,7 @@
 <!-- END Hero -->
 <!-- Page Content -->
 <div class="content">
-    <a class="btn btn-link btn-sm mb-2" href="/appraisal/appraise-members"><i class="fa fa-arrow-left"></i> Back</a>
+    <a class="btn btn-link btn-sm mb-2" href="@Url.Action("appraise-members", "appraisal")"><i class="fa fa-arrow-left"></i> Back</a>
     <!-- Elements -->
     <div class="block block-rounded block-bordered">
         <div class="block-header block-header-default">
@@ -1082,7 +1082,7 @@
                             var $sectionDetailId = parseInt($(this).attr("data-sectionResultDetailId"));
                             var $breakdownTotalScore = parseFloat($(this).find(".enter-score").text());
 
-                            // 
+                            //
                             var $breakdowns = $(this).find("input.input-breakdown");
                             var $breakdownArray = [];
                             $.each($breakdowns, function () {
@@ -1114,7 +1114,7 @@
                                     }
                                 }
                             });
-                            // 
+                            //
 
                             if ($validateSection) {
                                 if (isNaN($breakdownTotalScore)) {
@@ -1171,7 +1171,8 @@
 
                 }).then(function (n) {
                     if (n.value) {
-                        var url = "/api/Appraisal/PostScoreAppraisalSections";
+                        //var url = "/api/Appraisal/PostScoreAppraisalSections";
+                        var url = '@Url.Action("PostScoreAppraisalSections", "appraisal", new { httproute = "DefaultApi" })';
                         Dashmix.layout('header_loader_on');
                         $this.attr("disabled", true);
                         $.post(url, {
@@ -1192,7 +1193,8 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/appraise-members';
+                                    //window.location.href = '/appraisal/appraise-members';
+                                    window.location.href = '@Url.Action("appraise-members","appraisal")';
                                 }
                             });
                         });
@@ -1224,7 +1226,8 @@
 
                 Dashmix.layout('header_loader_on');
                 $this.attr("disabled", true);
-                var url = "/api/Appraisal/PostRejectAppraisalToAppraisee";
+                //var url = "/api/Appraisal/PostRejectAppraisalToAppraisee";
+                var url = '@Url.Action("PostRejectAppraisalToAppraisee", "appraisal", new { httproute = "DefaultApi" })';
                 $.post(url, {
                     appraiseeId: $appraiseeId,
                     rejectionReason: $rejectionReason
@@ -1242,7 +1245,8 @@
 
                     }).then(function (n) {
                         if (n.value) {
-                            window.location.href = '/appraisal/appraise-members';
+                            //window.location.href = '/appraisal/appraise-members';
+                            window.location.href = '@Url.Action("appraise-members","appraisal")';
                         }
                     });
                 });

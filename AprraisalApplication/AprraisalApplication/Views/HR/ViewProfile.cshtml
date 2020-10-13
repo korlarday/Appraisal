@@ -30,7 +30,7 @@
                 <h2 class="h4 font-w700 text-white-75">
                     @Model.JobTitle.Name
                 </h2>
-                <a href="/hr/edit-profile/@Model.ApplicationUserId" class="btn btn-hero-primary">
+                <a href="@Url.Action("edit-profile", "hr", new { Slug = Model.ApplicationUserId })" class="btn btn-hero-primary">
                     <i class="fa fa-pencil-alt mr-1"></i> Edit Profile
                 </a>
             </div>
@@ -50,7 +50,7 @@
         <i class="si si-user mr-1"></i> Employee Details
     </h2>
     <div class="row">
-        <a href="/hr/all-employees" class="btn btn-sm btn-link"><i class="fa fa-arrow-left"></i> Back</a>
+        <a href="@Url.Action("all-employees", "hr")" class="btn btn-sm btn-link"><i class="fa fa-arrow-left"></i> Back</a>
         <div class="block block-rounded block-bordered col-md-12 p-0">
             <div class="block-header block-header-default">
                 <h3 class="block-title">Details</h3>
@@ -138,7 +138,7 @@
             <div class="block-header block-header-default">
                 <h3 class="block-title">Career History</h3>
                 <div class="block-options">
-                    <a href="/hr/edit-career-history-hr/@Model.ApplicationUserId" class="btn-block-option mr-2">
+                    <a href="@Url.Action("edit-career-history-hr", "hr", new { Slug = Model.ApplicationUserId })" class="btn-block-option mr-2">
                         <i class="fa fa-pencil-alt mr-1"></i> Update Career History
                     </a>
                 </div>

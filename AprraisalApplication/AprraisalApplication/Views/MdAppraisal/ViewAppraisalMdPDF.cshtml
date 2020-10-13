@@ -1,5 +1,9 @@
 ﻿@model AprraisalApplication.Models.ViewModels.AppraiseStaffVM
 
+@*sectionTypeId 1 = duties assigned
+sectionTypeId 2 = other task assigned
+sectionTypeId 3 = quantitative section
+sectionTypeId 4 = qualitative section*@
 
 @{
     Layout = null;
@@ -53,7 +57,7 @@
 
 
     @Styles.Render("~/Content/css")
-    <style>
+<style>
         #content-body {
             max-width: 1000px;
             margin: 20px auto;
@@ -83,7 +87,7 @@
         }
 
         .check {
-            background: url("../../Images/checkmark.png") center center no-repeat;
+            background: url('@Url.Content("~/Images/checkmark.png")') center center no-repeat;
             background-size: 25px;
         }
 
@@ -136,10 +140,10 @@
         tr {
             page-break-inside: avoid !important;
         }
-        .breakhere {
-            page-break-after: always;
+        .table-responsive {
+            overflow-x: visible !important;
         }
-    </style>
+</style>
 </head>
 <body>
     <div id="content-body">
@@ -346,7 +350,7 @@
                     </table>
                 </div>
             </div>
-            <div class="breakhere"></div>
+            
             @foreach (var templateSection in Model.InitiatedAppraisalTemplate.InitiatedTemplateSections.OrderBy(x => x.SetupId))
             {
                 if (templateSection.IsDeleted == false)
@@ -612,7 +616,7 @@
                                         <tr>
                                             <td class="text-right font-w700" colspan="2">Mark Obtainable</td>
                                             <td class="text-center font-w700">@templateSection.TotalMarkObtainable</td>
-                                            <td colspan="@ratingsCount" class="text-center font-w700"></td>
+                                            <td colspan="@ratingsCount" class="text-center font-w700">@currentResultSection.TotalScore</td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -704,7 +708,7 @@
                                         <tr>
                                             <td class="text-right font-w700">Mark Obtainable</td>
                                             <td class="text-center font-w700">@templateSection.TotalMarkObtainable</td>
-                                            <td colspan="@ratingsCount" class="text-center font-w700"></td>
+                                            <td colspan="@ratingsCount" class="text-center font-w700">@currentResultSection.TotalScore</td>
                                         </tr>
                                     </tfoot>
                                 </table>

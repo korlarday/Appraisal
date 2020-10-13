@@ -12,10 +12,10 @@
             <span style="font-size:11px">@Model.User.UserName</span>
         </div>
         <div class="p-2">
-            <a class="dropdown-item" href="/users/user-profile">
+            <a class="dropdown-item" href="@Url.Action("user-profile", "users")">
                 <i class="far fa-fw fa-user mr-1"></i> Profile
             </a>
-            <a class="dropdown-item" href="/account/change-password">
+            <a class="dropdown-item" href="@Url.Action("change-password", "account")">
                 <i class="fa fa-fw fa-cog mr-1"></i> Change Password
             </a>
             @*<a class="dropdown-item d-flex align-items-center justify-content-between" href="be_pages_generic_inbox.html">

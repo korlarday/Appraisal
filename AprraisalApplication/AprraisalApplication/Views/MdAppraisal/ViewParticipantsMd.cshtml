@@ -23,7 +23,7 @@
 <!-- Page Content -->
 <div class="content">
     <!-- Elements -->
-    <a href="/mdappraisal/group-participants-md/@Model.NewAppraisal.Slug" class="btn btn-link"><i class="fa fa-arrow-left"></i> Back</a>
+    <a href="@Url.Action("group-participants-md","mdappraisal", new { slug = Model.NewAppraisal.Slug })" class="btn btn-link"><i class="fa fa-arrow-left"></i> Back</a>
     <div class="block block-rounded block-bordered">
         <div class="block-header block-header-default">
             <h3 class="block-title">View Appraisals</h3>
@@ -84,7 +84,7 @@
                                             {
                                                 <div class="col-12">
                                                     <div>
-                                                        <a href="/mdappraisal/view-appraisal-md-pdf?u=@item.Employee.ApplicationUserId&s=@Model.NewAppraisal.Slug" target="_blank" class="btn btn-link"> <i class="fa fa-file-pdf"></i> View pdf</a>
+                                                        <a href="@Url.Action("view-appraisal-md-pdf","mdappraisal", new { u = item.Employee.ApplicationUserId, s = Model.NewAppraisal.Slug })" target="_blank" class="btn btn-link"> <i class="fa fa-file-pdf"></i> View pdf</a>
                                                     </div>
                                                 </div>
                                             }
@@ -98,7 +98,7 @@
                                         }
                                         else if (item.AppraiseeProgress.HRSubmit && !item.AppraiseeProgress.MDAcknowledgement)
                                         {
-                                            <a href="/mdappraisal/md-comments?slug=@item.Employee.ApplicationUserId&n=@Model.NewAppraisal.Slug" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Enter Comments</a>
+                                            <a href="@Url.Action("md-comments", "mdappraisal", new { slug = item.Employee.ApplicationUserId, n = Model.NewAppraisal.Slug })" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Enter Comments</a>
                                         }
                                         else if (!item.AppraiseeProgress.HRSubmit)
                                         {

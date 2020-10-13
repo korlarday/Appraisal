@@ -850,7 +850,8 @@
                     if (n.value) {
                         Dashmix.layout('header_loader_on');
                         $this.attr("disabled", true);
-                        var url = "/api/Appraisal/PostEnterHodComment";
+                        //var url = "/api/Appraisal/PostEnterHodComment";
+                        var url = '@Url.Action("PostEnterHodComment", "Appraisal", new { httproute = "DefaultApi" })';
 
                         $.post(url, {
                             appraiseeId: $appraiseeId,
@@ -869,7 +870,9 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/departmentAppraisal/view-participants/' + $slug;
+                                    //window.location.href = '/departmentAppraisal/view-participants/' + $slug;
+                                    var link = '@Url.Action("view-participants", "departmentAppraisal", new { slug = "_slug_" })';
+                                    window.location.href = link.replace("_slug_", $slug);
                                 }
                             });
                         });
@@ -881,7 +884,7 @@
             });
 
             //
-            // 
+            //
             $(".rejectAppraisal").on("click", function (e) {
                 e.preventDefault();
                 var $this = $(this);
@@ -908,7 +911,8 @@
 
                 Dashmix.layout('header_loader_on');
                 $this.attr("disabled", true);
-                var url = "/api/Appraisal/PostRejectAppraisalToSupervisor";
+                //var url = "/api/Appraisal/PostRejectAppraisalToSupervisor";
+                var url = '@Url.Action("PostRejectAppraisalToSupervisor", "Appraisal", new { httproute = "DefaultApi" })';
                 $.post(url, {
                     appraiseeId: $appraiseeId,
                     rejectionReason: $rejectionReason,
@@ -927,7 +931,9 @@
 
                     }).then(function (n) {
                         if (n.value) {
-                            window.location.href = '/departmentAppraisal/view-participants/' + $slug;
+                            //window.location.href = '/departmentAppraisal/view-participants/' + $slug;
+                            var link = '@Url.Action("view-participants", "departmentAppraisal", new { slug = "_slug_" })';
+                            window.location.href = link.replace("_slug_", $slug);
                         }
                     });
                 });

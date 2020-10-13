@@ -75,7 +75,7 @@
                                                 }
                                             </td>
                                             <td class="text-center">
-                                                <a href="/configurations/edit-employee-roles/@item.Employee.ApplicationUserId" class="btn btn-sm btn-primary" data-toggle="tooltip" title="Edit Roles">
+                                                <a href="@Url.Action("edit-employee-roles", "configurations", new { slug = item.Employee.ApplicationUserId })" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="Edit Roles">
                                                     Edit
                                                 </a>
                                             </td>

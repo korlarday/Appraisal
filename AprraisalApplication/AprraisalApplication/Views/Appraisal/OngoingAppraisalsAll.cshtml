@@ -89,11 +89,11 @@
                                     <div class="row text-center">
                                         @if (item.AppraiseeProgress == null)
                                         {
-                                            <a href="/appraisal/ongoing-appraisal/@item.NewAppraisal.Slug" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Start Exercise</a>
+                                            <a href="@Url.Action("ongoing-appraisal","appraisal", new { slug = item.NewAppraisal.Slug })" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Start Exercise</a>
                                         }
                                         else if (!item.AppraiseeProgress.AppraiseeSubmit)
                                         {
-                                            <a href="/appraisal/ongoing-appraisal/@item.NewAppraisal.Slug" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Start Exercise</a>
+                                            <a href="@Url.Action("ongoing-appraisal","appraisal", new { slug = item.NewAppraisal.Slug })" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Start Exercise</a>
                                         }
                                         else if (item.AppraiseeProgress.AppraiseeSubmit &&
                                                 !item.AppraiseeProgress.SupervisorAskForFeedback &&
@@ -104,11 +104,11 @@
                                         }
                                         else if (!item.AppraiseeProgress.SupervisorSubmit && item.AppraiseeProgress.SupervisorReject)
                                         {
-                                            <a href="/appraisal/ongoing-appraisal/@item.NewAppraisal.Slug" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Make Corrections</a>
+                                            <a href="@Url.Action("ongoing-appraisal","appraisal", new { slug = item.NewAppraisal.Slug })" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Make Corrections</a>
                                         }
                                         else if (item.AppraiseeProgress.SupervisorAskForFeedback)
                                         {
-                                            <a href="/appraisal/ongoing-appraisal/@item.NewAppraisal.Slug" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Enter Comments</a>
+                                            <a href="@Url.Action("ongoing-appraisal","appraisal", new { slug = item.NewAppraisal.Slug })" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Enter Comments</a>
                                         }
                                         else if (item.AppraiseeProgress.AppraiseeSubmit &&
                                                 item.AppraiseeProgress.FeedbackFromAppraisee &&

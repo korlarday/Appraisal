@@ -97,7 +97,7 @@
                                                 }
                                                 else if (item.AppraiseeProgress.HODSubmit && !item.AppraiseeProgress.HRSubmit)
                                                 {
-                                                    <a href="@Url.Content("~/appraisal/hr-comments?slug=" + item.Employee.ApplicationUserId + "&n" + Model.NewAppraisal.Slug + "&a=t")" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Enter Comments</a>
+                                                    <a href="@Url.Content("~/appraisal/hr-comments?slug=" + item.Employee.ApplicationUserId + "&n=" + Model.NewAppraisal.Slug + "&a=t")" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Enter Comments</a>
                                                 }
                                                 else if (!item.AppraiseeProgress.HODSubmit && item.AppraiseeProgress.HRReject)
                                                 {
@@ -113,7 +113,7 @@
                                                 }
                                                 else if (item.AppraiseeProgress.MDAcknowledgement)
                                                 {
-                                                    <div class="text-success" style="margin:auto">Acknowledged by MD</div>
+                                                    <div class="text-success" style="margin:auto">Completed</div>
                                                 }
                                             </td>
                                             <td class="text-center">
@@ -123,7 +123,7 @@
                                                     {
                                                         <div class="text-center">
                                                             <div>
-                                                                <a href="@Url.Content("~/appraisal/view-appraisal-pdf?u=" + item.Employee.ApplicationUserId + "&s" + Model.NewAppraisal.Slug)" target="_blank" class="btn btn-link"> <i class="fa fa-file-pdf"></i> View pdf</a>
+                                                                <a href="@Url.Content("~/appraisal/view-appraisal-pdf?u=" + item.Employee.ApplicationUserId + "&s=" + Model.NewAppraisal.Slug)" target="_blank" class="btn btn-link"> <i class="fa fa-file-pdf"></i> View pdf</a>
                                                             </div>
                                                         </div>
                                                     }

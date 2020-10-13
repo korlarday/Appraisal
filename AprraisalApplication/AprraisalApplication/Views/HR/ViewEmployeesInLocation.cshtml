@@ -35,7 +35,7 @@
 <!-- END Hero -->
 <!-- Page Content -->
 <div class="content">
-    <a href="/hr/employees-by-location" class="btn btn-link"><i class="fa fa-arrow-left"></i> Back</a>
+    <a href="@Url.Action("employees-by-location","hr")" class="btn btn-link"><i class="fa fa-arrow-left"></i> Back</a>
     <!-- Elements -->
     <div class="block block-rounded block-bordered">
         <div class="block-header block-header-default">
@@ -91,10 +91,10 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="btn-group">
-                                                    <a href="/hr/view-profile/@item.ApplicationUserId" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="View Profile">
+                                                    <a href="@Url.Action("view-profile", "hr", new { Slug = item.ApplicationUserId })" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="View Profile">
                                                         <i class="fa fa-eye"></i>
                                                     </a>
-                                                    <a href="/hr/edit-profile/@item.ApplicationUserId" class="btn btn-sm btn-outline-secondary" data-toggle="tooltip" title="Edit Profile">
+                                                    <a href="@Url.Action("edit-profile", "hr", new { Slug = item.ApplicationUserId })" class="btn btn-sm btn-outline-secondary" data-toggle="tooltip" title="Edit Profile">
                                                         <i class="fa fa-pencil-alt"></i>
                                                     </a>
                                                     @if (item.AccountDisabled)
@@ -158,7 +158,8 @@
                 }).then(function (n) {
                     if (n.value) {
                         var id = $this.attr("data-userId");
-                        var url = "/api/Configurations/PostActivateAccount";
+                        //var url = "/api/Configurations/PostActivateAccount";
+                        var url = '@Url.Action("PostActivateAccount", "configurations", new { httproute = "DefaultApi" })';
 
                         $.post(url, { userId: id }, function (data) {
                             Swal.fire("activated!", "User account has been activated.", "success");
@@ -199,7 +200,8 @@
                 }).then(function (n) {
                     if (n.value) {
                         var id = $this.attr("data-userId");
-                        var url = "/api/Configurations/PostDeactivateAccount";
+                        //var url = "/api/Configurations/PostDeactivateAccount";
+                        var url = '@Url.Action("PostDeactivateAccount", "configurations", new { httproute = "DefaultApi" })';
 
                         $.post(url, { userId: id }, function (data) {
                             Swal.fire("Deactivated!", "User account has been deactivated.", "success");

@@ -179,9 +179,9 @@
                     $this.attr("disabled", false);
                     return false;
                 }
-
+                var url = '@Url.Action("PostAddJobTitle", "Resources", new { httproute = "DefaultApi" })';
                 $.ajax({
-                    url: '/api/resources/PostAddJobTitle',
+                    url: url,
                     data: {
                         jobtitleName: newJobtitleName
                     },
@@ -256,7 +256,8 @@
                     return false;
                 }
 
-                var url = "/api/Resources/PostEditJobTitle";
+                //var url = "/api/Resources/PostEditJobTitle";
+                var url = '@Url.Action("PostEditJobTitle", "Resources", new { httproute = "DefaultApi" })';
 
                 $.post(url,
                     { id: editId, jobtitleName: jobtitleName },
@@ -312,7 +313,8 @@
                     if (n.value) {
                         Swal.fire("Deleted!", "Job title has been deleted.", "success");
                         var id = $this.closest('tr').children(".id").text();
-                        var url = "/api/Resources/PostDeleteJobTitle";
+                        //var url = "/api/Resources/PostDeleteJobTitle";
+                        var url = '@Url.Action("PostDeleteJobTitle", "Resources", new { httproute = "DefaultApi" })';
 
                         $.post(url, { id: id }, function (data) {
                                 $this.closest('tr').fadeOut("slow", function () {

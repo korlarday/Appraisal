@@ -24,7 +24,7 @@
 <!-- Page Content -->
 <div class="content">
     <!-- Elements -->
-    <a href="/appraisal/initiated-appraisals" class="btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
+    <a href="@Url.Action("initiated-appraisals", "appraisal")" class="btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
     <div class="block block-rounded block-bordered">
         <div class="block-header block-header-default">
             <h3 class="block-title">Appraisal</h3>
@@ -100,7 +100,7 @@
                                             <td>
                                                 @if (item.AppraisalTemplate != null)
                                                 {
-                                                    <a href="/configurations/view-appraisal-template/@item.AppraisalTemplate.Slug" target="_blank">@item.AppraisalTemplate.TemplateName</a>
+                                                    <a href="@Url.Action("view-appraisal-template", "configurations", new { slug = item.AppraisalTemplate.Slug })" target="_blank">@item.AppraisalTemplate.TemplateName</a>
                                                 }
                                             </td>
                                         </tr>
@@ -141,7 +141,8 @@
                 }).then(function (n) {
                     if (n.value) {
                         var id = $this.attr("data-templateId");
-                        var url = "/api/configurations/PostDeleteAppraisalTemplate";
+                        //var url = "/api/configurations/PostDeleteAppraisalTemplate";
+                        var url = '@Url.Action("PostDeleteAppraisalTemplate", "configurations", new { httproute = "DefaultApi" })';
 
                         $.post(url, { id: id }, function (data) {
                             Swal.fire("Deleted!", "Template has been deleted.", "success");

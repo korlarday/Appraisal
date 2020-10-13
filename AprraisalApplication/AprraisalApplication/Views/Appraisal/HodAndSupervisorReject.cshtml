@@ -659,7 +659,7 @@
             function capitalize(text) {
                 return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
             }
-            
+
             // when you click on add row (for task performed)
             $(".addTaskRow").on("click", function () {
                 var $this = $(this);
@@ -718,8 +718,8 @@
                     }).then(function (n) {
                         if (n.value) {
                             var $appraiseeId = parseInt($("#appraiseeId").text());
-                            var url = "/api/Appraisal/PostRemoveSectionResultDetail";
-
+                            //var url = "/api/Appraisal/PostRemoveSectionResultDetail";
+                            var url = '@Url.Action("PostRemoveSectionResultDetail", "appraisal", new { httproute = "DefaultApi" })';
                             $.post(url, {
                                 sectionResultDetailId: $sectionResultDetailId
                             }, function (data) {
@@ -875,8 +875,8 @@
                 }).then(function (n) {
                     if (n.value) {
                         var $appraiseeId = parseInt($("#appraiseeId").text());
-                        var url = "/api/Appraisal/PostResubmitAppraisalToSupervisor";
-
+                        //var url = "/api/Appraisal/PostResubmitAppraisalToSupervisor";
+                        var url = '@Url.Action("PostResubmitAppraisalToSupervisor", "appraisal", new { httproute = "DefaultApi" })';
                         $.post(url, {
                             appraiseeId: $appraiseeId,
                             sectionResults: $sectionResults,
@@ -893,7 +893,8 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/ongoing-appraisals-all';
+                                    //window.location.href = '/appraisal/ongoing-appraisals-all';
+                                    window.location.href = '@Url.Action("ongoing-appraisals-all", "appraisal")';
                                 }
                             });
                         });

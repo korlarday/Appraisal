@@ -601,7 +601,7 @@
                             var $title = $(this).find(".title").val();
                             var $weight = parseInt($(this).find(".weight").val());
                             var $breakdownTotal = 0;
-                            
+
                             if ($title == '' || isNaN($weight)) {
                                 $qualitativeDetailsIsValid = false;
                             }
@@ -657,7 +657,7 @@
                             $qualitativeDetailsScoreValid = false;
                         }
                     }
-                    
+
                     if ($sectionTitle == '' || $sectionInstructions == '' || $sectionPercentageScore == '' || $sectionTotalPoints == '') {
                         $isValid = false;
                     }
@@ -725,8 +725,9 @@
                 }
                 console.log($appraisalTemplate);
                 console.log("include tracker", $includeTracker);
-                var url = "/api/Configurations/PostSaveAppraisalTemplate";
-                
+                //var url = "/api/Configurations/PostSaveAppraisalTemplate";
+                var url = '@Url.Action("PostSaveAppraisalTemplate", "configurations", new { httproute = "DefaultApi" })';
+
                 $.post(url,
                     {
                         templateName: $templateName,
@@ -747,7 +748,8 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/configurations/appraisal-templates';
+                                    //window.location.href = '/configurations/appraisal-templates';
+                                    window.location.href = '@Url.Action("appraisal-templates","configurations")';
                                 }
                             });
                         } else if (data == "title exists") {

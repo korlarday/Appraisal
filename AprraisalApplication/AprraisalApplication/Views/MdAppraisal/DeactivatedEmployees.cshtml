@@ -89,7 +89,7 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="btn-group">
-                                                    <a href="/mdappraisal/view-profile/@item.ApplicationUserId" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="View Profile">
+                                                    <a href="@Url.Action("view-profile", "mdappraisal", new { slug = item.ApplicationUserId })" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="View Profile">
                                                         <i class="fa fa-eye"></i>
                                                     </a>
                                                 </div>

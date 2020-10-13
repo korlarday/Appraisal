@@ -50,14 +50,14 @@
                                         <tr>
                                             <th class="text-center" scope="row">@num</th>
                                             <td class="font-w600">
-                                                <a href="/configurations/view-appraisal-template/@item.Slug" target="_blank">@item.TemplateName</a>
+                                                <a href="@Url.Action("view-appraisal-template", "configurations", new { slug = item.Slug })" target="_blank">@item.TemplateName</a>
                                             </td>
                                             <td class="text-center">
                                                 @item.NumberOfSections
                                             </td>
                                             <td class="text-center">
                                                 <div class="btn-group">
-                                                    <a href="/configurations/edit-appraisal-template/@item.Slug" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="Edit">
+                                                    <a href="@Url.Action("edit-appraisal-template", "configurations", new { slug = item.Slug })" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="Edit">
                                                         <i class="fa fa-pencil-alt"></i>
                                                     </a>
                                                     <button type="button" class="btn btn-sm btn-outline-danger delete_template" data-templateId="@item.Id" data-toggle="tooltip" title="Delete">
@@ -103,7 +103,8 @@
                 }).then(function (n) {
                     if (n.value) {
                         var id = $this.attr("data-templateId");
-                        var url = "/api/configurations/PostDeleteAppraisalTemplate";
+                        //var url = "/api/configurations/PostDeleteAppraisalTemplate";
+                        var url = '@Url.Action("PostDeleteAppraisalTemplate", "configurations", new { httproute = "DefaultApi" })';
 
                         $.post(url, { id: id }, function (data) {
                             Swal.fire("Deleted!", "Template has been deleted.", "success");

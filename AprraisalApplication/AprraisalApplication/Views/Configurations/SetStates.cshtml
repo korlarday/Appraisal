@@ -178,9 +178,9 @@
                     $this.attr("disabled", false);
                     return false;
                 }
-
+                var url = '@Url.Action("PostAddState", "Resources", new { httproute = "DefaultApi" })';
                 $.ajax({
-                    url: '/api/resources/PostAddState',
+                    url: url,
                     data: {
                         stateName: newStateName
                     },
@@ -257,7 +257,8 @@
                     return false;
                 }
 
-                var url = "/api/Resources/PostEditState";
+                //var url = "/api/Resources/PostEditState";
+                var url = '@Url.Action("PostEditState", "Resources", new { httproute = "DefaultApi" })';
 
                 $.post(url,
                     { id: editId, stateName: statename },
@@ -313,7 +314,8 @@
                     if (n.value) {
                         Swal.fire("Deleted!", "State item has been deleted.", "success");
                         var id = $this.closest('tr').children(".id").text();
-                        var url = "/api/Resources/PostDeleteState";
+                        //var url = "/api/Resources/PostDeleteState";
+                        var url = '@Url.Action("PostDeleteState", "Resources", new { httproute = "DefaultApi" })';
 
                         $.post(url, { id: id }, function (data) {
                                 $this.closest('tr').fadeOut("slow", function () {

@@ -45,7 +45,7 @@
 
                                     <div class="col-sm-4 invisible pt-3 pb-3" data-toggle="appear">
                                         <a class="block block-rounded block-bordered block-link-shadow"
-                                           href="/departmentappraisal/view-employees-in-location-hod/@item.State.Id">
+                                           href="@Url.Action("view-employees-in-location-hod", "departmentAppraisal", new { slug = item.State.Id })">
                                             <div class="block-content block-content-full text-center bg-body-light" data-toggle="appear">
                                                 <div class="mt-2">
                                                     <p class="font-w600 mb-0">

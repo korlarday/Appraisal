@@ -54,7 +54,7 @@
 <!-- END Hero -->
 <!-- Page Content -->
 <div class="content">
-    <a class="btn btn-link btn-sm mb-2" href="/appraisal/ongoing-appraisals-all"><i class="fa fa-arrow-left"></i> Back</a>
+    <a class="btn btn-link btn-sm mb-2" href="@Url.Action("ongoing-appraisals-all", "appraisal")"><i class="fa fa-arrow-left"></i> Back</a>
     <!-- Elements -->
     <div class="block block-rounded block-bordered">
         <div class="block-header block-header-default">
@@ -109,7 +109,7 @@
                         <div class="text-danger">
                             Note: Update your career history before starting an appraisal exercise <br />
                             
-                            <a class="btn btn-link btn-sm" href="/users/edit-career-history">
+                            <a class="btn btn-link btn-sm" href="@Url.Action("edit-career-history","users")">
                                 <i class="fa fa-pencil-alt"></i> Update Career History With Company
                             </a>
                         </div>
@@ -637,7 +637,8 @@
                 $this.attr("disabled", true);
                 Dashmix.layout('header_loader_on');
 
-                var url = '/api/appraisal/PostStartEmployeeAppraisal';
+                //var url = '/api/appraisal/PostStartEmployeeAppraisal';
+                var url = '@Url.Action("PostStartEmployeeAppraisal", "appraisal", new { httproute = "DefaultApi" })';
                 $.post(url,
                     {
                         employeeId: $employeeId,
@@ -942,7 +943,8 @@
                         Dashmix.layout('header_loader_on');
                         $this.attr("disabled", true);
                         var $appraiseeId = parseInt($("#appraiseeId").text());
-                        var url = "/api/Appraisal/PostSubmitAppraisalToSupervisor";
+                        //var url = "/api/Appraisal/PostSubmitAppraisalToSupervisor";
+                        var url = '@Url.Action("PostSubmitAppraisalToSupervisor", "appraisal", new { httproute = "DefaultApi" })';
 
                         $.post(url, {
                             appraiseeId: $appraiseeId,
@@ -962,7 +964,8 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/ongoing-appraisals-all';
+                                    //window.location.href = '/appraisal/ongoing-appraisals-all';
+                                    window.location.href = '@Url.Action("ongoing-appraisals-all", "appraisal")';
                                 }
                             });
                         });

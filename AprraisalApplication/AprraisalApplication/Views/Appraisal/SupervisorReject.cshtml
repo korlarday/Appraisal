@@ -622,7 +622,8 @@
                 $this.attr("disabled", true);
                 Dashmix.layout('header_loader_on');
 
-                var url = '/api/appraisal/PostStartEmployeeAppraisal';
+                //var url = '/api/appraisal/PostStartEmployeeAppraisal';
+                var url = '@Url.Action("PostStartEmployeeAppraisal", "appraisal", new { httproute = "DefaultApi" })';
                 $.post(url,
                     {
                         employeeId: $employeeId,
@@ -643,7 +644,9 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/ongoing-appraisal';
+                                    //window.location.href = '/appraisal/ongoing-appraisal';
+                                    window.location.href = '@Url.Action("ongoing-appraisal", "appraisal")';
+
                                 }
                             });
                         }
@@ -665,7 +668,9 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/ongoing-appraisal';
+                                    //window.location.href = '/appraisal/ongoing-appraisal';
+                                    window.location.href = '@Url.Action("ongoing-appraisal", "appraisal")';
+
                                 }
                             });
                         }
@@ -681,7 +686,8 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/ongoing-appraisal';
+                                    //window.location.href = '/appraisal/ongoing-appraisal';
+                                    window.location.href = '@Url.Action("ongoing-appraisal", "appraisal")';
                                 }
                             });
                         }
@@ -746,8 +752,8 @@
                     }).then(function (n) {
                         if (n.value) {
                             var $appraiseeId = parseInt($("#appraiseeId").text());
-                            var url = "/api/Appraisal/PostRemoveSectionResultDetail";
-
+                            //var url = "/api/Appraisal/PostRemoveSectionResultDetail";
+                            var url = '@Url.Action("PostRemoveSectionResultDetail", "appraisal", new { httproute = "DefaultApi" })';
                             $.post(url, {
                                 sectionResultDetailId: $sectionResultDetailId
                             }, function (data) {
@@ -958,7 +964,8 @@
                         Dashmix.layout('header_loader_on');
                         //$this.attr("disabled", true);
                         var $appraiseeId = parseInt($("#appraiseeId").text());
-                        var url = "/api/Appraisal/PostResubmitAppraisalToSupervisor";
+                        //var url = "/api/Appraisal/PostResubmitAppraisalToSupervisor";
+                        var url = '@Url.Action("PostResubmitAppraisalToSupervisor", "appraisal", new { httproute = "DefaultApi" })';
 
                         console.log($sectionResults)
                         $.post(url, {
@@ -979,7 +986,8 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/ongoing-appraisals-all';
+                                    //window.location.href = '/appraisal/ongoing-appraisals-all';
+                                    window.location.href = '@Url.Action("ongoing-appraisals-all", "appraisal")';
                                 }
                             });
                         });

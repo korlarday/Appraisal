@@ -23,7 +23,7 @@
 <!-- END Hero -->
 <!-- Page Content -->
 <div class="content">
-    <a href="/departmentAppraisal/department-initiated-appraisals" class="btn btn-link btn-sm mb-2"><i class="fa fa-arrow-left"></i> Back</a>
+    <a href="@Url.Action("department-initiated-appraisals", "departmentAppraisal")" class="btn btn-link btn-sm mb-2"><i class="fa fa-arrow-left"></i> Back</a>
     <!-- Elements -->
     <div class="block block-rounded block-bordered">
         <div class="block-header block-header-default">
@@ -85,7 +85,7 @@
                                             {
                                                 <div class="col-12">
                                                     <div>
-                                                        <a href="/departmentappraisal/view-appraisal-pdf?u=@item.Employee.ApplicationUserId&s=@Model.NewAppraisal.Slug" target="_blank" class="btn btn-link"> <i class="fa fa-file-pdf"></i> View pdf</a>
+                                                        <a href="@Url.Action("view-appraisal-pdf", "departmentappraisal", new { u = item.Employee.ApplicationUserId, s = item.NewAppraisal.Slug })" target="_blank" class="btn btn-link"> <i class="fa fa-file-pdf"></i> View pdf</a>
                                                     </div>
                                                 </div>
                                             }
@@ -123,7 +123,7 @@
                                         }
                                         else if (item.AppraiseeProgress.SupervisorSubmit && item.AppraiseeProgress.AppraiseeSubmit && !item.AppraiseeProgress.HODSubmit)
                                         {
-                                            <a href="/departmentappraisal/hod-enter-comments?u=@item.Employee.ApplicationUserId&s=@item.NewAppraisal.Slug" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">View Appraisal</a>
+                                            <a href="@Url.Action("hod-enter-comments", "departmentappraisal", new { u = item.Employee.ApplicationUserId, s = item.NewAppraisal.Slug })" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">View Appraisal</a>
                                         }
                                         else if (item.AppraiseeProgress.SupervisorSubmit &&
                                                 item.AppraiseeProgress.AppraiseeSubmit &&

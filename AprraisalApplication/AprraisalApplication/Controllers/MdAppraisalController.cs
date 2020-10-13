@@ -177,7 +177,6 @@ namespace AprraisalApplication.Controllers
             {
                 PageOrientation = Rotativa.Options.Orientation.Portrait,
                 PageSize = Rotativa.Options.Size.A4,
-                FileName = employee.Firstname + " " + employee.Lastname + ".pdf"
             };
         }
 

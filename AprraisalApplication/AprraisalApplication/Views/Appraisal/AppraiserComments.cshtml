@@ -809,7 +809,8 @@
                     if (n.value) {
                         Dashmix.layout('header_loader_on');
                         $this.attr("disabled", true);
-                        var url = "/api/Appraisal/PostEnterAppraiserComment";
+                        //var url = "/api/Appraisal/PostEnterAppraiserComment";
+                        var url = '@Url.Action("PostEnterAppraiserComment", "appraisal", new { httproute = "DefaultApi" })';
 
                         $.post(url, {
                             appraiseeId: $appraiseeId,
@@ -829,7 +830,8 @@
 
                             }).then(function (n) {
                                 if (n.value) {
-                                    window.location.href = '/appraisal/appraise-members';
+                                    //window.location.href = '/appraisal/appraise-members';
+                                    window.location.href = '@Url.Action("appraise-members","appraisal")';
                                 }
                             });
                         });
@@ -868,7 +870,8 @@
 
                 Dashmix.layout('header_loader_on');
                 $this.attr("disabled", true);
-                var url = "/api/Appraisal/PostRejectAppraisalCommentsToAppraisee";
+                //var url = "/api/Appraisal/PostRejectAppraisalCommentsToAppraisee";
+                var url = '@Url.Action("PostRejectAppraisalCommentsToAppraisee", "appraisal", new { httproute = "DefaultApi" })';
                 $.post(url, {
                     appraiseeId: $appraiseeId,
                     rejectionReason: $rejectionReason,
@@ -887,7 +890,8 @@
 
                     }).then(function (n) {
                         if (n.value) {
-                            window.location.href = '/appraisal/appraise-members';
+                            //window.location.href = '/appraisal/appraise-members';
+                            window.location.href = '@Url.Action("appraise-members","appraisal")';
                         }
                     });
                 });

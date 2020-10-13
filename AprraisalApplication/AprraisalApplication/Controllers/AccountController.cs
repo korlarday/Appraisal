@@ -61,6 +61,14 @@ namespace AprraisalApplication.Controllers
             }
         }
 
+
+        [AllowAnonymous]
+        public async Task<ActionResult> TestEmail()
+        {
+            var response = await EmailServices.EmailSend("rilwan.busari@ieianchorpensions.com", "this is a test email from Rilwan");
+            return Content(response);
+            //return RedirectToAction("index", "home");
+        }
         //
         // GET: /Account/Login
         [AllowAnonymous]
@@ -246,7 +254,7 @@ namespace AprraisalApplication.Controllers
                     // Send an email with this link
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    await UserManager.SendEmailAsync(user.Id, "Confirm your account", EmailTemps.Body("Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>"));
 
                     return RedirectToAction("email-confirmation", "Account");
                 }
@@ -262,7 +270,7 @@ namespace AprraisalApplication.Controllers
             string userId = User.Identity.GetUserId();
             string code = await UserManager.GenerateEmailConfirmationTokenAsync(userId);
             var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = userId, code = code }, protocol: Request.Url.Scheme);
-            await UserManager.SendEmailAsync(userId, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+            await UserManager.SendEmailAsync(userId, "Confirm your account", EmailTemps.Body("Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>"));
             TempData["SM"] = "A confirmation link has been sent to your email address. Please check your mail.";
             return RedirectToAction("email-confirmation", "Account");
         }
@@ -312,7 +320,7 @@ namespace AprraisalApplication.Controllers
                 // Send an email with this link
                 string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
                 var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                await UserManager.SendEmailAsync(user.Id, "Reset Password", EmailTemps.Body("Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>"));
                 return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
