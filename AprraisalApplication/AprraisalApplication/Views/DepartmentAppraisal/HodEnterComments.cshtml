@@ -504,18 +504,26 @@
                                                             <td>@count</td>
                                                             <td data-sectionDetailId="@detail.Id" class="section-detail">
                                                                 <span class="detail-title">@detail.Title1</span>
+                                                                <div class="row">
+                                                                    <div class="col-2 offset-10 font-weight-bolder">Score</div>
+                                                                </div>
                                                                 <div>
                                                                     <ul>
                                                                         @foreach (var breakdown in detail.InitiatedSectionDetailBreakdowns)
                                                                         {
                                                                             var result = detailResult.ItemBreakdownResults.Where(x => x.InitiatedSectionDetailBreakdownId == breakdown.Id).SingleOrDefault();
-                                                                            <li class="mt-1">
-                                                                                <span class="breakdown-title">@breakdown.Title</span>
-                                                                                <input type="number" data-breakdownId="@breakdown.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;@(breakdown.ExpectedValueId == 3 ? "display:none":"display:inline;")" disabled />
-                                                                                @if (breakdown.IsScore)
-                                                                                {
-                                                                                    <span class="ml-3">score - <b>@result.Score</b>/@breakdown.MaxScore</span>
-                                                                                }
+                                                                            <li class="mt-1 row">
+                                                                                <div class="col-10">
+                                                                                    <span class="breakdown-title">@breakdown.Title</span>
+                                                                                    <input type="number" data-breakdownId="@breakdown.Id" value="@result.Value" class="form-control ml-4 input-breakdown" style="width:120px;@(breakdown.ExpectedValueId == 3 ? "display:none":"display:inline;")" disabled />
+
+                                                                                </div>
+                                                                                <div class="col-2">
+                                                                                    @if (breakdown.IsScore)
+                                                                                    {
+                                                                                        <span><b>@result.Score</b>/@breakdown.MaxScore</span>
+                                                                                    }
+                                                                                </div>
                                                                             </li>
                                                                         }
                                                                     </ul>

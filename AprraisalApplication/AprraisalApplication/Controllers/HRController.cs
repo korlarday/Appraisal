@@ -172,6 +172,20 @@ namespace AprraisalApplication.Controllers
             return View("SetHodSupervisors", model);
         }
 
+        [ActionName("set-employees-supervisors")]
+        public ActionResult SetEmployeesSupervisors()
+        {
+            List<Employee> supervisors = _unitOfWork.Office.GetAllEmployeesAsSupervisors();
+            List<Employee> employees = _unitOfWork.Office.GetAllEmployees();
+            SetupEmployeeAppraiserVM model = new SetupEmployeeAppraiserVM
+            {
+                UserAppraisers = employees,
+                Employees = employees,
+                Supervisors = supervisors
+            };
+            return View("SetEmployeesSupervisors", model);
+        }
+
         private CreateEmployeeProfileVM PopulateSelectList(CreateEmployeeProfileVM model)
         {
             model.States = new SelectList(_unitOfWork.Resources.GetAllStates(), "Id", "Description");

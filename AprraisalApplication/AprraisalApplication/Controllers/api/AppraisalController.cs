@@ -36,8 +36,16 @@ namespace AprraisalApplication.Controllers.api
 
         public IHttpActionResult PostStartEmployeeAppraisal([FromBody] StartEmployeeAppraisalParams model)
         {
-            string response = _unitOfWork.Appraisal.StartEmployeeAppraisal(model.EmployeeId, model.NewAppraisalId);
-            return Ok(response);
+            try
+            {
+                string response = _unitOfWork.Appraisal.StartEmployeeAppraisal(model.EmployeeId, model.NewAppraisalId);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            
         }
 
         public async Task<IHttpActionResult> PostSubmitAppraisalToSupervisor([FromBody] SubmitAppraisalParams model)

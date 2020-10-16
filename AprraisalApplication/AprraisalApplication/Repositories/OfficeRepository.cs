@@ -185,6 +185,8 @@ namespace AprraisalApplication.Repositories
             return hods;
         }
 
+        
+
         internal List<Employee> GetAllHodsAndHigherRanks()
         {
             var hodRole = db.Roles.Where(x => x.Name == PositionsCS.Hod).SingleOrDefault();
@@ -225,6 +227,13 @@ namespace AprraisalApplication.Repositories
                     .Where(x => x.AccountDisabled != true)
                     .Include(x => x.Department)
                     .Include(x => x.State)
+                    .ToList();
+        }
+        internal List<Employee> GetAllEmployeesAsSupervisors()
+        {
+            return db.Employees
+                    .Where(x => x.AccountDisabled != true)
+                    .Include(x => x.DefaultUserAppraiser)
                     .ToList();
         }
 

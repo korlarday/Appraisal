@@ -65,9 +65,9 @@ namespace AprraisalApplication.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> TestEmail()
         {
-            var response = await EmailServices.EmailSend("rilwan.busari@ieianchorpensions.com", "this is a test email from Rilwan");
+            var response = await EmailServices.EmailSend("korlarday47@yahoo.com", "this is a test email from Rilwan");
             return Content(response);
-            //return RedirectToAction("index", "home");
+            //return RedirectToAction("index", "home");musagadabs1
         }
         //
         // GET: /Account/Login

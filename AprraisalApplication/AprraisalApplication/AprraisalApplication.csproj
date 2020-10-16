@@ -4704,10 +4704,10 @@
     <Content Include="Views\Configurations\SetQualifications.cshtml" />
     <Content Include="Views\Appraisal\AllParticipants.cshtml" />
     <Content Include="Views\MdAppraisal\AllParticipantsMd.cshtml" />
+    <Content Include="Views\HR\SetEmployeesSupervisors.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\HumanResource\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

@@ -131,7 +131,7 @@
                         {
                             <div class="table-responsive">
 
-                                <table class="table js-table-checkable  table-bordered table-striped table-vcenter js-dataTable-full">
+                                <table class="table js-table-checkable  table-bordered table-striped table-vcenter js-dataTable-full" data-page-length='200'>
                                     <thead>
                                         <tr>
                                             <th>Select</th>
@@ -265,6 +265,7 @@
 
                 //var url = '/api/appraisal/PostInitialiseAppraisalExercise';
                 var url = '@Url.Action("PostInitialiseAppraisalExercise", "appraisal", new { httproute = "DefaultApi" })';
+                
                 $.post(url,
                     {
                         appraisalTitle: $appraisalTitle,

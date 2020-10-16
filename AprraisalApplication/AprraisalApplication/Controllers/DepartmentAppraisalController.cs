@@ -180,7 +180,6 @@ namespace AprraisalApplication.Controllers
             return View("ViewEmployee", employee);
         }
 
-
         
         [ActionName("employees-by-department-hod")]
         public ActionResult EmployeesByDepartment()

@@ -732,7 +732,7 @@
                     }
 
 
-                    <button class="btn btn-secondary btn-sm mt-5" id="calculateScore">Calculate Score</button>
+                    <button class="btn btn-outline-secondary btn-sm mt-5" id="calculateScore">Calculate Score</button>
                     <div class="row" id="scoreDiv" style="display:none;">
                         <div class="offset-2 col-8 p-5 my-5" style="border: 1px solid grey">
                             <div class="row">
@@ -763,10 +763,10 @@
                     </div>
                     <div class="row mt-4">
                         <div style="margin:auto">
-                            <button class="btn btn-primary mr-4" id="submitAppraisal">
+                            <button class="btn btn-outline-primary mr-4" id="submitAppraisal">
                                 Submit Appraisal
                             </button>
-                            <button class="btn btn-danger" id="rejectAppraisal">
+                            <button class="btn btn-outline-danger" id="rejectAppraisal">
                                 Reject Appraisal
                             </button>
                         </div>
@@ -1092,6 +1092,9 @@
                                 var $isScore = $(this).closest("li").attr("data-isScore");
                                 var $expectedValueType = $(this).closest("li").attr("data-expectedValue");
 
+                                if ($score == null || isNaN($score)) {
+                                    $score = 0;
+                                }
                                 if ($isScore == 'True') {
                                     if (isNaN($score)) {
                                         $breakdownValid = false;

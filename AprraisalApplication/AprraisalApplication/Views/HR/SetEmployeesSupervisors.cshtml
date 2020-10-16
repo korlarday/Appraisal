@@ -1,20 +1,19 @@
 ﻿@model AprraisalApplication.Models.ViewModels.SetupEmployeeAppraiserVM
 
 @{
-    ViewBag.Title = "Set Hod Supervisors";
+    ViewBag.Title = "Set Employees Supervisors";
 }
-
 
 <!-- Hero -->
 <div class="bg-body-light">
     <div class="content content-full">
         <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
-            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Setup HODs Appraiser</h1>
+            <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Setup Employees Appraiser</h1>
             <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">Configurations</li>
                     <li class="breadcrumb-item">Appraisal</li>
-                    <li class="breadcrumb-item active" aria-current="page">HODs Appraiser Setup</li>
+                    <li class="breadcrumb-item active" aria-current="page">Employees Appraiser Setup</li>
                 </ol>
             </nav>
         </div>
@@ -57,8 +56,8 @@
                                             <td>@item.Department.Name</td>
                                             <td>@item.State.Description</td>
                                             <td class="text-center">
-                                                <select class="form-control select-appraiser">
-                                                    <option value=""></option>
+                                                <select class="js-select2 form-control select-appraiser" data-placeholder="Select appraiser..">
+                                                    <option disabled selected>select supervisor</option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
                                                     @foreach (var employee in Model.Supervisors)
                                                     {
                                                         if (item.ApplicationUserId != employee.ApplicationUserId)
@@ -68,13 +67,24 @@
                                                         }
                                                     }
                                                 </select>
+                                                @*<select class="form-control select-appraiser">
+                                                    <option value=""></option>
+                                                    @foreach (var employee in Model.Supervisors)
+                                                    {
+                                                        if (item.ApplicationUserId != employee.ApplicationUserId)
+                                                        {
+                                                            <option value="@employee.ApplicationUserId" @(employee.ApplicationUserId == item.DefaultUserAppraiser.AppraiserId ? "selected" : "")>@employee.Firstname @employee.Lastname</option>
+
+                                                        }
+                                                    }
+                                                </select>*@
                                             </td>
                                             @*<td>
-                                                    <select class="form-control to-team-leader">
-                                                        <option value="false" @(item.DefaultUserAppraiser.ToTeamLeader? "selected":"")>False</option>
-                                                        <option value="true" @(item.DefaultUserAppraiser.ToTeamLeader? "selected":"")>True</option>
-                                                    </select>
-                                                </td>*@
+                                                <select class="form-control to-team-leader">
+                                                    <option value="false" @(item.DefaultUserAppraiser.ToTeamLeader? "selected":"")>False</option>
+                                                    <option value="true" @(item.DefaultUserAppraiser.ToTeamLeader? "selected":"")>True</option>
+                                                </select>
+                                            </td>*@
                                         </tr>
                                         ++num;
                                     }
@@ -99,9 +109,7 @@
 
     <script>
         $(function () {
-            /*
-             * Delete Subject js
-             */
+
             $("#updateEmpAppraiser").on("click", function (e) {
                 var $this = $(this);
                 e.preventDefault();
@@ -128,11 +136,13 @@
                 var url = '@Url.Action("PostSetEmployeeAppraiser", "configurations", new { httproute = "DefaultApi" })';
 
                 $.post(url, { items: $usersAndAppraiserId }, function (data) {
-                    Swal.fire("Updated!", "HODs appraiser has been updated.", "success");
+                    Swal.fire("Updated!", "Employees appraiser has been updated.", "success");
                     Dashmix.layout('header_loader_off');
                 });
-            })
+            });
+
         })
                         ////////////////////////////////////////////////////////////////////
     </script>
+        <script>jQuery(function () { Dashmix.helpers(['select2']); });</script>
 }

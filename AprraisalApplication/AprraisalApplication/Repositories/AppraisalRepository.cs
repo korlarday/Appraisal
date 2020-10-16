@@ -11,6 +11,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -1324,7 +1325,7 @@ namespace AprraisalApplication.Repositories
                                                 if (result != null)
                                                 {
                                                     result.Value = breakdown.BreakdownValue;
-                                                    result.Score = breakdown.Score;
+                                                    result.Score = Double.IsNaN(breakdown.Score) ? 0 : Convert.ToDouble(breakdown.Score);
                                                 }
                                             }
                                         }
@@ -1363,7 +1364,8 @@ namespace AprraisalApplication.Repositories
                     catch (Exception e)
                     {
                         dbContextTransaction.Rollback();
-                        throw new System.ArgumentException(e.Message);
+                        Debug.WriteLine(e.Message);
+                        return "failed";
                     }
                 }
             }
@@ -1391,78 +1393,87 @@ namespace AprraisalApplication.Repositories
                         foreach (var section in appraisee.InitiatedAppraisalTemplate.InitiatedTemplateSections)
                         {
                             var sectionResult = model.SectionResults.Where(x => x.SectionId == section.Id).SingleOrDefault();
-                            
-                            // store section result
-                            Models.MigrationModels.SectionResult sectionResultDb = new Models.MigrationModels.SectionResult(appraisee.Id, section.Id, section.Optional, sectionResult.OptionSelected);
-                            context.SectionResults.Add(sectionResultDb);
-                            context.SaveChanges();
 
-                            if (section.SectionTypeId == SectionTypeCS.TaskPerfomed)
+                            // first check if the sectionResult has been saved before
+                            var sectionResultt = context.SectionResults.Where(x => x.AppraiseeId == appraisee.Id
+                                                                                && x.InitiatedTemplateSectionId == section.Id)
+                                                                        .FirstOrDefault();
+                            
+                            if(sectionResultt == null)
                             {
-                                if (sectionResult != null)
+                                // store section result
+                                var sectionResultDb = new Models.MigrationModels.SectionResult(appraisee.Id, section.Id, section.Optional, sectionResult.OptionSelected);
+                                context.SectionResults.Add(sectionResultDb);
+                                context.SaveChanges();
+
+                                if (section.SectionTypeId == SectionTypeCS.TaskPerfomed)
                                 {
-                                    foreach (var item in sectionResult.TaskPerformed)
+                                    if (sectionResult != null)
                                     {
-                                        SectionDetailResult detail = new SectionDetailResult(item, sectionResultDb.Id, section.Id);
-                                        context.SectionDetailResults.Add(detail);
-                                        context.SaveChanges();
-                                    }
-                                }
-                            }
-                            else if (section.SectionTypeId == SectionTypeCS.DutiesAssigned)
-                            {
-                                if (sectionResult != null)
-                                {
-                                    foreach (var item in sectionResult.TaskPerformed)
-                                    {
-                                        SectionDetailResult detail = new SectionDetailResult(item, sectionResultDb.Id, section.Id);
-                                        context.SectionDetailResults.Add(detail);
-                                    }
-                                }
-                            }
-                            else if (section.SectionTypeId == SectionTypeCS.Qualitative)
-                            {
-                                foreach (var item in section.InitiatedSectionDetails)
-                                {
-                                    SectionDetailResult detail = new SectionDetailResult(item, sectionResultDb.Id);
-                                    context.SectionDetailResults.Add(detail);
-                                    context.SaveChanges();
-                                    if (item.InitiatedSectionDetailBreakdowns != null && item.InitiatedSectionDetailBreakdowns.Count() > 0)
-                                    {
-                                        foreach (var breakdown in item.InitiatedSectionDetailBreakdowns)
+                                        foreach (var item in sectionResult.TaskPerformed)
                                         {
-                                            ItemBreakdownResult itemBreakdown = new ItemBreakdownResult(breakdown, detail.Id);
-                                            context.ItemBreakdownResults.Add(itemBreakdown);
+                                            SectionDetailResult detail = new SectionDetailResult(item, sectionResultDb.Id, section.Id);
+                                            context.SectionDetailResults.Add(detail);
+                                            context.SaveChanges();
                                         }
                                     }
                                 }
-
-                            }
-                            else if (section.SectionTypeId == SectionTypeCS.Quantitative)
-                            {
-                                if (sectionResult != null)
+                                else if (section.SectionTypeId == SectionTypeCS.DutiesAssigned)
+                                {
+                                    if (sectionResult != null)
+                                    {
+                                        foreach (var item in sectionResult.TaskPerformed)
+                                        {
+                                            SectionDetailResult detail = new SectionDetailResult(item, sectionResultDb.Id, section.Id);
+                                            context.SectionDetailResults.Add(detail);
+                                        }
+                                    }
+                                }
+                                else if (section.SectionTypeId == SectionTypeCS.Qualitative)
                                 {
                                     foreach (var item in section.InitiatedSectionDetails)
                                     {
-                                        var sectionDetail = sectionResult.TaskPerformed.Where(x => x.Number == item.Id).SingleOrDefault();
                                         SectionDetailResult detail = new SectionDetailResult(item, sectionResultDb.Id);
                                         context.SectionDetailResults.Add(detail);
                                         context.SaveChanges();
                                         if (item.InitiatedSectionDetailBreakdowns != null && item.InitiatedSectionDetailBreakdowns.Count() > 0)
                                         {
-                                            if(sectionDetail.Breakdowns != null)
+                                            foreach (var breakdown in item.InitiatedSectionDetailBreakdowns)
                                             {
-                                                foreach (var breakdown in item.InitiatedSectionDetailBreakdowns)
+                                                ItemBreakdownResult itemBreakdown = new ItemBreakdownResult(breakdown, detail.Id);
+                                                context.ItemBreakdownResults.Add(itemBreakdown);
+                                            }
+                                        }
+                                    }
+
+                                }
+                                else if (section.SectionTypeId == SectionTypeCS.Quantitative)
+                                {
+                                    if (sectionResult != null)
+                                    {
+                                        foreach (var item in section.InitiatedSectionDetails)
+                                        {
+                                            var sectionDetail = sectionResult.TaskPerformed.Where(x => x.Number == item.Id).SingleOrDefault();
+                                            SectionDetailResult detail = new SectionDetailResult(item, sectionResultDb.Id);
+                                            context.SectionDetailResults.Add(detail);
+                                            context.SaveChanges();
+                                            if (item.InitiatedSectionDetailBreakdowns != null && item.InitiatedSectionDetailBreakdowns.Count() > 0)
+                                            {
+                                                if(sectionDetail.Breakdowns != null)
                                                 {
-                                                    var result = sectionDetail.Breakdowns.Where(x => x.BreakdownId == breakdown.Id).SingleOrDefault();
-                                                    ItemBreakdownResult itemBreakdown = new ItemBreakdownResult(breakdown, result, detail.Id);
-                                                    context.ItemBreakdownResults.Add(itemBreakdown);
+                                                    foreach (var breakdown in item.InitiatedSectionDetailBreakdowns)
+                                                    {
+                                                        var result = sectionDetail.Breakdowns.Where(x => x.BreakdownId == breakdown.Id).SingleOrDefault();
+                                                        ItemBreakdownResult itemBreakdown = new ItemBreakdownResult(breakdown, result, detail.Id);
+                                                        context.ItemBreakdownResults.Add(itemBreakdown);
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
+
                         }
 
                         // save the progress
@@ -1638,9 +1649,10 @@ namespace AprraisalApplication.Repositories
                         dbContextTransaction.Commit();
                         return "initialized";
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         dbContextTransaction.Rollback();
+                        Debug.WriteLine(ex.Message);
                         return "failed";
                     }
                 }
@@ -1857,6 +1869,7 @@ namespace AprraisalApplication.Repositories
                                         && x.NewAppraisalId == newAppraisalId)
                                 .Include(x => x.AppraiserPersonalData.Appraiser.Department)
                                 .Include(x => x.AppraiserPersonalData.Appraiser.Grade)
+                                .Include(x => x.AppraiserPersonalData.Appraiser.JobTitle)
                                 .Include(x => x.AppraiseeCareerHistoryWithCompanies.Select(d => d.Department))
                                 .Include(x => x.AppraiseeProgress)
                                 .Include(x => x.AppraiseeRejections)

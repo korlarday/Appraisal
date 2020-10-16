@@ -107,7 +107,7 @@
                                             !item.AppraiseeProgress.HODReject)
                                         {
                                             <div style="margin:auto">
-                                                @Html.ActionLink("Enter Comments", "appraiser-comments", "appraisal", new { u = item.Employee.ApplicationUserId, s = item.NewAppraisal.Slug }, new { @class = "btn btn-primary btn-sm", style = "display:block;margin:10px auto" });
+                                                @Html.ActionLink("Enter Comments", "appraiser-comments", "appraisal", new { u = item.Employee.ApplicationUserId, s = item.NewAppraisal.Slug }, new { @class = "btn btn-primary btn-sm", style = "display:block;margin:10px auto" })
                                             </div>
                                             @*<a href="/appraisal/appraiser-comments?u=@item.Employee.ApplicationUserId&s=@item.NewAppraisal.Slug" class="btn btn-primary btn-sm" style="display:block;margin:10px auto">Enter Comments</a>*@
                                         }

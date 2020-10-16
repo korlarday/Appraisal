@@ -289,17 +289,23 @@
                         </ul>
                     </li>
                     <li class="nav-main-item">
-                        <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "set-hod-supervisors" ? "active" : "")" href="@Url.Content("~/hr/set-hod-supervisors")">
+                        <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "set-employees-supervisors" ? "active" : "")" href="@Url.Content("~/hr/set-employees-supervisors")">
                             <i class="nav-main-link-icon si si-users"></i>
-                            <span class="nav-main-link-name">Set HODs Supervisor</span>
+                            <span class="nav-main-link-name">Set Employees Supervisor</span>
                         </a>
                     </li>
+                    @*<li class="nav-main-item">
+                <a class="nav-main-link @(ViewContext.RouteData.Values["Action"].ToString() == "set-hod-supervisors" ? "active" : "")" href="@Url.Content("~/hr/set-hod-supervisors")">
+                    <i class="nav-main-link-icon si si-users"></i>
+                    <span class="nav-main-link-name">Set HODs Supervisor</span>
+                </a>
+            </li>*@
                 }
                 @if (User.IsInRole("HOD") || User.IsInRole("HR"))
                 {
                     <li class="nav-main-heading">Configurations</li>
                 }
-                @if (User.IsInRole("HOD"))
+                @*@if (User.IsInRole("HOD"))
                 {
                     <li class="nav-main-item">
                         <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
@@ -314,7 +320,7 @@
                             </li>
                         </ul>
                     </li>
-                }
+                }*@
                 @if (User.IsInRole("HR"))
                 {
                     <li class="nav-main-item">
